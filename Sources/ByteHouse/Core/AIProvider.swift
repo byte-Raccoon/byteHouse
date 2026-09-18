@@ -1,0 +1,177 @@
+import Foundation
+
+public struct AIToolCall: Codable, Sendable {
+    public let id: String
+    public let name: String
+    public let arguments: [String: AnyCodable]
+}
+
+public struct AIMessage: Codable, Sendable {
+    public let role: String // "user" | "assistant" | "system" | "tool"
+    public let content: String
+    public let tool_calls: [AIToolCall]?
+    public let name: String?
+
+    public init(role: String, content: String, tool_calls: [AIToolCall]? = nil, name: String? = nil) {
+        self.role = role
+        self.content = content
+        self.tool_calls = tool_calls
+        self.name = name
+    }
+}
+
+public struct AIGenerateResponse: Sendable {
+    public let content: String
+    public let tool_calls: [AIToolCall]?
+
+    public init(content: String, tool_calls: [AIToolCall]? = nil) {
+        self.content = content
+        self.tool_calls = tool_calls
+    }
+}
+
+public protocol AIProvider: Sendable {
+    var name: String { get }
+    func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse
+}
+
+public class MockAIProvider: AIProvider, @unchecked Sendable {
+    public let name = "mock"
+
+    public init() {}
+
+    public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
+        guard let last = messages.last else {
+            return AIGenerateResponse(content: "How can I help you?", tool_calls: nil)
+        }
+
+        // Case 1: Answering after a tool has executed
+        if last.role == "tool" {
+            guard let data = last.content.data(using: .utf8),
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                return AIGenerateResponse(content: "Action completed.", tool_calls: nil)
+            }
+
+            if last.name == "remember" {
+                let mem = json["memory"] as? [String: Any]
+                let content = (mem?["content"] as? String) ?? "stored"
+                return AIGenerateResponse(content: "I've noted that down: \"\(content)\". I'll remember this for you.", tool_calls: nil)
+            } else if last.name == "recall" {
+                let mems = json["memories"] as? [[String: Any]] ?? []
+                if mems.isEmpty {
+                    return AIGenerateResponse(content: "I searched my memory, but I don't have any record of that yet.", tool_calls: nil)
+                }
+                let list = mems.compactMap { $0["content"] as? String }.map { "• \($0)" }.joined(separator: "\n")
+                return AIGenerateResponse(content: "Here is what I remember:\n\(list)", tool_calls: nil)
+            } else if last.name == "create_task" {
+                let task = json["task"] as? [String: Any]
+                let title = (task?["title"] as? String) ?? "Task"
+                let priority = (task?["priority"] as? String) ?? "medium"
+                return AIGenerateResponse(content: "I've created the task: \"\(title)\" (Priority: \(priority)).", tool_calls: nil)
+            } else if last.name == "list_tasks" {
+                let tasks = json["tasks"] as? [[String: Any]] ?? []
+                if tasks.isEmpty {
+                    return AIGenerateResponse(content: "You have no active tasks right now.", tool_calls: nil)
+                }
+                let list = tasks.compactMap { t -> String? in
+                    guard let title = t["title"] as? String else { return nil }
+                    let status = (t["status"] as? String) == "completed" ? "x" : " "
+                    let prio = (t["priority"] as? String) ?? "medium"
+                    return "[\(status)] \(title) (\(prio))"
+                }.joined(separator: "\n")
+                return AIGenerateResponse(content: "Here are your tasks:\n\(list)", tool_calls: nil)
+            } else if last.name == "complete_task" {
+                let task = json["task"] as? [String: Any]
+                let title = (task?["title"] as? String) ?? "Task"
+                return AIGenerateResponse(content: "Great job! I've marked \"\(title)\" as completed.", tool_calls: nil)
+            }
+            return AIGenerateResponse(content: "Action executed successfully.", tool_calls: nil)
+        }
+
+        // Case 2: Intent detection from user prompt
+        let text = last.content.lowercased()
+
+        // "Remember that ..."
+        if text.contains("remember") {
+            var fact = last.content
+            if let range = fact.range(of: "remember that ", options: .caseInsensitive) {
+                fact = String(fact[range.upperBound...])
+            } else if let range = fact.range(of: "remember ", options: .caseInsensitive) {
+                fact = String(fact[range.upperBound...])
+            }
+            fact = fact.trimmingCharacters(in: .whitespacesAndNewlines)
+            let call = AIToolCall(
+                id: UUID().uuidString,
+                name: "remember",
+                arguments: ["content": AnyCodable(fact)]
+            )
+            return AIGenerateResponse(content: "", tool_calls: [call])
+        }
+
+        // "Recall ..." / "What is my ..." / "Do you remember ..."
+        if text.contains("recall") || text.contains("what is my") || text.contains("what do you remember") {
+            var query = ""
+            if let range = text.range(of: "recall ") {
+                query = String(text[range.upperBound...])
+            } else if let range = text.range(of: "what is my ") {
+                query = String(text[range.upperBound...]).replacingOccurrences(of: "?", with: "")
+            }
+            query = query.trimmingCharacters(in: .whitespacesAndNewlines)
+            let call = AIToolCall(
+                id: UUID().uuidString,
+                name: "recall",
+                arguments: ["query": AnyCodable(query)]
+            )
+            return AIGenerateResponse(content: "", tool_calls: [call])
+        }
+
+        // "Add task ..." / "Create a task ..."
+        if text.contains("add a task") || text.contains("create a task") || text.contains("add task") || text.contains("create task") {
+            var title = last.content
+            if let range = title.range(of: "task to ", options: .caseInsensitive) {
+                title = String(title[range.upperBound...])
+            } else if let range = title.range(of: "task ", options: .caseInsensitive) {
+                title = String(title[range.upperBound...])
+            }
+            title = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            let call = AIToolCall(
+                id: UUID().uuidString,
+                name: "create_task",
+                arguments: ["title": AnyCodable(title), "priority": AnyCodable("medium")]
+            )
+            return AIGenerateResponse(content: "", tool_calls: [call])
+        }
+
+        // "List tasks" / "What are my tasks"
+        if text.contains("list tasks") || text.contains("show tasks") || text.contains("my tasks") {
+            let call = AIToolCall(
+                id: UUID().uuidString,
+                name: "list_tasks",
+                arguments: ["status": AnyCodable("pending")]
+            )
+            return AIGenerateResponse(content: "", tool_calls: [call])
+        }
+
+        // "Complete task ..." / "Finish task ..."
+        if text.contains("complete task") || text.contains("complete the task") || text.contains("finish task") {
+            var target = last.content
+            if let range = target.range(of: "task ", options: .caseInsensitive) {
+                target = String(target[range.upperBound...])
+            }
+            target = target.trimmingCharacters(in: .whitespacesAndNewlines)
+            let call = AIToolCall(
+                id: UUID().uuidString,
+                name: "complete_task",
+                arguments: ["task_title": AnyCodable(target)]
+            )
+            return AIGenerateResponse(content: "", tool_calls: [call])
+        }
+
+        // Default greeting
+        if text.contains("hello") || text.contains("hi") {
+            return AIGenerateResponse(content: "Hello! I'm ByteHouse, your personal companion. How can I help you today?", tool_calls: nil)
+        }
+
+        return AIGenerateResponse(content: "I'm ByteHouse. You can ask me to remember facts, recall information, or manage your tasks.", tool_calls: nil)
+    }
+}

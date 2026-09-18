@@ -453,5 +453,20 @@ Supersedes: [old decision number]
 
 **Date:** 2026-09-18
 
+**Status:** superseded by [29]
+
+---
+
+# [29] Native Swift WebKit Host + React UI Architecture
+
+**Decision:** ByteHouse adopts a Native WebKit Shell architecture: **Swift** (Swift 6.1.2) as the native macOS desktop companion host, system integration layer, and core engine (AppKit `NSPanel`, `NSStatusItem` menu bar tray, global hotkeys `Control+Option+Space`, native `libsqlite3` persistence), and **React** (React 19 + Vite) as the companion HUD interface running in an embedded `WKWebView` via two-way `WKScriptMessageHandler` communication.
+
+**Reason:** Eliminates Electron and bundled Chromium overhead completely, lowering idle RAM from ~200MB to ~35MB and binary size to ~5MB. Provides 100% native macOS floating window behavior (`.nonactivatingPanel` that floats over all desktop spaces and full-screen apps) while preserving modern React component development, state management, and rapid styling.
+
+**Alternatives considered:** Electron + TypeScript (heavier resource footprint, slower startup); Pure SwiftUI (harder web animation sharing and cross-device React components).
+
+**Date:** 2026-09-18
+
 **Status:** active
+
 

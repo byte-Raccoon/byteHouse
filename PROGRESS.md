@@ -464,11 +464,11 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 ### Stage 0 — Initial Core Loop (completed 2026-09-18)
 
 - **Goal:** Prove conversation + explicit memory + task capability + persistent state in desktop companion.
-- **Feature:** Siri-like macOS Companion HUD, SQLite WAL persistence, Memory CRUD, Task management, Tool boundaries, Mock + Gemini provider adapters, non-conflicting configurable global shortcut.
-- **Tests:** 14/14 tests passing across 5 test suites, including 10-step full journey integration test.
-- **Architecture:** Decoupled core engine in `src/core/`, Electron HUD shell in `src/electron/` and `src/ui/`.
+- **Feature:** Native macOS companion HUD (NSPanel + Menu Bar Status Item), Apple WebKit container (`WKWebView`), React 19 + Vite frontend, SQLite WAL persistence via built-in `libsqlite3`, Memory CRUD, Task management, Tool boundaries, Mock + Gemini provider adapters, non-conflicting global shortcut (`Control+Option+Space`).
+- **Tests:** 5/5 Swift Testing suite tests passing (100% success), including the 10-step full journey integration test.
+- **Architecture:** Native WebKit Shell — Swift 6 host & core engine in `Sources/ByteHouse/`, modern React UI in `web/` communicating via `WKScriptMessageHandler` bridge. Electron and Chromium completely removed.
+- **Decisions:** [28] (superseded), [29] (active).
 - **Known limitations:** Voice I/O and animated character state machine are placeholders for Phase 8 & 9; mobile sync is future Stage 11 & 12.
-- **Commit:** `6d36857`
 - **Next stage:** Stage 1 — Foundation
 
 ---

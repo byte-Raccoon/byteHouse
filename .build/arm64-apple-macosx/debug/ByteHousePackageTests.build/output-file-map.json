@@ -1,0 +1,11 @@
+{
+  "": {
+    "swift-dependencies": "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/master.swiftdeps"
+  },
+  "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.derived/runner.swift": {
+    "dependencies": "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/runner.d",
+    "object": "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/runner.swift.o",
+    "swiftmodule": "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/runner.swiftdeps"
+  }
+}

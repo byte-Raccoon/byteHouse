@@ -1,35 +1,26 @@
 {
   "name": "bytehouse",
   "version": "0.1.0",
-  "description": "ByteHouse — Personal AI Operating Layer & Digital Companion",
-  "main": "dist/electron/main.js",
+  "description": "ByteHouse — Personal AI Operating Layer & Digital Companion (React + Swift)",
   "type": "module",
   "scripts": {
-    "build:assets": "node scripts/copy-assets.js",
-    "build": "tsc -p tsconfig.json && npm run build:assets",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "start": "electron dist/electron/main.js",
-    "dev": "npm run build && electron dist/electron/main.js"
+    "build:web": "cd web && npm run build",
+    "build:swift": "swift build",
+    "build": "npm run build:web && npm run build:swift",
+    "test": "swift test",
+    "start": "swift run ByteHouse",
+    "dev:web": "cd web && npm run dev",
+    "dev": "npm run build:web && swift run ByteHouse"
   },
   "keywords": [
     "ai",
     "assistant",
     "bytehouse",
     "mac",
+    "swift",
+    "react",
     "companion"
   ],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "better-sqlite3": "^11.8.1",
-    "dotenv": "^16.4.7"
-  },
-  "devDependencies": {
-    "@types/better-sqlite3": "^7.6.12",
-    "@types/node": "^22.13.9",
-    "electron": "^34.3.0",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.7"
-  }
+  "license": "ISC"
 }

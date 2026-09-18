@@ -1,0 +1,4 @@
+module ByteHousePackageTests {
+    header "/Users/joy/development/byteHouse/.build/arm64-apple-macosx/debug/ByteHousePackageTests.build/ByteHousePackageTests-Swift.h"
+    requires objc
+}
