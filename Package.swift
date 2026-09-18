@@ -15,6 +15,9 @@ let package = Package(
             name: "ByteHouse",
             dependencies: [],
             path: "Sources/ByteHouse",
+            resources: [
+                .process("Host/asset")
+            ],
             linkerSettings: [
                 .linkedLibrary("sqlite3")
             ]

@@ -65,6 +65,8 @@ public class LocalSchemeHandler: NSObject, WKURLSchemeHandler {
         case "woff": return "font/woff"
         case "woff2": return "font/woff2"
         case "ttf": return "font/ttf"
+        case "webm": return "video/webm"
+        case "mp4": return "video/mp4"
         default: return "application/octet-stream"
         }
     }

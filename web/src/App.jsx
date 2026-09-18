@@ -149,10 +149,23 @@ export default function App() {
       {/* Header */}
       <header className="hud-header">
         <div className="presence-wrapper">
-          <div className={`presence-orb ${presenceState}`} />
+          <div className={`orb-avatar-wrapper ${presenceState}`}>
+            <video
+              className="orb-video"
+              src="/orb-animation.webm"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <div className="orb-halo" />
+          </div>
           <div className="presence-meta">
             <span className="hud-title">ByteHouse</span>
-            <span className="presence-label">{presenceState}</span>
+            <div className="presence-indicator">
+              <span className={`status-dot ${presenceState}`} />
+              <span className="presence-label">{presenceState}</span>
+            </div>
           </div>
         </div>
         <div className="header-actions">
