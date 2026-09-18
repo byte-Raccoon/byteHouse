@@ -211,15 +211,14 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 ---
 
 ## Stage 2 — ByteHouse Core
-**Status:** `IN PROGRESS (Stage 2.1 Completed)`
-- [x] Stable conversation management system (`ConversationService`)
-- [x] Multi-model LLM provider adapters (`GeminiAIProvider`, `OpenAIProvider`, `MockAIProvider`)
-- [x] Provider error recovery & graceful offline fallback (`AIProviderFactory`)
-- [x] Dynamic context construction (explicit memory recall injection into prompt context)
-- [x] Native tool calling translation & multi-turn execution loop (up to 5 rounds)
-- [x] Streaming response handling
+**Status:** `FUTURE`
+- [ ] Stable conversation management system
+- [ ] Multi-model LLM provider adapters
 - [ ] Message history trimming & compaction
+- [ ] Dynamic context construction
 - [ ] Token limit & context window management
+- [ ] Streaming response handling
+- [ ] Provider error recovery & fallback
 - [ ] Model configuration UI
 
 ---
@@ -328,7 +327,7 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 - [ ] Location context awareness
 
 ---
-
+ 
 ## Stage 12 — Sync
 **Status:** `FUTURE`
 - [ ] Conversation sync between Mac & mobile
@@ -470,25 +469,20 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 - **Architecture:** Native WebKit Shell — Swift 6 host & core engine in `Sources/ByteHouse/`, modern React UI in `web/` communicating via `WKScriptMessageHandler` bridge. Electron and Chromium completely removed.
 - **Decisions:** [28] (superseded), [29] (active).
 - **Known limitations:** Voice I/O and animated character state machine are placeholders for Phase 8 & 9; mobile sync is future Stage 11 & 12.
-- **Next stage:** Stage 1 — Foundation
 
-### Stage 2.1 — Live AI Provider & Multi-Turn Tool Calling (completed 2026-09-18)
+### Stage 2.2 — Real-time Streaming & Multi-Provider Support (completed 2026-09-18)
 
-- **Goal:** Connect ByteHouse to live generative AI models with autonomous function/tool calling and offline fallback.
-- **Feature:** `GeminiAIProvider` connecting to `gemini-3.6-flash` with parameter schemas; `OpenAIProvider` supporting GPT-4o, local Ollama, and Groq/Grok; `AIProviderFactory` automatically selecting providers based on `.env` keys with seamless offline fallback to `MockAIProvider`; enhanced `ConversationService` multi-turn tool execution loop supporting up to 5 sequential tool calls per conversation turn.
-- **Tests:** 8/8 Swift Testing suite tests passing (100% success), including provider factory selection, fallback behavior, tool schemas, and full 10-step user journey.
-- **Architecture:** `Sources/ByteHouse/Core/GeminiAIProvider.swift`, `Sources/ByteHouse/Core/OpenAIProvider.swift`, `Sources/ByteHouse/Core/AIProvider.swift`, `Sources/ByteHouse/Core/ToolRegistry.swift`.
-- **Decisions:** [31] (active).
-- **Next stage:** Stage 2.2 — Streaming response tokens.
+- **Goal:** Real-time token response streaming over native WebKit bridge, multi-provider support (Gemini 3.6 Flash, OpenAI, Groq OSS model `openai/gpt-oss-120b`).
+- **Feature:** URLSession SSE streaming in `OpenAIProvider` & `GeminiAIProvider`, `chatStream` bridge in `WebBridge`, presence state syncing, offline Mock streaming simulation.
+- **Tests:** 9/9 Swift test suites passing.
+- **Decisions:** [31] (active), [32] (active).
 
-### Stage 2.2 — Streaming Response Tokens & Grok OSS Model (completed 2026-09-18)
+### Stage 2.3 — Stitch Liquid Glassmorphism Companion HUD (completed 2026-09-18)
 
-- **Goal:** Stream AI response tokens in real-time over native WebKit bridge to React HUD and configure Grok/Groq default to `openai/gpt-oss-120b`.
-- **Feature:** `generateStream` added to `AIProvider` protocol, `MockAIProvider`, `GeminiAIProvider` (`streamGenerateContent?alt=sse`), and `OpenAIProvider` (Server-Sent Events with `"stream": true`). Real-time bridge dispatch via `WebBridge.swift` (`onByteHouseStreamChunk`), `bridge.js` (`chatStream`), and React 19 HUD (`App.jsx`) with live typing cursor (`.streaming-cursor`), thinking dots, and auto-scrolling. Groq/Grok default model updated to `openai/gpt-oss-120b`.
-- **Tests:** 9/9 Swift Testing suite tests passing (100% success), verifying chunk assembly, streaming delta propagation, presence state transitions, and SQLite message persistence.
-- **Architecture:** `Sources/ByteHouse/Core/AIProvider.swift`, `Sources/ByteHouse/Core/ConversationService.swift`, `Sources/ByteHouse/Core/GeminiAIProvider.swift`, `Sources/ByteHouse/Core/OpenAIProvider.swift`, `Sources/ByteHouse/Host/WebBridge.swift`, `web/src/App.jsx`, `web/src/bridge.js`, `web/src/styles.css`.
-- **Decisions:** [32] (active).
-- **Next stage:** Stage 3 — Dedicated Memory & Task Inspection UI Panels.
+- **Goal:** Modernize companion HUD with Stitch liquid glassmorphism design, SVG caustics, and video orb avatar.
+- **Feature:** Ported `stitch/code.html` design to React 19 HUD with Tailwind CSS v4, SVG caustics displacement filter `#liquid-caustic-filter`, cursor reflection tracking (`--liquid-x`, `--liquid-y`), prompt suggestions, live status indicator, and `orb-animation.webm` avatar.
+- **Tests:** Production build `npm run build` succeeds; 9/9 Swift test suites pass.
+- **Next stage:** Stage 3 — Memory Subsystem
 
 ---
 
@@ -497,8 +491,9 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 The next execution step is:
 
 ```text
-Stage 2.2 Real-Time Token Streaming verified
+Stage 0 verified
        ↓
-Proceed to Stage 3 (Dedicated Memory & Task UI inspection panels)
+Review roadmap & user priorities
+       ↓
+Proceed to Stage 1 (Foundation) or Stage 2 (ByteHouse Core)
 ```
-

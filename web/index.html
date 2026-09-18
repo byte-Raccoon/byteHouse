@@ -2,10 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>ByteHouse</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <!-- Procedural Caustics Displacement Filter from Stitch UI -->
+    <svg aria-hidden="true" class="hidden" height="0" width="0" style="position: absolute; width: 0; height: 0; overflow: hidden;">
+      <defs>
+        <filter height="140%" id="liquid-caustic-filter" width="140%" x="-20%" y="-20%">
+          <feTurbulence baseFrequency="0.024 0.038" numOctaves="3" result="noise" seed="4" type="fractalNoise">
+            <animate attributeName="baseFrequency" dur="18s" repeatCount="indefinite" values="0.024 0.038; 0.032 0.022; 0.02 0.035; 0.024 0.038" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
