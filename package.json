@@ -8,7 +8,7 @@
     "build:swift": "swift build",
     "build": "npm run build:web && npm run build:swift",
     "test": "swift test",
-    "start": "swift run ByteHouse",
+    "start": "npm run build:web && swift run ByteHouse",
     "dev:web": "cd web && npm run dev",
     "dev": "npm run build:web && swift run ByteHouse"
   },

@@ -38,11 +38,12 @@ public class HUDPanel: NSPanel {
         self.isMovableByWindowBackground = true
 
         // Configure WebKit
-        webView.frame = NSRect(x: 0, y: 0, width: width, height: height)
+        let bounds = NSRect(x: 0, y: 0, width: width, height: height)
+        webView.frame = bounds
         webView.autoresizingMask = [.width, .height]
         webView.setValue(false, forKey: "drawsBackground") // Transparent WebKit canvas
 
-        let containerView = NSView(frame: contentRect)
+        let containerView = NSView(frame: bounds)
         containerView.wantsLayer = true
         containerView.addSubview(webView)
         self.contentView = containerView
@@ -55,10 +56,36 @@ public class HUDPanel: NSPanel {
         }
     }
 
-    public func toggle() {
+    override public var canBecomeKey: Bool {
+        return true
+    }
+
+    override public var canBecomeMain: Bool {
+        return true
+    }
+
+    public func positionNear(statusItem: NSStatusItem?) {
+        guard let screen = NSScreen.main else { return }
+        let screenRect = screen.visibleFrame
+        let width = frame.width
+        let height = frame.height
+
+        var targetX = screenRect.maxX - width - 24
+        if let button = statusItem?.button, let buttonWindow = button.window {
+            let buttonRect = buttonWindow.frame
+            targetX = buttonRect.midX - (width / 2)
+            targetX = max(screenRect.minX + 16, min(targetX, screenRect.maxX - width - 16))
+        }
+        let targetY = screenRect.maxY - height - 8
+
+        setFrameOrigin(NSPoint(x: targetX, y: targetY))
+    }
+
+    public func toggle(statusItem: NSStatusItem? = nil) {
         if isVisible {
             orderOut(nil)
         } else {
+            positionNear(statusItem: statusItem)
             makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
         }

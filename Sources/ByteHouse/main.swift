@@ -1,5 +1,32 @@
 import AppKit
 import WebKit
+import Darwin
+
+// --- 1. Single-Instance Enforcement ---
+let fileManager = FileManager.default
+let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+let byteHouseDir = appSupport.appendingPathComponent("ByteHouse", isDirectory: true)
+
+if !fileManager.fileExists(atPath: byteHouseDir.path) {
+    try? fileManager.createDirectory(at: byteHouseDir, withIntermediateDirectories: true)
+}
+
+let lockFilePath = byteHouseDir.appendingPathComponent("bytehouse.lock").path
+let lockFd = open(lockFilePath, O_CREAT | O_RDWR, 0o644)
+
+if lockFd != -1 {
+    let lockResult = flock(lockFd, LOCK_EX | LOCK_NB)
+    if lockResult != 0 {
+        print("[ByteHouse] Another instance is already running. Activating existing instance...")
+        DistributedNotificationCenter.default().postNotificationName(
+            NSNotification.Name("com.bytehouse.activateHUD"),
+            object: nil,
+            userInfo: nil,
+            deliverImmediately: true
+        )
+        exit(0)
+    }
+}
 
 @MainActor
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -14,23 +41,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var globalEventMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Run as accessory app (lives in menu bar, floating overlay like Siri)
+        // Run as accessory app (lives in menu bar, floating overlay)
         NSApp.setActivationPolicy(.accessory)
 
-        // 1. Setup Database Directory
-        let fileManager = FileManager.default
-        let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let byteHouseDir = appSupport.appendingPathComponent("ByteHouse", isDirectory: true)
-
-        if !fileManager.fileExists(atPath: byteHouseDir.path) {
-            try? fileManager.createDirectory(at: byteHouseDir, withIntermediateDirectories: true)
+        // Listen for activation requests from secondary launches
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name("com.bytehouse.activateHUD"),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.showHUD()
+            }
         }
 
+        // Setup Database
         let dbPath = ProcessInfo.processInfo.environment["DATABASE_PATH"] ?? byteHouseDir.appendingPathComponent("bytehouse.db").path
         let db = ByteHouseDatabase(path: dbPath)
         self.database = db
 
-        // 2. Setup Core Services
+        // Setup Core Services
         let memService = MemoryService(database: db)
         let tService = TaskService(database: db)
         let tRegistry = ToolRegistry(database: db, memoryService: memService, taskService: tService)
@@ -42,7 +72,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.toolRegistry = tRegistry
         self.conversationService = convService
 
-        // 3. Setup WebBridge & React URL
+        // Setup WebBridge & React URL
         let bridge = WebBridge(
             conversationService: convService,
             taskService: tService,
@@ -56,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let localDistHTML = currentDir.appendingPathComponent("web/dist/index.html")
 
         let contentURL: URL
-        if fileManager.fileExists(atPath: localDistHTML.path) {
+        if FileManager.default.fileExists(atPath: localDistHTML.path) {
             contentURL = localDistHTML
         } else {
             // Fallback to local Vite dev server if running
@@ -65,43 +95,83 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         print("[ByteHouse] Loading React UI from: \(contentURL)")
 
-        // 4. Create HUD Panel
+        // Create HUD Panel
         let panel = HUDPanel(webBridge: bridge, contentURL: contentURL)
         bridge.onHideWindow = { [weak panel] in
             panel?.orderOut(nil)
         }
         self.hudPanel = panel
 
-        // 5. Setup Status Item (macOS Menu Bar)
+        // Setup Status Item (macOS Menu Bar)
         setupStatusItem()
 
-        // 6. Setup Global Shortcut (Control + Option + Space)
+        // Setup Global Shortcut (Control + Option + Space)
         setupGlobalShortcut()
 
         // Show HUD initially
-        panel.toggle()
+        panel.toggle(statusItem: statusItem)
         print("[ByteHouse] Native companion running. Toggle with ⌃⌥ Space or Menu Bar icon.")
     }
 
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        if let button = statusItem?.button {
-            button.title = "⚡︎" // Clean monochrome symbol for menu bar
-            button.target = self
-            button.action = #selector(toggleHUD)
+        guard let button = statusItem?.button else { return }
+
+        // Use Apple SF Symbol 'sparkles'
+        let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .medium)
+        if let image = NSImage(systemSymbolName: "sparkles", accessibilityDescription: "ByteHouse")?.withSymbolConfiguration(config) {
+            image.isTemplate = true
+            button.image = image
+            button.imagePosition = .imageOnly
+            button.title = ""
+        } else {
+            button.title = "✦"
         }
 
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Toggle ByteHouse HUD (⌃⌥ Space)", action: #selector(toggleHUD), keyEquivalent: ""))
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit ByteHouse", action: #selector(quitApp), keyEquivalent: "q"))
+        button.target = self
+        button.action = #selector(statusBarButtonClicked(_:))
+        button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+    }
 
-        // Right-click opens menu, left-click toggles
-        statusItem?.menu = nil // Allow button click action
+    @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
+        guard let event = NSApp.currentEvent else {
+            toggleHUD()
+            return
+        }
+
+        if event.type == .rightMouseUp || (event.type == .leftMouseUp && event.modifierFlags.contains(.control)) {
+            showContextMenu()
+        } else {
+            toggleHUD()
+        }
+    }
+
+    private func showContextMenu() {
+        let menu = NSMenu()
+        let toggleItem = NSMenuItem(title: "Toggle ByteHouse HUD (⌃⌥ Space)", action: #selector(toggleHUD), keyEquivalent: "")
+        toggleItem.target = self
+        menu.addItem(toggleItem)
+        menu.addItem(NSMenuItem.separator())
+        let quitItem = NSMenuItem(title: "Quit ByteHouse", action: #selector(quitApp), keyEquivalent: "q")
+        quitItem.target = self
+        menu.addItem(quitItem)
+
+        statusItem?.menu = menu
+        statusItem?.button?.performClick(nil)
+        DispatchQueue.main.async { [weak self] in
+            self?.statusItem?.menu = nil
+        }
+    }
+
+    @objc func showHUD() {
+        guard let panel = hudPanel else { return }
+        panel.positionNear(statusItem: statusItem)
+        panel.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     @objc func toggleHUD() {
-        hudPanel?.toggle()
+        hudPanel?.toggle(statusItem: statusItem)
     }
 
     @objc func quitApp() {
@@ -113,7 +183,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
             if event.modifierFlags.contains([.control, .option]) && event.keyCode == 49 { // 49 = Space
                 DispatchQueue.main.async {
-                    self?.hudPanel?.toggle()
+                    self?.toggleHUD()
                 }
             }
         }
@@ -122,7 +192,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             if event.modifierFlags.contains([.control, .option]) && event.keyCode == 49 {
                 DispatchQueue.main.async {
-                    self?.hudPanel?.toggle()
+                    self?.toggleHUD()
                 }
                 return nil
             }
