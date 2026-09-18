@@ -1,5 +1,26 @@
 @import "tailwindcss";
 
+:root {
+  /* Radii scale:
+     Window: 20px (Native macOS popover style)
+     Cards & Bubbles: 12px
+     Suggestions: 10px
+     Pills / Chips: 9999px (full capsule)
+     Buttons: 9999px / 50% circle
+  */
+  --radius-window: 20px;
+  --radius-card: 12px;
+  --radius-suggestion: 10px;
+  --radius-pill: 9999px;
+  --radius-button: 9999px;
+
+  /* Spacing scale: 8px (sm), 12px (md), 16px (lg), 20px (xl) */
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -21,25 +42,20 @@ html, body {
 }
 
 /* ==========================================================================
-   STITCH UI: ULTRA-LUMINOUS LIQUID GLASS SYSTEM
+   NATIVE macOS FROSTED GLASS & LIQUID TRANSLUCENCY SYSTEM
    ========================================================================== */
 
-/* Main Assistant Liquid Window Shell - Ultra Translucent Frosted Glass */
+/* Single Continuous Backdrop Blur Applied to Entire Window Shell Only */
 .liquid-window {
-  background: linear-gradient(
-    142deg,
-    rgba(255, 255, 255, 0.28) 0%,
-    rgba(238, 246, 255, 0.14) 42%,
-    rgba(224, 242, 254, 0.18) 100%
-  );
-  backdrop-filter: blur(40px) saturate(180%) contrast(105%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%) contrast(105%);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-window);
   box-shadow: 
-    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.6),
-    inset 0 -1px 2px 0 rgba(186, 230, 253, 0.25),
-    0 24px 60px -12px rgba(14, 60, 105, 0.25),
-    0 0 35px -5px rgba(186, 230, 253, 0.25);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.7),
+    0 16px 40px -8px rgba(0, 0, 0, 0.18),
+    0 0 1px 1px rgba(0, 0, 0, 0.04);
   position: relative;
 }
 
@@ -61,12 +77,12 @@ html, body {
   will-change: opacity, transform;
 }
 
-/* Traveling specular gleaming perimeter with blue/cyan refraction */
+/* Specular gleam perimeter */
 .perimeter-shimmer {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.2px;
+  padding: 1px;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -74,33 +90,25 @@ html, body {
   background: linear-gradient(
     115deg,
     transparent 0%,
-    transparent 20%,
-    rgba(255, 255, 255, 0.75) 45%,
-    rgba(125, 211, 252, 0.7) 50%,
-    rgba(199, 210, 254, 0.65) 55%,
-    transparent 80%,
+    transparent 25%,
+    rgba(255, 255, 255, 0.8) 48%,
+    rgba(186, 230, 253, 0.7) 52%,
+    transparent 75%,
     transparent 100%
   );
   background-size: 250% 250%;
   animation: borderSweep 8s linear infinite;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
-/* Refined inner card with translucent blue-frosted glass */
+/* Inner card without duplicate backdrop-filter to prevent blur seams */
 .liquid-card {
-  background: linear-gradient(
-    138deg,
-    rgba(255, 255, 255, 0.42) 0%,
-    rgba(240, 247, 255, 0.28) 55%,
-    rgba(224, 242, 254, 0.32) 100%
-  );
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-card);
   box-shadow: 
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.7),
-    inset 0 -1px 2px rgba(191, 219, 254, 0.25),
-    0 14px 34px -4px rgba(15, 60, 100, 0.1);
+    inset 0 1px 1px rgba(255, 255, 255, 0.75),
+    0 4px 16px -2px rgba(15, 60, 100, 0.05);
   position: relative;
 }
 
@@ -112,16 +120,16 @@ html, body {
   pointer-events: none;
   overflow: hidden;
   mix-blend-mode: soft-light;
-  opacity: 0.35;
+  opacity: 0.25;
 }
 
 .caustic-mesh-1, .caustic-mesh-2 {
   position: absolute;
   inset: -50%;
   background: 
-    radial-gradient(ellipse 55% 45% at 30% 30%, rgba(56, 189, 248, 0.32) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 45% at 75% 65%, rgba(96, 165, 250, 0.25) 0%, transparent 55%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 50%);
+    radial-gradient(ellipse 55% 45% at 30% 30%, rgba(56, 189, 248, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 45% at 75% 65%, rgba(96, 165, 250, 0.2) 0%, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
   filter: url(#liquid-caustic-filter) contrast(135%) brightness(112%);
   animation: liquidDrift 16s ease-in-out infinite alternate;
   will-change: transform;
@@ -130,7 +138,7 @@ html, body {
 .caustic-mesh-2 {
   animation: liquidDriftReverse 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   mix-blend-mode: overlay;
-  opacity: 0.45;
+  opacity: 0.3;
 }
 
 /* Sunlight water reflection ripple sweep */
@@ -141,9 +149,9 @@ html, body {
   background: linear-gradient(
     125deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.22) 38%,
-    rgba(186, 230, 253, 0.38) 48%,
-    rgba(255, 255, 255, 0.45) 52%,
+    rgba(255, 255, 255, 0.18) 38%,
+    rgba(186, 230, 253, 0.28) 48%,
+    rgba(255, 255, 255, 0.35) 52%,
     transparent 65%
   );
   background-size: 200% 200%;
@@ -154,151 +162,162 @@ html, body {
 
 /* Polished Light Glass Pill Controls */
 .glass-pill {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(240, 247, 255, 0.65) 100%
-  );
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-pill);
   box-shadow: 
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
-    inset 0 -0.5px 1px rgba(186, 230, 253, 0.45),
-    0 4px 14px rgba(15, 45, 80, 0.07);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .glass-pill:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.96) 0%,
-    rgba(224, 242, 254, 0.82) 100%
-  );
+  background: rgba(255, 255, 255, 0.85);
   border-color: rgba(255, 255, 255, 1);
   box-shadow: 
-    inset 0 1px 2px rgba(255, 255, 255, 1),
-    0 6px 18px rgba(14, 116, 144, 0.12);
+    inset 0 1px 1.5px rgba(255, 255, 255, 1),
+    0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
-.glass-pill::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.6) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  opacity: 0.4;
-  pointer-events: none;
-  animation: capsuleShimmer 6s ease-in-out infinite;
-}
-
-/* Light Liquid Glass Send Button with Sky Glow */
-.send-btn-liquid {
-  background: linear-gradient(
-    135deg,
-    #38bdf8 0%,
-    #0284c7 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.6),
-    inset 0 -1px 1.5px rgba(3, 105, 161, 0.5),
-    0 4px 12px rgba(2, 132, 199, 0.32);
-  position: relative;
-  overflow: hidden;
-}
-
-.send-btn-liquid::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(circle at 40% 25%, rgba(255, 255, 255, 0.6) 0%, transparent 60%);
-  animation: ambientPulse 3s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-.send-btn-liquid:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  filter: grayscale(0.5);
-}
-
-/* Interactive Prompt Action Chip Cards */
-.prompt-chip {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.75) 0%,
-    rgba(240, 249, 255, 0.5) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.9),
-    0 2px 8px rgba(14, 116, 144, 0.04);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.prompt-chip:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(224, 242, 254, 0.75) 100%
-  );
-  border-color: rgba(186, 230, 253, 0.9);
-  transform: translateY(-1px);
-  box-shadow: 
-    inset 0 1px 2px rgba(255, 255, 255, 1),
-    0 4px 14px rgba(14, 116, 144, 0.1);
-}
-
-/* Pearl Iridescent Spectrum Orb Glow */
-.orb-glow {
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #38bdf8 0deg,
-    #60a5fa 70deg,
-    #a78bfa 140deg,
-    #38bdf8 210deg,
-    #34d399 280deg,
-    #38bdf8 360deg
-  );
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
-}
-
-/* User Chat Bubble in Stitch Styling */
-.user-bubble-liquid {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);
+/* Solid Filled Circle Accent Send Button */
+.send-btn-solid {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-button);
+  background: #0ea5e9;
+  border: none;
   color: #ffffff;
-  border-radius: 18px 18px 4px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.send-btn-solid:hover:not(:disabled) {
+  background: #0284c7;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.45);
+}
+
+.send-btn-solid:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.send-btn-solid:disabled {
+  background: #cbd5e1;
+  color: #94a3b8;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Suggestion Card Item (Individual rounded card, radius 10px, 12px vert, 16px horiz) */
+.suggestion-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-suggestion);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.suggestion-card:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+}
+
+.suggestion-card:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Small Pill/Chip Label (e.g. TRY) */
+.chip-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(14, 165, 233, 0.12);
+  color: #0369a1;
+  border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+/* Header Status Pill matching chip-label aesthetic */
+.header-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #334155;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Avatar Depth & Soft Outer Glow */
+.avatar-polished-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-button);
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(186, 230, 253, 0.7) 100%);
+  box-shadow: 
+    0 2px 10px -1px rgba(14, 165, 233, 0.3),
+    0 0 16px rgba(56, 189, 248, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+}
+
+.avatar-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-button);
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* User Chat Bubble */
+.user-bubble-liquid {
+  background: #0284c7;
+  color: #ffffff;
+  border-radius: var(--radius-card);
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
-/* Assistant Chat Bubble in Translucent Stitch Styling */
+/* Assistant Chat Bubble */
 .assistant-bubble-liquid {
-  background: linear-gradient(
-    138deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(240, 247, 255, 0.38) 55%,
-    rgba(224, 242, 254, 0.42) 100%
-  );
+  background: rgba(255, 255, 255, 0.65);
   color: #0f172a;
-  border-radius: 18px 18px 18px 4px;
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  box-shadow: 
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    0 6px 20px -4px rgba(15, 60, 100, 0.12);
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
@@ -375,7 +394,7 @@ html, body {
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 14px;
+  border-radius: var(--radius-card);
   font-size: 12.5px;
   color: #334155;
   box-shadow: 0 2px 8px rgba(14, 116, 144, 0.04);

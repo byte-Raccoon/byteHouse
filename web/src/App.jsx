@@ -163,7 +163,7 @@ export default function App() {
   return (
     <main
       ref={shellRef}
-      className="liquid-window relative z-10 w-full h-full rounded-[36px] flex flex-col justify-between p-4.5 pb-5 overflow-hidden shadow-2xl shadow-blue-900/10"
+      className="liquid-window relative z-10 w-full h-full flex flex-col justify-between p-4 overflow-hidden"
       data-purpose="assistant-shell"
     >
       {/* Traveling specular perimeter shimmer border */}
@@ -178,17 +178,13 @@ export default function App() {
       {/* Diagonal refractive fluid sweep */}
       <div className="fluid-shimmer-sweep"></div>
 
-      {/* Liquid Bevel Refraction Lines */}
-      <div className="absolute top-0 left-10 right-10 h-[1.5px] bg-gradient-to-r from-transparent via-white to-transparent pointer-events-none"></div>
-      <div className="absolute bottom-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-sky-200/60 to-transparent pointer-events-none"></div>
-
       {/* BEGIN: Top Navigation Header */}
-      <header className="relative z-10 flex items-center justify-between pt-1 px-1 flex-shrink-0" data-purpose="app-header">
-        {/* Left: Identity & Pearl Orb Avatar */}
+      <header className="relative z-10 flex items-center justify-between flex-shrink-0 mb-3" data-purpose="app-header">
+        {/* Left: Identity & Polished Avatar */}
         <div className="flex items-center space-x-3">
-          {/* Polished Iridescent Pearl Orb Avatar with Reactive Glow & Breathing */}
-          <div className="relative w-12 h-12 rounded-full p-[2.5px] bg-gradient-to-tr from-sky-400 via-indigo-400 to-cyan-300 orb-glow-ring flex-shrink-0">
-            <div className="w-full h-full rounded-full bg-white/70 backdrop-blur-md flex items-center justify-center overflow-hidden relative shadow-inner">
+          {/* Avatar Icon with subtle outer glow and inner shadow depth */}
+          <div className="avatar-polished-container">
+            <div className="avatar-inner">
               <video
                 className="w-full h-full object-cover rounded-full pointer-events-none scale-105"
                 src="/orb-animation.webm"
@@ -197,18 +193,17 @@ export default function App() {
                 muted
                 playsInline
               />
-              {/* Specular reflection overlays */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-transparent rounded-full pointer-events-none"></div>
-              <div className="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff] top-1.5 left-2 pointer-events-none"></div>
+              {/* Soft specular depth overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-black/10 rounded-full pointer-events-none"></div>
             </div>
           </div>
 
           {/* Title and Sleek Status Row */}
           <div className="flex flex-col justify-center">
-            <h1 className="text-[16px] font-bold tracking-tight text-slate-900 drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)] leading-tight">
+            <h1 className="text-[15.5px] font-bold tracking-tight text-slate-900 leading-tight">
               ByteHouse
             </h1>
-            <div className="flex items-center space-x-2 mt-0.5">
+            <div className="flex items-center space-x-2 mt-1">
               {/* Live Presence Indicator */}
               <div className="flex items-center space-x-1.5">
                 <span className="relative flex h-2 w-2">
@@ -235,9 +230,9 @@ export default function App() {
                   {presenceState}
                 </span>
               </div>
-              <span className="text-[9px] text-blue-300 font-medium select-none">•</span>
-              {/* Model Badge */}
-              <span className="inline-flex items-center text-[9.5px] font-semibold text-slate-700 bg-white/70 border border-blue-200/60 shadow-[0_1px_2px_rgba(14,116,144,0.05)] px-2 py-0.5 rounded-full">
+              <span className="text-[9px] text-slate-400 font-medium select-none">•</span>
+              {/* Model / Status Chip matching TRY pill styling */}
+              <span className="header-pill">
                 openai/gpt-oss-120b
               </span>
             </div>
@@ -248,19 +243,19 @@ export default function App() {
         <div className="flex items-center space-x-2 flex-shrink-0">
           <button
             aria-label="Switch Space"
-            className="glass-pill px-3 py-1.5 rounded-full flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all shadow-sm"
+            className="glass-pill px-2.5 py-1 flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all"
             type="button"
           >
-            <span className="relative z-10 text-[11px] font-mono text-sky-600 font-bold tracking-tight">⌃⌥</span>
-            <span className="relative z-10 tracking-normal font-medium text-slate-800">Space</span>
+            <span className="relative z-10 text-[10.5px] font-mono text-sky-600 font-bold tracking-tight">⌃⌥</span>
+            <span className="relative z-10 text-[11px] font-medium text-slate-800">Space</span>
           </button>
           <button
             aria-label="Close Assistant"
             onClick={handleClose}
-            className="glass-pill w-8 h-8 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all shadow-sm"
+            className="glass-pill w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all"
             type="button"
           >
-            <svg className="relative z-10 w-3.5 h-3.5 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="relative z-10 w-3 h-3 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"></path>
             </svg>
           </button>
@@ -271,42 +266,51 @@ export default function App() {
       {/* BEGIN: Chat Flow & Messages View */}
       <div
         ref={feedRef}
-        className="flex-1 flex flex-col justify-start pt-4 pb-3 px-1 overflow-y-auto space-y-3.5 no-scrollbar relative z-10"
+        className="flex-1 flex flex-col justify-start overflow-y-auto space-y-3 no-scrollbar relative z-10 pb-3"
         data-purpose="chat-messages"
       >
-        {/* Welcome Greeting Liquid Bubble Card (Shown initially) */}
+        {/* Welcome Greeting Card (Shown initially) */}
         {messages.length === 0 && (
-          <article className="liquid-card rounded-2xl p-4 sm:p-5 text-left relative overflow-hidden backdrop-blur-2xl border border-white/60">
-            <div className="caustic-fluid-layer opacity-25">
-              <div className="caustic-mesh-1 scale-125"></div>
-            </div>
-            <div className="fluid-shimmer-sweep opacity-30"></div>
-            <div className="absolute -top-10 -right-10 w-36 h-36 bg-sky-200/30 rounded-full blur-2xl pointer-events-none"></div>
-
+          <article className="liquid-card p-4 text-left relative overflow-hidden">
             {/* Greeting Headline */}
-            <p className="relative z-10 text-[14.5px] leading-relaxed text-slate-800 font-normal tracking-[-0.01em]">
-              Hello! I'm <span className="font-bold text-slate-900 drop-shadow-sm">ByteHouse</span>, your personal AI companion.
+            <p className="text-[14.5px] leading-relaxed text-slate-900 font-normal tracking-[-0.01em]">
+              Hello! I'm <span className="font-semibold text-slate-900">ByteHouse</span>, your personal AI companion.
             </p>
 
             {/* Assistant Sub-text */}
-            <p className="relative z-10 text-[12.5px] text-slate-600 mt-1.5 leading-relaxed">
+            <p className="text-[12.5px] text-slate-600 mt-1 leading-relaxed">
               I can remember facts, manage your tasks, and reason in real time with high accuracy.
             </p>
 
-            {/* Suggestions list */}
-            <ul className="relative z-10 mt-3.5 space-y-2">
+            {/* Try Suggestions Header Label */}
+            <div className="flex items-center space-x-2 mt-4 mb-2.5">
+              <span className="chip-label">
+                Try
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">Click to use prompt</span>
+            </div>
+
+            {/* Suggestions list as individual rounded cards */}
+            <ul className="space-y-2">
               {suggestions.map((sugg, idx) => (
                 <li
                   key={idx}
                   onClick={() => sendPromptText(sugg)}
-                  className="prompt-chip px-3.5 py-2 rounded-xl flex items-center justify-between text-[12.5px] font-medium text-slate-700 hover:text-sky-950 cursor-pointer transition-all"
+                  className="suggestion-card group"
                 >
-                  <span className="truncate pr-2 font-normal">"{sugg}"</span>
+                  <div className="flex items-center space-x-2.5 min-w-0 pr-2">
+                    {/* Small colored dot before text */}
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.7)] flex-shrink-0"></span>
+                    <span className="text-[12.5px] text-slate-700 italic group-hover:text-slate-900 font-medium truncate transition-colors leading-tight">
+                      "{sugg}"
+                    </span>
+                  </div>
+                  {/* Right chevron icon aligned to far edge */}
                   <svg
-                    className="w-3.5 h-3.5 text-sky-500 flex-shrink-0"
+                    className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition-all flex-shrink-0"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="2"
+                    strokeWidth="2.2"
                     viewBox="0 0 24 24"
                   >
                     <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -324,11 +328,11 @@ export default function App() {
             className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} my-0.5`}
           >
             {msg.role === 'user' ? (
-              <div className="user-bubble-liquid p-3 px-4 text-[13px] max-w-[85%] font-medium leading-relaxed">
+              <div className="user-bubble-liquid text-[13px] max-w-[85%] font-medium leading-relaxed">
                 {msg.content}
               </div>
             ) : (
-              <div className="assistant-bubble-liquid p-3.5 sm:p-4 text-left relative overflow-hidden backdrop-blur-2xl max-w-[90%] text-[13px] leading-relaxed text-slate-900">
+              <div className="assistant-bubble-liquid text-left relative max-w-[90%] text-[13px] leading-relaxed text-slate-900">
                 {msg.isStreaming && !msg.content ? (
                   <div className="thinking-dots">
                     <span />
@@ -398,14 +402,12 @@ export default function App() {
       </div>
       {/* END: Chat Flow & Messages View */}
 
-      {/* BEGIN: Floating Liquid Input Capsule */}
-      <footer className="relative z-20 pt-3 pb-1 px-0.5 flex-shrink-0" data-purpose="chat-input-bar">
+      {/* BEGIN: Floating Input Bar */}
+      <footer className="relative z-20 pt-2 flex-shrink-0" data-purpose="chat-input-bar">
         <form onSubmit={handleSubmit} className="relative flex items-center">
-          <div className="relative overflow-hidden w-full flex items-center glass-pill rounded-full pl-3.5 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-sky-400/40 focus-within:border-sky-300 transition-all duration-300 shadow-[0_8px_24px_rgba(14,60,110,0.08)]">
-            <div className="fluid-shimmer-sweep opacity-40 pointer-events-none"></div>
-
+          <div className="relative overflow-hidden w-full flex items-center glass-pill pl-3.5 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-sky-400/40 focus-within:border-sky-300 transition-all duration-200 shadow-sm">
             {/* Input Icon */}
-            <div className="relative z-10 pl-1 pr-2 text-sky-500 flex-shrink-0">
+            <div className="relative z-10 pl-0.5 pr-2 text-sky-500 flex-shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" strokeLinecap="round" strokeLinejoin="round"></path>
               </svg>
@@ -422,14 +424,14 @@ export default function App() {
               disabled={isSubmitting}
             />
 
-            {/* Translucent Glass Send Action Button */}
+            {/* Solid Filled Circle Accent Send Button */}
             <button
               aria-label="Send prompt"
               type="submit"
               disabled={isSubmitting || !prompt.trim()}
-              className="relative z-10 send-btn-liquid w-8 h-8 rounded-full flex items-center justify-center ml-2 text-white hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex-shrink-0 shadow-md"
+              className="relative z-10 send-btn-solid"
             >
-              <svg className="w-3.5 h-3.5 transform -rotate-12 translate-x-[-0.5px] translate-y-[-0.5px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 transform -rotate-12 translate-x-[-0.5px] translate-y-[-0.5px]" fill="none" stroke="currentColor" strokeWidth="2.4" viewBox="0 0 24 24">
                 <path d="M6 12L3 21l18-9L3 3l3 9zm0 0h9" strokeLinecap="round" strokeLinejoin="round"></path>
               </svg>
             </button>
@@ -437,9 +439,9 @@ export default function App() {
         </form>
 
         {/* macOS Subtle Bottom Accent Pill Bar */}
-        <div className="w-20 h-1 bg-slate-400/20 rounded-full mx-auto mt-2.5 pointer-events-none"></div>
+        <div className="w-16 h-1 bg-slate-400/20 rounded-full mx-auto mt-2.5 pointer-events-none"></div>
       </footer>
-      {/* END: Floating Liquid Input Capsule */}
+      {/* END: Floating Input Bar */}
     </main>
   );
 }
