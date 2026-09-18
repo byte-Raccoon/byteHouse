@@ -100,7 +100,11 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
         ]
         if let json = try? JSONSerialization.data(withJSONObject: payload),
            let str = String(data: json, encoding: .utf8) {
-            webView.evaluateJavaScript("window.onByteHouseResponse && window.onByteHouseResponse(\(str));", completionHandler: nil)
+            webView.evaluateJavaScript("window.onByteHouseResponse && window.onByteHouseResponse(\(str));") { _, error in
+                if let error = error {
+                    print("[ByteHouse] WebKit evaluateJavaScript error: \(error.localizedDescription)")
+                }
+            }
         }
     }
 
@@ -113,13 +117,21 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
         ]
         if let json = try? JSONSerialization.data(withJSONObject: payload),
            let str = String(data: json, encoding: .utf8) {
-            webView.evaluateJavaScript("window.onByteHouseResponse && window.onByteHouseResponse(\(str));", completionHandler: nil)
+            webView.evaluateJavaScript("window.onByteHouseResponse && window.onByteHouseResponse(\(str));") { _, error in
+                if let error = error {
+                    print("[ByteHouse] WebKit evaluateJavaScript error: \(error.localizedDescription)")
+                }
+            }
         }
     }
 
     @MainActor
     public func emitPresenceState(state: String) {
         guard let webView = webView else { return }
-        webView.evaluateJavaScript("window.onPresenceState && window.onPresenceState('\(state)');", completionHandler: nil)
+        webView.evaluateJavaScript("window.onPresenceState && window.onPresenceState('\(state)');") { _, error in
+            if let error = error {
+                print("[ByteHouse] WebKit emitPresenceState error: \(error.localizedDescription)")
+            }
+        }
     }
 }

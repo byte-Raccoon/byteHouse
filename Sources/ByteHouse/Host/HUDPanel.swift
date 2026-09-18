@@ -10,6 +10,14 @@ public class HUDPanel: NSPanel {
         userContentController.add(webBridge, name: "bytehouse")
         config.userContentController = userContentController
         config.preferences.setValue(true, forKey: "developerExtrasEnabled")
+        config.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
+        config.setValue(true, forKey: "allowUniversalAccessFromFileURLs")
+
+        // Register custom scheme handler for local assets to avoid file:// CORS issues
+        let currentDir = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        let distDir = currentDir.appendingPathComponent("web/dist", isDirectory: true)
+        let schemeHandler = LocalSchemeHandler(baseDir: distDir)
+        config.setURLSchemeHandler(schemeHandler, forURLScheme: "bytehouse")
 
         self.webView = WKWebView(frame: .zero, configuration: config)
         webBridge.webView = self.webView
@@ -48,11 +56,12 @@ public class HUDPanel: NSPanel {
         containerView.addSubview(webView)
         self.contentView = containerView
 
-        // Load content URL (local dist/index.html or dev server)
-        if contentURL.isFileURL {
-            webView.loadFileURL(contentURL, allowingReadAccessTo: contentURL.deletingLastPathComponent())
-        } else {
+        // Load content URL (bytehouse://app/index.html or http dev server)
+        if contentURL.scheme == "http" || contentURL.scheme == "https" {
             webView.load(URLRequest(url: contentURL))
+        } else {
+            let appURL = URL(string: "bytehouse://app/index.html")!
+            webView.load(URLRequest(url: appURL))
         }
     }
 

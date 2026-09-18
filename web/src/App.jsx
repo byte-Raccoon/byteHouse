@@ -29,7 +29,21 @@ export default function App() {
       if (sc) setShortcut(sc);
     });
 
-    return () => unsubPresence();
+    // Dismiss HUD on Escape key
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        bridge.hideWindow();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Auto-focus input
+    inputRef.current?.focus();
+
+    return () => {
+      unsubPresence();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {

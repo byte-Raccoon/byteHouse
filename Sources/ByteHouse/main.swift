@@ -86,11 +86,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let localDistHTML = currentDir.appendingPathComponent("web/dist/index.html")
 
         let contentURL: URL
-        if FileManager.default.fileExists(atPath: localDistHTML.path) {
-            contentURL = localDistHTML
+        if let devServer = ProcessInfo.processInfo.environment["VITE_DEV_SERVER"], !devServer.isEmpty {
+            contentURL = URL(string: devServer) ?? URL(string: "http://localhost:5173")!
+        } else if FileManager.default.fileExists(atPath: localDistHTML.path) {
+            contentURL = URL(string: "bytehouse://app/index.html")!
         } else {
             // Fallback to local Vite dev server if running
-            contentURL = URL(string: "http://localhost:5173") ?? localDistHTML
+            contentURL = URL(string: "http://localhost:5173")!
         }
 
         print("[ByteHouse] Loading React UI from: \(contentURL)")
