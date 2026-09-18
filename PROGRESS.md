@@ -198,15 +198,15 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 ---
 
 ## Stage 1 — Foundation
-**Status:** `UPCOMING`
-- [ ] Clean repository modularization & package structure
-- [ ] Environment configuration & secrets handling
-- [ ] Structured logging system
-- [ ] Unified error recovery & handling
-- [ ] Database migrations & indexing
-- [ ] API & IPC boundary contracts
-- [ ] Development scripts & build pipeline
-- [ ] Automated test harness & CI setup
+**Status:** `IN PROGRESS (Milestone 1.1 Completed)`
+- [x] Environment configuration & secrets handling (`AppConfig`, `.env` parser, `.env.example`)
+- [x] Structured logging system (`AppLogger`, leveled logs, secret redaction, persistent file logs)
+- [x] Database migrations & indexing (`MigrationRunner`, `PRAGMA user_version`, transaction-safe schema upgrades, query indexes)
+- [x] Clean repository modularization & package structure (Core, Host, WebBridge)
+- [x] Development scripts & unified build pipeline (`npm start`, `npm run build`, `npm test`)
+- [x] Automated test harness (Swift Testing 7/7 suites passing)
+- [ ] Unified error recovery & offline fallback
+- [ ] API & IPC boundary contracts formalization
 
 ---
 
@@ -471,6 +471,15 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 - **Known limitations:** Voice I/O and animated character state machine are placeholders for Phase 8 & 9; mobile sync is future Stage 11 & 12.
 - **Next stage:** Stage 1 — Foundation
 
+### Stage 1.1 — Foundation Infrastructure (completed 2026-09-18)
+
+- **Goal:** Production-grade configuration, versioned database migrations, and structured logging.
+- **Feature:** `AppConfig` supporting `.env` parsing, typed settings, and secret isolation; `MigrationRunner` managing SQLite `PRAGMA user_version` with atomic transactions and performance query indexes (`001_initial_schema`, `002_performance_indexes`); `AppLogger` with leveled outputs (`DEBUG`, `INFO`, `WARN`, `ERROR`), automatic secret masking, and persistent append logs in `~/Library/Logs/ByteHouse/bytehouse.log`.
+- **Tests:** 7/7 Swift Testing suite tests passing (100% success), including database migration upgrades, index verification, config parsing, logger redaction, and the full 10-step Stage 0 journey.
+- **Architecture:** `Sources/ByteHouse/Core/Config.swift`, `Sources/ByteHouse/Core/Logger.swift`, `Sources/ByteHouse/Core/Migrations.swift`.
+- **Decisions:** [30] (active).
+- **Next stage:** Stage 1.2 — Error boundaries & IPC contracts / Stage 2 — ByteHouse Core (Live AI Provider).
+
 ---
 
 # 11. Current Next Action
@@ -478,9 +487,8 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 The next execution step is:
 
 ```text
-Stage 0 verified
+Stage 1.1 Foundation Infrastructure verified
        ↓
-Review roadmap & user priorities
-       ↓
-Proceed to Stage 1 (Foundation) or Stage 2 (ByteHouse Core)
+Proceed to Stage 2: ByteHouse Core (Live AI Provider — Gemini / streaming)
+       or Stage 1.2 (IPC & Error Boundaries)
 ```

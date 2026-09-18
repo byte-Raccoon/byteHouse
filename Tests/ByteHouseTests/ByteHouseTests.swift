@@ -6,10 +6,11 @@ import SQLite3
 @Suite("ByteHouse Core Tests")
 struct ByteHouseTests {
 
-    @Test("Database Initialization")
+    @Test("Database Initialization & Migrations")
     func databaseInitialization() throws {
         let db = ByteHouseDatabase(path: ":memory:")
         #expect(db.db != nil)
+        #expect(db.userVersion >= 2)
 
         let tablesQuery = "SELECT name FROM sqlite_master WHERE type='table';"
         var stmt: OpaquePointer?
@@ -28,6 +29,22 @@ struct ByteHouseTests {
         #expect(foundTables.contains("memories"))
         #expect(foundTables.contains("tasks"))
         #expect(foundTables.contains("tool_traces"))
+
+        // Check indexes
+        let indexesQuery = "SELECT name FROM sqlite_master WHERE type='index';"
+        #expect(sqlite3_prepare_v2(db.db, indexesQuery, -1, &stmt, nil) == SQLITE_OK)
+        var foundIndexes: Set<String> = []
+        while sqlite3_step(stmt) == SQLITE_ROW {
+            if let name = sqlite3_column_text(stmt, 0) {
+                foundIndexes.insert(String(cString: name))
+            }
+        }
+        sqlite3_finalize(stmt)
+
+        #expect(foundIndexes.contains("idx_messages_conversation_created"))
+        #expect(foundIndexes.contains("idx_tasks_status_priority"))
+        #expect(foundIndexes.contains("idx_memories_created"))
+        #expect(foundIndexes.contains("idx_tool_traces_created"))
     }
 
     @Test("Memory Service CRUD")
@@ -178,5 +195,41 @@ struct ByteHouseTests {
         #expect(restoredTasks.first?.status == "completed")
 
         db?.close()
+    }
+
+    @Test("AppConfig & .env Parsing")
+    func appConfigAndEnv() {
+        let envSample = """
+        # Comments should be ignored
+        DATABASE_PATH=/custom/test.db
+        LOG_LEVEL=DEBUG
+        AI_PROVIDER=gemini
+        export GEMINI_API_KEY="test_secret_gemini_key_123"
+        HOTKEY="⌃⌥ B"
+        """
+
+        let parsed = AppConfig.parseEnvContent(envSample)
+        #expect(parsed["DATABASE_PATH"] == "/custom/test.db")
+        #expect(parsed["LOG_LEVEL"] == "DEBUG")
+        #expect(parsed["AI_PROVIDER"] == "gemini")
+        #expect(parsed["GEMINI_API_KEY"] == "test_secret_gemini_key_123")
+        #expect(parsed["HOTKEY"] == "⌃⌥ B")
+    }
+
+    @Test("AppLogger Redaction & Levels")
+    func appLogger() {
+        let logger = AppLogger()
+        let tempLog = NSTemporaryDirectory() + "test_log_\(UUID().uuidString).log"
+        defer {
+            try? FileManager.default.removeItem(atPath: tempLog)
+        }
+
+        logger.configure(minLevel: .info, logPath: tempLog, secrets: ["my-super-secret-token"])
+
+        logger.info("TestSubsystem", "Connecting with token my-super-secret-token here")
+
+        // Read log file back
+        let content = (try? String(contentsOfFile: tempLog, encoding: .utf8)) ?? ""
+        #expect(!content.contains("my-super-secret-token"))
     }
 }

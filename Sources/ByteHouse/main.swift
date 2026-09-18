@@ -2,7 +2,15 @@ import AppKit
 import WebKit
 import Darwin
 
-// --- 1. Single-Instance Enforcement ---
+// --- 1. Load Configuration & Initialize Structured Logger ---
+let config = AppConfig.load()
+AppLogger.shared.configure(
+    minLevel: config.logLevel,
+    logPath: config.logPath,
+    secrets: [config.geminiApiKey, config.openAiApiKey].compactMap { $0 }
+)
+
+// --- 2. Single-Instance Enforcement ---
 let fileManager = FileManager.default
 let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
 let byteHouseDir = appSupport.appendingPathComponent("ByteHouse", isDirectory: true)
@@ -17,7 +25,7 @@ let lockFd = open(lockFilePath, O_CREAT | O_RDWR, 0o644)
 if lockFd != -1 {
     let lockResult = flock(lockFd, LOCK_EX | LOCK_NB)
     if lockResult != 0 {
-        print("[ByteHouse] Another instance is already running. Activating existing instance...")
+        AppLogger.shared.info("Host", "Another instance is already running. Activating existing instance...")
         DistributedNotificationCenter.default().postNotificationName(
             NSNotification.Name("com.bytehouse.activateHUD"),
             object: nil,
@@ -43,6 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Run as accessory app (lives in menu bar, floating overlay)
         NSApp.setActivationPolicy(.accessory)
+        AppLogger.shared.info("Host", "ByteHouse desktop companion initializing (log level: \(config.logLevel.rawValue))...")
 
         // Listen for activation requests from secondary launches
         DistributedNotificationCenter.default().addObserver(
@@ -56,9 +65,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Setup Database
-        let dbPath = ProcessInfo.processInfo.environment["DATABASE_PATH"] ?? byteHouseDir.appendingPathComponent("bytehouse.db").path
-        let db = ByteHouseDatabase(path: dbPath)
+        let db = ByteHouseDatabase(path: config.databasePath)
         self.database = db
+        AppLogger.shared.info("Database", "Database ready (schema version: \(db.userVersion)) at \(config.databasePath)")
 
         // Setup Core Services
         let memService = MemoryService(database: db)
@@ -77,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             conversationService: convService,
             taskService: tService,
             memoryService: memService,
-            configuredShortcut: "⌃⌥ Space"
+            configuredShortcut: config.hotkey
         )
         self.webBridge = bridge
 
@@ -95,7 +104,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             contentURL = URL(string: "http://localhost:5173")!
         }
 
-        print("[ByteHouse] Loading React UI from: \(contentURL)")
+        AppLogger.shared.info("Host", "Loading React UI from: \(contentURL)")
 
         // Create HUD Panel
         let panel = HUDPanel(webBridge: bridge, contentURL: contentURL)
@@ -112,7 +121,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Show HUD initially
         panel.toggle(statusItem: statusItem)
-        print("[ByteHouse] Native companion running. Toggle with ⌃⌥ Space or Menu Bar icon.")
+        AppLogger.shared.info("Host", "Native companion running. Summon with \(config.hotkey) or menu bar icon.")
     }
 
     private func setupStatusItem() {

@@ -469,4 +469,19 @@ Supersedes: [old decision number]
 
 **Status:** active
 
+---
+
+# [30] Versioned SQLite Migrations, .env Configuration, and Structured Logging
+
+**Decision:** ByteHouse adopts SQLite native `PRAGMA user_version` for atomic, transaction-wrapped database migrations (`MigrationRunner`), custom `.env` loader with typed `AppConfig` avoiding third-party dependencies, and an asynchronous leveled `AppLogger` with automatic secret redacting writing to `~/Library/Logs/ByteHouse/bytehouse.log`.
+
+**Reason:** Preserves existing user database integrity through automatic schema version tracking and performance indexing without corrupting SQLite state across updates. Protects sensitive API credentials from ever being printed or written to persistent logs.
+
+**Alternatives considered:** Third-party migration tools (unnecessary dependency bloat); Unversioned `CREATE TABLE IF NOT EXISTS` string execution (cannot handle future column alterations or schema evolutions safely).
+
+**Date:** 2026-09-18
+
+**Status:** active
+
+
 
