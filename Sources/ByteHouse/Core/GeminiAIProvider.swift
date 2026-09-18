@@ -6,7 +6,7 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
     private let model: String
     private let session: URLSession
 
-    public init(apiKey: String, model: String = "gemini-2.0-flash", session: URLSession = .shared) {
+    public init(apiKey: String, model: String = "gemini-3.6-flash", session: URLSession = .shared) {
         self.apiKey = apiKey
         self.model = model
         self.session = session

@@ -182,8 +182,8 @@ public final class AIProviderFactory {
 
         if requested == "gemini" {
             if let key = config.geminiApiKey, !key.isEmpty {
-                AppLogger.shared.info("AI", "Initialized live Google Gemini provider (gemini-2.0-flash).")
-                return GeminiAIProvider(apiKey: key)
+                AppLogger.shared.info("AI", "Initialized live Google Gemini provider (\(config.geminiModel)).")
+                return GeminiAIProvider(apiKey: key, model: config.geminiModel)
             } else {
                 AppLogger.shared.warn("AI", "AI_PROVIDER=gemini requested but GEMINI_API_KEY is missing in .env. Falling back to MockAIProvider.")
                 return MockAIProvider()
@@ -202,8 +202,8 @@ public final class AIProviderFactory {
 
         // Auto-detect if user provided a key without explicitly setting AI_PROVIDER
         if let geminiKey = config.geminiApiKey, !geminiKey.isEmpty {
-            AppLogger.shared.info("AI", "Detected GEMINI_API_KEY in environment. Using live Gemini provider.")
-            return GeminiAIProvider(apiKey: geminiKey)
+            AppLogger.shared.info("AI", "Detected GEMINI_API_KEY in environment. Using live Gemini provider (\(config.geminiModel)).")
+            return GeminiAIProvider(apiKey: geminiKey, model: config.geminiModel)
         }
 
         if let openAiKey = config.openAiApiKey, !openAiKey.isEmpty {

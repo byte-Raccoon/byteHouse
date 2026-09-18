@@ -26,6 +26,7 @@ public struct AppConfig: Sendable {
     public let logPath: String
     public let aiProvider: String
     public let geminiApiKey: String?
+    public let geminiModel: String
     public let openAiApiKey: String?
     public let hotkey: String
 
@@ -35,6 +36,7 @@ public struct AppConfig: Sendable {
         logPath: String,
         aiProvider: String = "mock",
         geminiApiKey: String? = nil,
+        geminiModel: String = "gemini-3.6-flash",
         openAiApiKey: String? = nil,
         hotkey: String = "⌃⌥ Space"
     ) {
@@ -43,6 +45,7 @@ public struct AppConfig: Sendable {
         self.logPath = logPath
         self.aiProvider = aiProvider
         self.geminiApiKey = geminiApiKey
+        self.geminiModel = geminiModel
         self.openAiApiKey = openAiApiKey
         self.hotkey = hotkey
     }
@@ -90,6 +93,7 @@ public struct AppConfig: Sendable {
         let level = LogLevel(rawValue: rawLevel) ?? .info
         let provider = getVal("AI_PROVIDER") ?? "mock"
         let geminiKey = getVal("GEMINI_API_KEY")
+        let geminiModel = getVal("GEMINI_MODEL") ?? "gemini-3.6-flash"
         let openAiKey = getVal("OPENAI_API_KEY")
         let hotkey = getVal("HOTKEY") ?? "⌃⌥ Space"
 
@@ -99,6 +103,7 @@ public struct AppConfig: Sendable {
             logPath: logPath,
             aiProvider: provider,
             geminiApiKey: geminiKey,
+            geminiModel: geminiModel,
             openAiApiKey: openAiKey,
             hotkey: hotkey
         )
