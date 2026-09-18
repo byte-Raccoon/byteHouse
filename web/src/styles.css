@@ -24,22 +24,22 @@ html, body {
    STITCH UI: ULTRA-LUMINOUS LIQUID GLASS SYSTEM
    ========================================================================== */
 
-/* Main Assistant Liquid Window Shell */
+/* Main Assistant Liquid Window Shell - Ultra Translucent Frosted Glass */
 .liquid-window {
   background: linear-gradient(
     142deg,
-    rgba(255, 255, 255, 0.78) 0%,
-    rgba(238, 246, 255, 0.54) 42%,
-    rgba(224, 242, 254, 0.58) 100%
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(238, 246, 255, 0.14) 42%,
+    rgba(224, 242, 254, 0.18) 100%
   );
-  backdrop-filter: blur(48px) saturate(190%) contrast(102%);
-  -webkit-backdrop-filter: blur(48px) saturate(190%) contrast(102%);
-  border: 1px solid rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(40px) saturate(180%) contrast(105%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%) contrast(105%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   box-shadow: 
-    inset 0 1.5px 3px 0 rgba(255, 255, 255, 0.98),
-    inset 0 -1.5px 2px 0 rgba(186, 230, 253, 0.45),
-    0 24px 60px -12px rgba(14, 60, 105, 0.2),
-    0 0 45px -5px rgba(186, 230, 253, 0.4);
+    inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 2px 0 rgba(186, 230, 253, 0.25),
+    0 24px 60px -12px rgba(14, 60, 105, 0.25),
+    0 0 35px -5px rgba(186, 230, 253, 0.25);
   position: relative;
 }
 
@@ -51,9 +51,9 @@ html, body {
   border-radius: inherit;
   background: radial-gradient(
     circle at var(--liquid-x, 25%) var(--liquid-y, 0%),
-    rgba(255, 255, 255, 0.75) 0%,
-    rgba(219, 234, 254, 0.4) 30%,
-    rgba(224, 242, 254, 0.15) 55%,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(219, 234, 254, 0.15) 30%,
+    rgba(224, 242, 254, 0.05) 55%,
     transparent 75%
   );
   pointer-events: none;
@@ -75,32 +75,32 @@ html, body {
     115deg,
     transparent 0%,
     transparent 20%,
-    rgba(255, 255, 255, 0.95) 45%,
-    rgba(125, 211, 252, 0.9) 50%,
-    rgba(199, 210, 254, 0.85) 55%,
+    rgba(255, 255, 255, 0.75) 45%,
+    rgba(125, 211, 252, 0.7) 50%,
+    rgba(199, 210, 254, 0.65) 55%,
     transparent 80%,
     transparent 100%
   );
   background-size: 250% 250%;
   animation: borderSweep 8s linear infinite;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
-/* Refined inner card with crisp blue-frosted glass */
+/* Refined inner card with translucent blue-frosted glass */
 .liquid-card {
   background: linear-gradient(
     138deg,
-    rgba(255, 255, 255, 0.82) 0%,
-    rgba(240, 247, 255, 0.62) 55%,
-    rgba(224, 242, 254, 0.65) 100%
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(240, 247, 255, 0.28) 55%,
+    rgba(224, 242, 254, 0.32) 100%
   );
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow: 
-    inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95),
-    inset 0 -1px 2px rgba(191, 219, 254, 0.45),
-    0 14px 34px -4px rgba(15, 60, 100, 0.08);
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.7),
+    inset 0 -1px 2px rgba(191, 219, 254, 0.25),
+    0 14px 34px -4px rgba(15, 60, 100, 0.1);
   position: relative;
 }
 
@@ -112,7 +112,7 @@ html, body {
   pointer-events: none;
   overflow: hidden;
   mix-blend-mode: soft-light;
-  opacity: 0.55;
+  opacity: 0.35;
 }
 
 .caustic-mesh-1, .caustic-mesh-2 {
@@ -276,27 +276,51 @@ html, body {
 .user-bubble-liquid {
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);
   color: #ffffff;
-  border-radius: 20px 20px 4px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28);
+  border-radius: 18px 18px 4px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.28);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
-/* Assistant Chat Bubble in Stitch Styling */
+/* Assistant Chat Bubble in Translucent Stitch Styling */
 .assistant-bubble-liquid {
   background: linear-gradient(
     138deg,
-    rgba(255, 255, 255, 0.85) 0%,
-    rgba(240, 247, 255, 0.65) 55%,
-    rgba(224, 242, 254, 0.68) 100%
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(240, 247, 255, 0.38) 55%,
+    rgba(224, 242, 254, 0.42) 100%
   );
-  color: #1e293b;
-  border-radius: 20px 20px 20px 4px;
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  color: #0f172a;
+  border-radius: 18px 18px 18px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow: 
-    inset 0 1px 2px rgba(255, 255, 255, 0.95),
-    0 8px 24px -4px rgba(15, 60, 100, 0.08);
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 6px 20px -4px rgba(15, 60, 100, 0.12);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Multi-layered Glowing Orb Ring */
+.orb-glow-ring {
+  box-shadow: 
+    0 0 18px 2px rgba(56, 189, 248, 0.45),
+    0 0 32px 6px rgba(96, 165, 250, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.6);
+  animation: orbBreathing 4s ease-in-out infinite alternate;
+}
+
+@keyframes orbBreathing {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 16px 2px rgba(56, 189, 248, 0.4), 0 0 28px 4px rgba(96, 165, 250, 0.2);
+  }
+  100% {
+    transform: scale(1.04);
+    box-shadow: 0 0 24px 4px rgba(56, 189, 248, 0.6), 0 0 42px 8px rgba(167, 139, 250, 0.35);
+  }
 }
 
 /* Real-Time Streaming Cursor */
