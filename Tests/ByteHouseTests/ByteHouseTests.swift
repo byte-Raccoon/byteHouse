@@ -254,5 +254,10 @@ struct ByteHouseTests {
         let openAiConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "openai", openAiApiKey: "fake-key")
         let provider4 = AIProviderFactory.create(config: openAiConfig)
         #expect(provider4.name == "openai")
+
+        // 5. Grok requested with Groq key (gsk_...) -> OpenAIProvider (configured for Groq)
+        let groqConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "grok", grokApiKey: "gsk_test_key_123")
+        let provider5 = AIProviderFactory.create(config: groqConfig)
+        #expect(provider5.name == "openai")
     }
 }

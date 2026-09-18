@@ -200,7 +200,20 @@ public final class AIProviderFactory {
             }
         }
 
+        if requested == "grok" || requested == "groq" {
+            if let key = config.grokApiKey, !key.isEmpty {
+                return makeGrokProvider(key: key, model: config.grokModel)
+            } else {
+                AppLogger.shared.warn("AI", "AI_PROVIDER=\(requested) requested but GROK_API_KEY/GROQ_API_KEY is missing in .env. Falling back to MockAIProvider.")
+                return MockAIProvider()
+            }
+        }
+
         // Auto-detect if user provided a key without explicitly setting AI_PROVIDER
+        if let grokKey = config.grokApiKey, !grokKey.isEmpty {
+            return makeGrokProvider(key: grokKey, model: config.grokModel)
+        }
+
         if let geminiKey = config.geminiApiKey, !geminiKey.isEmpty {
             AppLogger.shared.info("AI", "Detected GEMINI_API_KEY in environment. Using live Gemini provider (\(config.geminiModel)).")
             return GeminiAIProvider(apiKey: geminiKey, model: config.geminiModel)
@@ -211,8 +224,36 @@ public final class AIProviderFactory {
             return OpenAIProvider(apiKey: openAiKey)
         }
 
-        AppLogger.shared.info("AI", "Using MockAIProvider (deterministic offline mode). Add GEMINI_API_KEY in .env for live AI.")
+        AppLogger.shared.info("AI", "Using MockAIProvider (deterministic offline mode). Add GEMINI_API_KEY or GROK_API_KEY in .env for live AI.")
         return MockAIProvider()
+    }
+
+    private static func makeGrokProvider(key: String, model: String?) -> AIProvider {
+        if key.hasPrefix("gsk_") {
+            let selectedModel = model ?? "llama-3.3-70b-versatile"
+            AppLogger.shared.info("AI", "Initialized live Groq provider (\(selectedModel)) via OpenAI-compatible endpoint.")
+            return OpenAIProvider(
+                apiKey: key,
+                model: selectedModel,
+                baseURL: "https://api.groq.com/openai/v1"
+            )
+        } else if key.hasPrefix("xai-") {
+            let selectedModel = model ?? "grok-2-latest"
+            AppLogger.shared.info("AI", "Initialized live xAI Grok provider (\(selectedModel)).")
+            return OpenAIProvider(
+                apiKey: key,
+                model: selectedModel,
+                baseURL: "https://api.x.ai/v1"
+            )
+        } else {
+            let selectedModel = model ?? "llama-3.3-70b-versatile"
+            AppLogger.shared.info("AI", "Initialized live Groq/Grok provider (\(selectedModel)).")
+            return OpenAIProvider(
+                apiKey: key,
+                model: selectedModel,
+                baseURL: "https://api.groq.com/openai/v1"
+            )
+        }
     }
 }
 

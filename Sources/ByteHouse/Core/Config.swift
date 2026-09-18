@@ -28,6 +28,8 @@ public struct AppConfig: Sendable {
     public let geminiApiKey: String?
     public let geminiModel: String
     public let openAiApiKey: String?
+    public let grokApiKey: String?
+    public let grokModel: String?
     public let hotkey: String
 
     public init(
@@ -38,6 +40,8 @@ public struct AppConfig: Sendable {
         geminiApiKey: String? = nil,
         geminiModel: String = "gemini-3.6-flash",
         openAiApiKey: String? = nil,
+        grokApiKey: String? = nil,
+        grokModel: String? = nil,
         hotkey: String = "⌃⌥ Space"
     ) {
         self.databasePath = databasePath
@@ -47,6 +51,8 @@ public struct AppConfig: Sendable {
         self.geminiApiKey = geminiApiKey
         self.geminiModel = geminiModel
         self.openAiApiKey = openAiApiKey
+        self.grokApiKey = grokApiKey
+        self.grokModel = grokModel
         self.hotkey = hotkey
     }
 
@@ -95,6 +101,8 @@ public struct AppConfig: Sendable {
         let geminiKey = getVal("GEMINI_API_KEY")
         let geminiModel = getVal("GEMINI_MODEL") ?? "gemini-3.6-flash"
         let openAiKey = getVal("OPENAI_API_KEY")
+        let grokKey = getVal("GROK_API_KEY") ?? getVal("GROQ_API_KEY")
+        let grokModel = getVal("GROK_MODEL") ?? getVal("GROQ_MODEL")
         let hotkey = getVal("HOTKEY") ?? "⌃⌥ Space"
 
         return AppConfig(
@@ -105,6 +113,8 @@ public struct AppConfig: Sendable {
             geminiApiKey: geminiKey,
             geminiModel: geminiModel,
             openAiApiKey: openAiKey,
+            grokApiKey: grokKey,
+            grokModel: grokModel,
             hotkey: hotkey
         )
     }

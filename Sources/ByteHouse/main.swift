@@ -7,7 +7,7 @@ let config = AppConfig.load()
 AppLogger.shared.configure(
     minLevel: config.logLevel,
     logPath: config.logPath,
-    secrets: [config.geminiApiKey, config.openAiApiKey].compactMap { $0 }
+    secrets: [config.geminiApiKey, config.openAiApiKey, config.grokApiKey].compactMap { $0 }
 )
 
 // --- 2. Single-Instance Enforcement ---
