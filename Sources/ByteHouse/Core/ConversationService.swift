@@ -106,6 +106,15 @@ public class ConversationService: @unchecked Sendable {
     }
 
     public func chat(prompt: String, conversationId: String? = nil, onPresenceChange: (@Sendable (String) -> Void)? = nil) async throws -> ChatResponse {
+        return try await chatStream(prompt: prompt, conversationId: conversationId, onDelta: { _ in }, onPresenceChange: onPresenceChange)
+    }
+
+    public func chatStream(
+        prompt: String,
+        conversationId: String? = nil,
+        onDelta: @Sendable @escaping (String) -> Void,
+        onPresenceChange: (@Sendable (String) -> Void)? = nil
+    ) async throws -> ChatResponse {
         let conv = getOrCreateConversation(id: conversationId)
 
         // 1. Save user prompt
@@ -126,8 +135,8 @@ public class ConversationService: @unchecked Sendable {
         var toolsExecuted: [ToolExecutionResult] = []
         let tools = toolRegistry.getToolDefinitions()
 
-        // 3. AI provider generation
-        var response = try await aiProvider.generate(messages: aiMessages, tools: tools)
+        // 3. AI provider generation with streaming
+        var response = try await aiProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
 
         // 4. Tool execution loop (supports multi-turn tool calling up to 5 rounds)
         var rounds = 0
@@ -149,10 +158,14 @@ public class ConversationService: @unchecked Sendable {
             }
 
             onPresenceChange?("thinking")
-            response = try await aiProvider.generate(messages: aiMessages, tools: tools)
+            response = try await aiProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
         }
 
-        let finalAnswer = response.content.isEmpty ? "I have completed that for you." : response.content
+        var finalAnswer = response.content
+        if finalAnswer.isEmpty {
+            finalAnswer = "I have completed that for you."
+            onDelta(finalAnswer)
+        }
 
         // 5. Save assistant reply
         saveMessage(conversationId: conv.id, role: "assistant", content: finalAnswer)

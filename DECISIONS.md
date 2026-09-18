@@ -497,6 +497,21 @@ Supersedes: [old decision number]
 
 **Status:** active
 
+---
+
+# [32] Real-Time Token Streaming Over Native WebKit Bridge
+
+**Decision:** ByteHouse implements real-time Server-Sent Events (SSE) token streaming using native `URLSession.bytes(for:)` across all supported AI providers (`GeminiAIProvider` with `:streamGenerateContent?alt=sse`, `OpenAIProvider` with `"stream": true` supporting Grok/Groq with `openai/gpt-oss-120b` and OpenAI, and `MockAIProvider` with asynchronous token simulation). Stream deltas are passed through `ConversationService.chatStream` and dispatched across the native WebKit bridge to the React 19 companion HUD with live cursor animations and auto-scrolling.
+
+**Reason:** Greatly improves conversational interactivity and perceived responsiveness (zero wait time before text begins appearing) while preserving deterministic tool execution boundaries and multi-turn reasoning loops.
+
+**Alternatives considered:** WebSockets (unnecessary connection overhead for local IPC); Polling or buffering entire responses (poor perceived latency).
+
+**Date:** 2026-09-18
+
+**Status:** active
+
+
 
 
 

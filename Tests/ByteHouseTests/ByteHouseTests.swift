@@ -260,4 +260,58 @@ struct ByteHouseTests {
         let provider5 = AIProviderFactory.create(config: groqConfig)
         #expect(provider5.name == "openai")
     }
+
+    @Test("Streaming Token Generation & ChatStream")
+    func streamingChatTest() async throws {
+        final class Collector: @unchecked Sendable {
+            var items: [String] = []
+            func append(_ item: String) { items.append(item) }
+        }
+
+        let db = ByteHouseDatabase(path: ":memory:")
+        let memoryService = MemoryService(database: db)
+        let taskService = TaskService(database: db)
+        let toolRegistry = ToolRegistry(database: db, memoryService: memoryService, taskService: taskService)
+        let mockProvider = MockAIProvider()
+        let conversationService = ConversationService(database: db, aiProvider: mockProvider, toolRegistry: toolRegistry, memoryService: memoryService)
+
+        // 1. Test MockAIProvider.generateStream directly
+        let streamedCollector = Collector()
+        let genRes = try await mockProvider.generateStream(
+            messages: [AIMessage(role: "user", content: "Hello")],
+            tools: nil,
+            onDelta: { chunk in
+                streamedCollector.append(chunk)
+            }
+        )
+        #expect(!streamedCollector.items.isEmpty)
+        let concatenated = streamedCollector.items.joined()
+        #expect(concatenated == genRes.content)
+
+        // 2. Test ConversationService.chatStream
+        let deltasCollector = Collector()
+        let presenceCollector = Collector()
+
+        let chatRes = try await conversationService.chatStream(
+            prompt: "Hi ByteHouse!",
+            onDelta: { delta in
+                deltasCollector.append(delta)
+            },
+            onPresenceChange: { state in
+                presenceCollector.append(state)
+            }
+        )
+
+        #expect(!deltasCollector.items.isEmpty)
+        #expect(chatRes.response == deltasCollector.items.joined())
+        #expect(presenceCollector.items.contains("thinking"))
+        #expect(presenceCollector.items.contains("idle"))
+
+        // Verify message was stored in SQLite
+        let messages = conversationService.getMessages(conversationId: chatRes.conversation_id)
+        #expect(messages.count == 2)
+        #expect(messages.first?.role == "user")
+        #expect(messages.last?.role == "assistant")
+        #expect(messages.last?.content == chatRes.response)
+    }
 }

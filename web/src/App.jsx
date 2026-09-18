@@ -63,30 +63,58 @@ export default function App() {
       content: cleanPrompt,
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const asstId = 'asst_' + Date.now();
+    const assistantPlaceholder = {
+      id: asstId,
+      role: 'assistant',
+      content: '',
+      isStreaming: true,
+      tools_executed: [],
+    };
+
+    setMessages((prev) => [...prev, userMsg, assistantPlaceholder]);
     setPrompt('');
     setIsSubmitting(true);
     setPresenceState('thinking');
 
     try {
-      const result = await bridge.chat(cleanPrompt, conversationId);
+      const result = await bridge.chatStream(cleanPrompt, conversationId, (delta) => {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === asstId
+              ? { ...msg, content: msg.content + delta }
+              : msg
+          )
+        );
+      });
+
       if (result) {
         setConversationId(result.conversation_id);
-        const assistantMsg = {
-          id: 'asst_' + Date.now(),
-          role: 'assistant',
-          content: result.response,
-          tools_executed: result.tools_executed,
-        };
-        setMessages((prev) => [...prev, assistantMsg]);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === asstId
+              ? {
+                  ...msg,
+                  content: result.response || msg.content,
+                  tools_executed: result.tools_executed,
+                  isStreaming: false,
+                }
+              : msg
+          )
+        );
       }
     } catch (err) {
-      const errorMsg = {
-        id: 'err_' + Date.now(),
-        role: 'assistant',
-        content: `⚠️ Error: ${err.message || 'Something went wrong.'}`,
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === asstId
+            ? {
+                ...msg,
+                content: `⚠️ Error: ${err.message || 'Something went wrong.'}`,
+                isStreaming: false,
+              }
+            : msg
+        )
+      );
     } finally {
       setIsSubmitting(false);
       setPresenceState('idle');
@@ -139,7 +167,20 @@ export default function App() {
       <main className="chat-feed" ref={feedRef}>
         {messages.map((msg) => (
           <div key={msg.id} className={`message ${msg.role}`}>
-            <div className="bubble">{renderFormatted(msg.content)}</div>
+            <div className="bubble">
+              {msg.isStreaming && !msg.content ? (
+                <div className="thinking-dots">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              ) : (
+                <>
+                  {renderFormatted(msg.content)}
+                  {msg.isStreaming && <span className="streaming-cursor">▍</span>}
+                </>
+              )}
+            </div>
 
             {msg.tools_executed && msg.tools_executed.length > 0 && (
               <div className="tool-cards">

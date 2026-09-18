@@ -12,8 +12,9 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
         self.session = session
     }
 
-    public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
-        let endpoint = "https://generativelanguage.googleapis.com/v1beta/models/\(model):generateContent?key=\(apiKey)"
+    private func buildRequest(messages: [AIMessage], tools: [ToolDefinition]?, stream: Bool) throws -> URLRequest {
+        let action = stream ? "streamGenerateContent?alt=sse&" : "generateContent?"
+        let endpoint = "https://generativelanguage.googleapis.com/v1beta/models/\(model):\(action)key=\(apiKey)"
         guard let url = URL(string: endpoint) else {
             throw NSError(domain: "ByteHouse.Gemini", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid Gemini endpoint URL."])
         }
@@ -21,7 +22,7 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 30.0
+        request.timeoutInterval = 60.0
 
         // Build contents array
         var contents: [[String: Any]] = []
@@ -68,7 +69,6 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
                 ])
 
             case "tool":
-                // Function response
                 let toolName = msg.name ?? "tool"
                 var responseObj: [String: Any] = ["output": msg.content]
                 if let data = msg.content.data(using: .utf8),
@@ -146,7 +146,11 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
 
         let bodyData = try JSONSerialization.data(withJSONObject: payload)
         request.httpBody = bodyData
+        return request
+    }
 
+    public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
+        let request = try buildRequest(messages: messages, tools: tools, stream: false)
         let (data, response) = try await session.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -189,6 +193,71 @@ public final class GeminiAIProvider: AIProvider, @unchecked Sendable {
 
         return AIGenerateResponse(
             content: textContent.trimmingCharacters(in: .whitespacesAndNewlines),
+            tool_calls: toolCalls.isEmpty ? nil : toolCalls
+        )
+    }
+
+    public func generateStream(
+        messages: [AIMessage],
+        tools: [ToolDefinition]?,
+        onDelta: @Sendable @escaping (String) -> Void
+    ) async throws -> AIGenerateResponse {
+        let request = try buildRequest(messages: messages, tools: tools, stream: true)
+        let (asyncBytes, response) = try await session.bytes(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "ByteHouse.Gemini", code: 500, userInfo: [NSLocalizedDescriptionKey: "Invalid network response from Gemini."])
+        }
+
+        if httpResponse.statusCode != 200 {
+            var errData = Data()
+            for try await byte in asyncBytes {
+                errData.append(byte)
+            }
+            var errorDetail = "HTTP \(httpResponse.statusCode)"
+            if let errJson = try? JSONSerialization.jsonObject(with: errData) as? [String: Any],
+               let errObj = errJson["error"] as? [String: Any],
+               let message = errObj["message"] as? String {
+                errorDetail = message
+            }
+            AppLogger.shared.error("Gemini", "Gemini stream request failed: \(errorDetail)")
+            throw NSError(domain: "ByteHouse.Gemini", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "Gemini API Error (\(httpResponse.statusCode)): \(errorDetail)"])
+        }
+
+        var fullContent = ""
+        var toolCalls: [AIToolCall] = []
+
+        for try await line in asyncBytes.lines {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty || trimmed.hasPrefix(":") { continue }
+            guard trimmed.hasPrefix("data: ") else { continue }
+
+            let jsonString = String(trimmed.dropFirst(6))
+            guard let jsonData = jsonString.data(using: .utf8),
+                  let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                  let candidates = json["candidates"] as? [[String: Any]],
+                  let firstCandidate = candidates.first,
+                  let content = firstCandidate["content"] as? [String: Any],
+                  let parts = content["parts"] as? [[String: Any]] else {
+                continue
+            }
+
+            for part in parts {
+                if let text = part["text"] as? String, !text.isEmpty {
+                    fullContent += text
+                    onDelta(text)
+                }
+                if let functionCall = part["functionCall"] as? [String: Any],
+                   let fName = functionCall["name"] as? String {
+                    let rawArgs = (functionCall["args"] as? [String: Any]) ?? [:]
+                    let anyCodableArgs = rawArgs.mapValues { AnyCodable($0) }
+                    toolCalls.append(AIToolCall(id: UUID().uuidString, name: fName, arguments: anyCodableArgs))
+                }
+            }
+        }
+
+        return AIGenerateResponse(
+            content: fullContent.trimmingCharacters(in: .whitespacesAndNewlines),
             tool_calls: toolCalls.isEmpty ? nil : toolCalls
         )
     }

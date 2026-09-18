@@ -19,7 +19,7 @@ public final class OpenAIProvider: AIProvider, @unchecked Sendable {
         self.session = session
     }
 
-    public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
+    private func buildRequest(messages: [AIMessage], tools: [ToolDefinition]?, stream: Bool) throws -> URLRequest {
         let endpoint = "\(baseURL)/chat/completions"
         guard let url = URL(string: endpoint) else {
             throw NSError(domain: "ByteHouse.OpenAI", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid OpenAI endpoint URL: \(endpoint)"])
@@ -29,7 +29,7 @@ public final class OpenAIProvider: AIProvider, @unchecked Sendable {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
-        request.timeoutInterval = 30.0
+        request.timeoutInterval = 60.0
 
         var formattedMessages: [[String: Any]] = []
 
@@ -63,7 +63,8 @@ public final class OpenAIProvider: AIProvider, @unchecked Sendable {
 
         var payload: [String: Any] = [
             "model": model,
-            "messages": formattedMessages
+            "messages": formattedMessages,
+            "stream": stream
         ]
 
         if let tools = tools, !tools.isEmpty {
@@ -103,7 +104,11 @@ public final class OpenAIProvider: AIProvider, @unchecked Sendable {
 
         let bodyData = try JSONSerialization.data(withJSONObject: payload)
         request.httpBody = bodyData
+        return request
+    }
 
+    public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
+        let request = try buildRequest(messages: messages, tools: tools, stream: false)
         let (data, response) = try await session.data(for: request)
 
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -150,6 +155,95 @@ public final class OpenAIProvider: AIProvider, @unchecked Sendable {
 
         return AIGenerateResponse(
             content: content.trimmingCharacters(in: .whitespacesAndNewlines),
+            tool_calls: parsedCalls.isEmpty ? nil : parsedCalls
+        )
+    }
+
+    public func generateStream(
+        messages: [AIMessage],
+        tools: [ToolDefinition]?,
+        onDelta: @Sendable @escaping (String) -> Void
+    ) async throws -> AIGenerateResponse {
+        let request = try buildRequest(messages: messages, tools: tools, stream: true)
+        let (asyncBytes, response) = try await session.bytes(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "ByteHouse.OpenAI", code: 500, userInfo: [NSLocalizedDescriptionKey: "Invalid network response from OpenAI."])
+        }
+
+        if httpResponse.statusCode != 200 {
+            var errData = Data()
+            for try await byte in asyncBytes {
+                errData.append(byte)
+            }
+            var errorDetail = "HTTP \(httpResponse.statusCode)"
+            if let errJson = try? JSONSerialization.jsonObject(with: errData) as? [String: Any],
+               let errObj = errJson["error"] as? [String: Any],
+               let message = errObj["message"] as? String {
+                errorDetail = message
+            }
+            AppLogger.shared.error("OpenAI", "OpenAI stream request failed: \(errorDetail)")
+            throw NSError(domain: "ByteHouse.OpenAI", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: "OpenAI API Error (\(httpResponse.statusCode)): \(errorDetail)"])
+        }
+
+        var fullContent = ""
+        var toolCallsInProgress: [Int: (id: String, name: String, args: String)] = [:]
+
+        for try await line in asyncBytes.lines {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty || trimmed.hasPrefix(":") { continue }
+            if trimmed == "data: [DONE]" { break }
+            guard trimmed.hasPrefix("data: ") else { continue }
+
+            let jsonString = String(trimmed.dropFirst(6))
+            guard let jsonData = jsonString.data(using: .utf8),
+                  let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any],
+                  let choices = json["choices"] as? [[String: Any]],
+                  let firstChoice = choices.first else {
+                continue
+            }
+
+            if let delta = firstChoice["delta"] as? [String: Any] {
+                if let contentChunk = delta["content"] as? String, !contentChunk.isEmpty {
+                    fullContent += contentChunk
+                    onDelta(contentChunk)
+                }
+
+                if let toolCalls = delta["tool_calls"] as? [[String: Any]] {
+                    for tc in toolCalls {
+                        let idx = (tc["index"] as? Int) ?? 0
+                        var current = toolCallsInProgress[idx] ?? (id: "", name: "", args: "")
+                        if let id = tc["id"] as? String {
+                            current.id = id
+                        }
+                        if let fn = tc["function"] as? [String: Any] {
+                            if let name = fn["name"] as? String {
+                                current.name += name
+                            }
+                            if let args = fn["arguments"] as? String {
+                                current.args += args
+                            }
+                        }
+                        toolCallsInProgress[idx] = current
+                    }
+                }
+            }
+        }
+
+        var parsedCalls: [AIToolCall] = []
+        for idx in toolCallsInProgress.keys.sorted() {
+            guard let item = toolCallsInProgress[idx], !item.name.isEmpty else { continue }
+            let callId = item.id.isEmpty ? UUID().uuidString : item.id
+            var argMap: [String: AnyCodable] = [:]
+            if let data = item.args.data(using: .utf8),
+               let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                argMap = dict.mapValues { AnyCodable($0) }
+            }
+            parsedCalls.append(AIToolCall(id: callId, name: item.name, arguments: argMap))
+        }
+
+        return AIGenerateResponse(
+            content: fullContent.trimmingCharacters(in: .whitespacesAndNewlines),
             tool_calls: parsedCalls.isEmpty ? nil : parsedCalls
         )
     }

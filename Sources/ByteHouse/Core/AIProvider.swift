@@ -33,6 +33,17 @@ public struct AIGenerateResponse: Sendable {
 public protocol AIProvider: Sendable {
     var name: String { get }
     func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse
+    func generateStream(messages: [AIMessage], tools: [ToolDefinition]?, onDelta: @Sendable @escaping (String) -> Void) async throws -> AIGenerateResponse
+}
+
+public extension AIProvider {
+    func generateStream(messages: [AIMessage], tools: [ToolDefinition]?, onDelta: @Sendable @escaping (String) -> Void) async throws -> AIGenerateResponse {
+        let response = try await generate(messages: messages, tools: tools)
+        if !response.content.isEmpty {
+            onDelta(response.content)
+        }
+        return response
+    }
 }
 
 public class MockAIProvider: AIProvider, @unchecked Sendable {
@@ -174,6 +185,20 @@ public class MockAIProvider: AIProvider, @unchecked Sendable {
 
         return AIGenerateResponse(content: "I'm ByteHouse. You can ask me to remember facts, recall information, or manage your tasks.", tool_calls: nil)
     }
+
+    public func generateStream(messages: [AIMessage], tools: [ToolDefinition]?, onDelta: @Sendable @escaping (String) -> Void) async throws -> AIGenerateResponse {
+        let response = try await generate(messages: messages, tools: tools)
+        if let calls = response.tool_calls, !calls.isEmpty {
+            return response
+        }
+        let words = response.content.split(separator: " ")
+        for (index, word) in words.enumerated() {
+            let chunk = index == 0 ? String(word) : " " + String(word)
+            onDelta(chunk)
+            try? await Task.sleep(nanoseconds: 15_000_000)
+        }
+        return response
+    }
 }
 
 public final class AIProviderFactory {
@@ -230,7 +255,7 @@ public final class AIProviderFactory {
 
     private static func makeGrokProvider(key: String, model: String?) -> AIProvider {
         if key.hasPrefix("gsk_") {
-            let selectedModel = model ?? "llama-3.3-70b-versatile"
+            let selectedModel = model ?? "openai/gpt-oss-120b"
             AppLogger.shared.info("AI", "Initialized live Groq provider (\(selectedModel)) via OpenAI-compatible endpoint.")
             return OpenAIProvider(
                 apiKey: key,
@@ -246,7 +271,7 @@ public final class AIProviderFactory {
                 baseURL: "https://api.x.ai/v1"
             )
         } else {
-            let selectedModel = model ?? "llama-3.3-70b-versatile"
+            let selectedModel = model ?? "openai/gpt-oss-120b"
             AppLogger.shared.info("AI", "Initialized live Groq/Grok provider (\(selectedModel)).")
             return OpenAIProvider(
                 apiKey: key,
