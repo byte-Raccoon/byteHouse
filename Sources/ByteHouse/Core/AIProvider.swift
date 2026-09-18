@@ -175,3 +175,44 @@ public class MockAIProvider: AIProvider, @unchecked Sendable {
         return AIGenerateResponse(content: "I'm ByteHouse. You can ask me to remember facts, recall information, or manage your tasks.", tool_calls: nil)
     }
 }
+
+public final class AIProviderFactory {
+    public static func create(config: AppConfig) -> AIProvider {
+        let requested = config.aiProvider.lowercased()
+
+        if requested == "gemini" {
+            if let key = config.geminiApiKey, !key.isEmpty {
+                AppLogger.shared.info("AI", "Initialized live Google Gemini provider (gemini-2.0-flash).")
+                return GeminiAIProvider(apiKey: key)
+            } else {
+                AppLogger.shared.warn("AI", "AI_PROVIDER=gemini requested but GEMINI_API_KEY is missing in .env. Falling back to MockAIProvider.")
+                return MockAIProvider()
+            }
+        }
+
+        if requested == "openai" {
+            if let key = config.openAiApiKey, !key.isEmpty {
+                AppLogger.shared.info("AI", "Initialized live OpenAI provider (gpt-4o-mini).")
+                return OpenAIProvider(apiKey: key)
+            } else {
+                AppLogger.shared.warn("AI", "AI_PROVIDER=openai requested but OPENAI_API_KEY is missing in .env. Falling back to MockAIProvider.")
+                return MockAIProvider()
+            }
+        }
+
+        // Auto-detect if user provided a key without explicitly setting AI_PROVIDER
+        if let geminiKey = config.geminiApiKey, !geminiKey.isEmpty {
+            AppLogger.shared.info("AI", "Detected GEMINI_API_KEY in environment. Using live Gemini provider.")
+            return GeminiAIProvider(apiKey: geminiKey)
+        }
+
+        if let openAiKey = config.openAiApiKey, !openAiKey.isEmpty {
+            AppLogger.shared.info("AI", "Detected OPENAI_API_KEY in environment. Using live OpenAI provider.")
+            return OpenAIProvider(apiKey: openAiKey)
+        }
+
+        AppLogger.shared.info("AI", "Using MockAIProvider (deterministic offline mode). Add GEMINI_API_KEY in .env for live AI.")
+        return MockAIProvider()
+    }
+}
+

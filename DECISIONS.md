@@ -483,5 +483,20 @@ Supersedes: [old decision number]
 
 **Status:** active
 
+---
+
+# [31] Multi-Provider Live AI Architecture with Native Tool Calling & Offline Fallback
+
+**Decision:** ByteHouse implements a multi-provider AI architecture supporting live Google Gemini models (`gemini-2.0-flash` via `GeminiAIProvider`) and OpenAI-compatible endpoints (`OpenAIProvider` for GPT-4o, Ollama, Groq) with native function/tool calling schemas. Provider selection is managed by `AIProviderFactory` driven by `.env` / environment variables, with graceful automatic fallback to `MockAIProvider` when offline or when no API keys are present.
+
+**Reason:** Unlocks true generative reasoning, natural language comprehension, and autonomous tool invocation for user memory and tasks while guaranteeing that tests and offline environments run reliably with zero configuration.
+
+**Alternatives considered:** Direct SDK dependencies (GoogleGenerativeAI, OpenAI-Swift); single-vendor lock-in. Native URLSession-based REST integration keeps binary size minimal and eliminates third-party supply chain vulnerabilities.
+
+**Date:** 2026-09-18
+
+**Status:** active
+
+
 
 

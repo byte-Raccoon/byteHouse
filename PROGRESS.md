@@ -211,14 +211,15 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 ---
 
 ## Stage 2 — ByteHouse Core
-**Status:** `FUTURE`
-- [ ] Stable conversation management system
-- [ ] Multi-model LLM provider adapters
+**Status:** `IN PROGRESS (Stage 2.1 Completed)`
+- [x] Stable conversation management system (`ConversationService`)
+- [x] Multi-model LLM provider adapters (`GeminiAIProvider`, `OpenAIProvider`, `MockAIProvider`)
+- [x] Provider error recovery & graceful offline fallback (`AIProviderFactory`)
+- [x] Dynamic context construction (explicit memory recall injection into prompt context)
+- [x] Native tool calling translation & multi-turn execution loop (up to 5 rounds)
 - [ ] Message history trimming & compaction
-- [ ] Dynamic context construction
 - [ ] Token limit & context window management
 - [ ] Streaming response handling
-- [ ] Provider error recovery & fallback
 - [ ] Model configuration UI
 
 ---
@@ -471,14 +472,14 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 - **Known limitations:** Voice I/O and animated character state machine are placeholders for Phase 8 & 9; mobile sync is future Stage 11 & 12.
 - **Next stage:** Stage 1 — Foundation
 
-### Stage 1.1 — Foundation Infrastructure (completed 2026-09-18)
+### Stage 2.1 — Live AI Provider & Multi-Turn Tool Calling (completed 2026-09-18)
 
-- **Goal:** Production-grade configuration, versioned database migrations, and structured logging.
-- **Feature:** `AppConfig` supporting `.env` parsing, typed settings, and secret isolation; `MigrationRunner` managing SQLite `PRAGMA user_version` with atomic transactions and performance query indexes (`001_initial_schema`, `002_performance_indexes`); `AppLogger` with leveled outputs (`DEBUG`, `INFO`, `WARN`, `ERROR`), automatic secret masking, and persistent append logs in `~/Library/Logs/ByteHouse/bytehouse.log`.
-- **Tests:** 7/7 Swift Testing suite tests passing (100% success), including database migration upgrades, index verification, config parsing, logger redaction, and the full 10-step Stage 0 journey.
-- **Architecture:** `Sources/ByteHouse/Core/Config.swift`, `Sources/ByteHouse/Core/Logger.swift`, `Sources/ByteHouse/Core/Migrations.swift`.
-- **Decisions:** [30] (active).
-- **Next stage:** Stage 1.2 — Error boundaries & IPC contracts / Stage 2 — ByteHouse Core (Live AI Provider).
+- **Goal:** Connect ByteHouse to live generative AI models with autonomous function/tool calling and offline fallback.
+- **Feature:** `GeminiAIProvider` connecting to `gemini-2.0-flash` with parameter schemas; `OpenAIProvider` supporting GPT-4o, local Ollama, and Groq; `AIProviderFactory` automatically selecting providers based on `.env` keys with seamless offline fallback to `MockAIProvider`; enhanced `ConversationService` multi-turn tool execution loop supporting up to 5 sequential tool calls per conversation turn.
+- **Tests:** 8/8 Swift Testing suite tests passing (100% success), including provider factory selection, fallback behavior, tool schemas, and full 10-step user journey.
+- **Architecture:** `Sources/ByteHouse/Core/GeminiAIProvider.swift`, `Sources/ByteHouse/Core/OpenAIProvider.swift`, `Sources/ByteHouse/Core/AIProvider.swift`, `Sources/ByteHouse/Core/ToolRegistry.swift`.
+- **Decisions:** [31] (active).
+- **Next stage:** Stage 2.2 — Streaming response tokens / Stage 3 — Dedicated Memory & Task Inspection UI.
 
 ---
 
@@ -487,8 +488,8 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 The next execution step is:
 
 ```text
-Stage 1.1 Foundation Infrastructure verified
+Stage 2.1 Live AI Provider verified
        ↓
-Proceed to Stage 2: ByteHouse Core (Live AI Provider — Gemini / streaming)
-       or Stage 1.2 (IPC & Error Boundaries)
+Proceed to Stage 2.2 (Streaming response tokens directly into React UI)
+       or Stage 3 (Dedicated Memory & Task UI inspection panels)
 ```

@@ -1,10 +1,32 @@
 import Foundation
 import SQLite3
 
-public struct ToolDefinition: Codable {
+public struct ToolParameter: Codable, Sendable {
+    public let type: String
+    public let description: String
+    public let required: Bool
+    public let enumValues: [String]?
+
+    public init(type: String, description: String, required: Bool = false, enumValues: [String]? = nil) {
+        self.type = type
+        self.description = description
+        self.required = required
+        self.enumValues = enumValues
+    }
+}
+
+public struct ToolDefinition: Codable, Sendable {
     public let name: String
     public let description: String
     public let sideEffects: String
+    public let parameters: [String: ToolParameter]
+
+    public init(name: String, description: String, sideEffects: String, parameters: [String: ToolParameter] = [:]) {
+        self.name = name
+        self.description = description
+        self.sideEffects = sideEffects
+        self.parameters = parameters
+    }
 }
 
 public class ToolRegistry {
@@ -20,12 +42,58 @@ public class ToolRegistry {
 
     public func getToolDefinitions() -> [ToolDefinition] {
         return [
-            ToolDefinition(name: "remember", description: "Explicitly store a memory or fact about the user for long-term recall.", sideEffects: "Inserts into memories table."),
-            ToolDefinition(name: "recall", description: "Search and retrieve explicit memories stored by the user.", sideEffects: "Reads memories table."),
-            ToolDefinition(name: "forget", description: "Remove/delete a specific stored memory by ID.", sideEffects: "Deletes from memories table."),
-            ToolDefinition(name: "create_task", description: "Create a new personal todo/task.", sideEffects: "Inserts into tasks table."),
-            ToolDefinition(name: "list_tasks", description: "Retrieve user tasks optionally filtered by status.", sideEffects: "Reads tasks table."),
-            ToolDefinition(name: "complete_task", description: "Mark a task as completed by ID or title.", sideEffects: "Updates tasks status to completed.")
+            ToolDefinition(
+                name: "remember",
+                description: "Explicitly store a personal memory or fact about the user for long-term recall.",
+                sideEffects: "Inserts into memories table.",
+                parameters: [
+                    "content": ToolParameter(type: "string", description: "The specific fact, detail, or preference to remember.", required: true)
+                ]
+            ),
+            ToolDefinition(
+                name: "recall",
+                description: "Search and retrieve explicit personal memories stored by the user.",
+                sideEffects: "Reads memories table.",
+                parameters: [
+                    "query": ToolParameter(type: "string", description: "Topic, keyword, or query to search memories for.", required: false)
+                ]
+            ),
+            ToolDefinition(
+                name: "forget",
+                description: "Remove/delete a specific stored memory by ID.",
+                sideEffects: "Deletes from memories table.",
+                parameters: [
+                    "memory_id": ToolParameter(type: "string", description: "The ID of the memory to delete.", required: true)
+                ]
+            ),
+            ToolDefinition(
+                name: "create_task",
+                description: "Create a new personal todo/task.",
+                sideEffects: "Inserts into tasks table.",
+                parameters: [
+                    "title": ToolParameter(type: "string", description: "The title of the task to create.", required: true),
+                    "priority": ToolParameter(type: "string", description: "Task priority level.", required: false, enumValues: ["low", "medium", "high", "urgent"]),
+                    "due_at": ToolParameter(type: "string", description: "Optional due date or time.", required: false)
+                ]
+            ),
+            ToolDefinition(
+                name: "list_tasks",
+                description: "Retrieve user tasks optionally filtered by status or priority.",
+                sideEffects: "Reads tasks table.",
+                parameters: [
+                    "status": ToolParameter(type: "string", description: "Filter by task status.", required: false, enumValues: ["pending", "completed", "all"]),
+                    "priority": ToolParameter(type: "string", description: "Filter by priority level.", required: false, enumValues: ["low", "medium", "high", "urgent"])
+                ]
+            ),
+            ToolDefinition(
+                name: "complete_task",
+                description: "Mark a task as completed by ID or title phrase.",
+                sideEffects: "Updates task status to completed.",
+                parameters: [
+                    "task_title": ToolParameter(type: "string", description: "Title or matching keyword of the task to complete.", required: false),
+                    "task_id": ToolParameter(type: "string", description: "The exact task ID if known.", required: false)
+                ]
+            )
         ]
     }
 

@@ -129,16 +129,21 @@ public class ConversationService: @unchecked Sendable {
         // 3. AI provider generation
         var response = try await aiProvider.generate(messages: aiMessages, tools: tools)
 
-        // 4. Tool execution loop
-        if let calls = response.tool_calls, !calls.isEmpty {
+        // 4. Tool execution loop (supports multi-turn tool calling up to 5 rounds)
+        var rounds = 0
+        while let calls = response.tool_calls, !calls.isEmpty, rounds < 5 {
+            rounds += 1
             onPresenceChange?("working")
+
+            // Append assistant message with its tool calls so model sees full thread
+            aiMessages.append(AIMessage(role: "assistant", content: response.content, tool_calls: calls))
 
             for call in calls {
                 let inputDict = call.arguments.mapValues { $0.value }
                 let result = await toolRegistry.executeTool(name: call.name, input: inputDict)
                 toolsExecuted.append(result)
 
-                // Pass result back into context
+                // Pass result back into context as tool role
                 let outputJson = (try? JSONEncoder().encode(result.output)).flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
                 aiMessages.append(AIMessage(role: "tool", content: outputJson, name: call.name))
             }

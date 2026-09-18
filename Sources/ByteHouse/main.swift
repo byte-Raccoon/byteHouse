@@ -73,7 +73,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let memService = MemoryService(database: db)
         let tService = TaskService(database: db)
         let tRegistry = ToolRegistry(database: db, memoryService: memService, taskService: tService)
-        let aiProvider = MockAIProvider()
+        let aiProvider = AIProviderFactory.create(config: config)
         let convService = ConversationService(database: db, aiProvider: aiProvider, toolRegistry: tRegistry, memoryService: memService)
 
         self.memoryService = memService
