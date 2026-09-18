@@ -1,4 +1,7 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, nativeImage, screen } from 'electron';
+import type { BrowserWindow as BrowserWindowType, Tray as TrayType } from 'electron';
+import electron from 'electron';
+const { app, BrowserWindow, ipcMain, globalShortcut, Tray, Menu, nativeImage, screen } = electron;
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -19,8 +22,8 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let mainWindow: BrowserWindow | null = null;
-let tray: Tray | null = null;
+let mainWindow: BrowserWindowType | null = null;
+let tray: TrayType | null = null;
 let db: ByteHouseDatabase | null = null;
 let conversationService: ConversationService | null = null;
 let memoryService: MemoryService | null = null;
@@ -70,18 +73,30 @@ function createWindow(): void {
     alwaysOnTop: true,
     resizable: true,
     hasShadow: true,
-    show: false,
+    show: true,
+    skipTaskbar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
 
-  mainWindow.loadFile(path.join(__dirname, '../ui/index.html'));
+  mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+  const htmlPath = path.join(__dirname, '../ui/index.html');
+  console.log('[ByteHouse] Loading UI from:', htmlPath);
+  mainWindow.loadFile(htmlPath).catch((err) => {
+    console.error('[ByteHouse] Error loading HTML file:', err);
+  });
+
+  mainWindow.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
+    console.error('[ByteHouse] Failed to load window UI:', errorCode, errorDescription);
+  });
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show();
+    mainWindow?.focus();
   });
 
   mainWindow.on('closed', () => {

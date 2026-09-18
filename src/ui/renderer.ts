@@ -63,7 +63,10 @@ chatForm?.addEventListener('submit', async (e) => {
 
   try {
     updatePresence('thinking');
-    const result = await window.bytehouse?.chat(prompt, currentConversationId);
+    if (!window.bytehouse) {
+      throw new Error('ByteHouse system bridge not found. Please restart via "npm run dev".');
+    }
+    const result = await window.bytehouse.chat(prompt, currentConversationId);
     if (result) {
       currentConversationId = result.conversation_id;
       appendAssistantMessage(result.response, result.tools_executed);

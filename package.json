@@ -5,11 +5,12 @@
   "main": "dist/electron/main.js",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build:assets": "node scripts/copy-assets.js",
+    "build": "tsc -p tsconfig.json && npm run build:assets",
     "test": "vitest run",
     "test:watch": "vitest",
     "start": "electron dist/electron/main.js",
-    "dev": "tsc -p tsconfig.json && electron dist/electron/main.js"
+    "dev": "npm run build && electron dist/electron/main.js"
   },
   "keywords": [
     "ai",

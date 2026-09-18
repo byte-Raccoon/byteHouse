@@ -1,4 +1,5 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import electron from 'electron';
+const { contextBridge, ipcRenderer } = electron;
 
 export interface ByteHouseAPI {
   chat: (prompt: string, conversationId?: string) => Promise<any>;
