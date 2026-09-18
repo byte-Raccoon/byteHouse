@@ -5,6 +5,7 @@ export interface ByteHouseAPI {
   listTasks: () => Promise<any[]>;
   listMemories: () => Promise<any[]>;
   hideWindow: () => Promise<void>;
+  getShortcut: () => Promise<string>;
   onPresenceState: (callback: (state: string) => void) => void;
 }
 
@@ -13,6 +14,7 @@ const api: ByteHouseAPI = {
   listTasks: () => ipcRenderer.invoke('bytehouse:list-tasks'),
   listMemories: () => ipcRenderer.invoke('bytehouse:list-memories'),
   hideWindow: () => ipcRenderer.invoke('bytehouse:hide-window'),
+  getShortcut: () => ipcRenderer.invoke('bytehouse:get-shortcut'),
   onPresenceState: (callback) => {
     ipcRenderer.on('bytehouse:presence-state', (_event, state) => callback(state));
   },

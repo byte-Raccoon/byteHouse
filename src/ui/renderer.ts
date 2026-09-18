@@ -5,6 +5,7 @@ declare global {
       listTasks: () => Promise<any[]>;
       listMemories: () => Promise<any[]>;
       hideWindow: () => Promise<void>;
+      getShortcut: () => Promise<string>;
       onPresenceState: (callback: (state: string) => void) => void;
     };
   }
@@ -16,8 +17,22 @@ const promptInput = document.getElementById('prompt-input') as HTMLInputElement;
 const presenceOrb = document.getElementById('presence-orb') as HTMLDivElement;
 const presenceStatus = document.getElementById('presence-status') as HTMLSpanElement;
 const closeBtn = document.getElementById('close-btn') as HTMLButtonElement;
+const hotkeyBadge = document.getElementById('hotkey-badge') as HTMLSpanElement;
 
 let currentConversationId: string | undefined = undefined;
+
+// Fetch and display configured shortcut
+if (window.bytehouse?.getShortcut && hotkeyBadge) {
+  window.bytehouse.getShortcut().then((sc: string) => {
+    let formatted = sc
+      .replace(/CommandOrControl/g, '⌘')
+      .replace(/Control/g, '⌃')
+      .replace(/Option|Alt/g, '⌥')
+      .replace(/Shift/g, '⇧')
+      .replace(/\+/g, ' ');
+    hotkeyBadge.textContent = formatted;
+  });
+}
 
 // Presence State Updates
 if (window.bytehouse?.onPresenceState) {

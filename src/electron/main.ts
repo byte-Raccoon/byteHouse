@@ -156,6 +156,10 @@ function setupIPC(): void {
   ipcMain.handle('bytehouse:hide-window', () => {
     mainWindow?.hide();
   });
+
+  ipcMain.handle('bytehouse:get-shortcut', () => {
+    return process.env.GLOBAL_SHORTCUT || 'Control+Option+Space';
+  });
 }
 
 app.whenReady().then(() => {
@@ -164,13 +168,24 @@ app.whenReady().then(() => {
   createWindow();
   setupTray();
 
-  // Register global hotkey (Option+Space or Alt+Space)
-  globalShortcut.register('Option+Space', () => {
-    toggleWindow();
-  });
-  globalShortcut.register('CommandOrControl+Alt+Space', () => {
-    toggleWindow();
-  });
+  // Register global hotkey that does not conflict with Spotlight (Option+Space or Cmd+Space)
+  const primaryShortcut = process.env.GLOBAL_SHORTCUT || 'Control+Option+Space';
+  try {
+    globalShortcut.register(primaryShortcut, () => {
+      toggleWindow();
+    });
+  } catch (err) {
+    console.warn(`Failed to register primary shortcut ${primaryShortcut}:`, err);
+  }
+
+  // Also register Command+Shift+Space as a convenient alternative
+  try {
+    globalShortcut.register('CommandOrControl+Shift+Space', () => {
+      toggleWindow();
+    });
+  } catch (err) {
+    console.warn('Failed to register secondary shortcut:', err);
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
