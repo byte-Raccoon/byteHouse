@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteHouse Companion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="hud-container">
+    <!-- Top Header / Presence Bar -->
+    <header class="hud-header">
+      <div class="presence-wrapper">
+        <div id="presence-orb" class="presence-orb idle"></div>
+        <div class="presence-meta">
+          <span class="hud-title">ByteHouse</span>
+          <span id="presence-status" class="presence-label">Idle</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="hotkey-badge">⌥ Space</span>
+        <button id="close-btn" class="icon-btn" title="Hide HUD">×</button>
+      </div>
+    </header>
+
+    <!-- Message Feed -->
+    <main id="chat-feed" class="chat-feed">
+      <div class="message assistant">
+        <div class="bubble">
+          Hello! I'm <strong>ByteHouse</strong>, your personal companion.
+          <br><br>
+          Try:
+          <ul>
+            <li><em>"Remember that my flight is on Friday"</em></li>
+            <li><em>"Add a task to prepare meeting notes"</em></li>
+            <li><em>"What do you remember?"</em></li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <!-- Input Footer -->
+    <footer class="hud-footer">
+      <form id="chat-form" class="input-form">
+        <input
+          type="text"
+          id="prompt-input"
+          placeholder="Ask ByteHouse or give an instruction..."
+          autocomplete="off"
+          autofocus
+        />
+        <button type="submit" id="send-btn" class="send-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <script type="module" src="../../dist/ui/renderer.js"></script>
+</body>
+</html>
