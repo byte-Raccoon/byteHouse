@@ -509,6 +509,18 @@ Supersedes: [old decision number]
 
 **Date:** 2026-09-18
 
+---
+
+# [33] Window-Based Spotlight HUD & OrbAnimationGen UI/UX
+
+**Decision:** ByteHouse adopts a centered macOS Spotlight-style command window (720x580px, optical top-center positioning) featuring the full pure-CSS **ByteHouse Neural Presence Orb** from Stitch project `OrbAnimationGen` (`projects/2119614306656510916`), complete with 3 concentric acoustic soundwave halos, breathing outer chromatic glow, dynamic energy ribbon, pendulum light dynamics, and live audio amplitude spectrum bars. The companion interface provides macOS traffic lights, quick state toggles (`IDLE`, `LISTENING`, `THINKING`), omnibar input with glowing sparkle slot and return keycaps, interactive suggestion cards, and rich Bento-styled tool execution feedback.
+
+**Reason:** Aligns ByteHouse with native macOS Spotlight/Raycast UX conventions, provides high visual presence and immediate feedback on model state transitions, and creates a unified command center experience that stays fast, lightweight, and 60 FPS GPU-accelerated.
+
+**Alternatives considered:** Fixed right-side menu bar dropdown (too cramped for multi-card inspection and full presence animation); separate detached inspector windows.
+
+**Date:** 2026-09-20
+
 **Status:** active
 
 

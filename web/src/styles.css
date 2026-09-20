@@ -1,219 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* Radii scale:
-     Window: 20px (Native macOS popover style)
-     Cards & Bubbles: 12px
-     Suggestions: 10px
-     Pills / Chips: 9999px (full capsule)
-     Buttons: 9999px / 50% circle
-  */
-  --radius-window: 20px;
-  --radius-card: 12px;
-  --radius-suggestion: 10px;
-  --radius-pill: 9999px;
-  --radius-button: 9999px;
-
-  /* Spacing scale: 8px (sm), 12px (md), 16px (lg), 20px (xl) */
-  --space-8: 8px;
-  --space-12: 12px;
-  --space-16: 16px;
-  --space-20: 20px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-  user-select: none;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: transparent;
-}
-
-#root {
-  width: 100%;
-  height: 100%;
-}
-
-/* ==========================================================================
-   NATIVE macOS SPOTLIGHT THEME (Transparent Canvas + System Materials)
-   ========================================================================== */
-
-/* Main Assistant Window Shell: Clean, Frameless & Transparent */
-.liquid-window {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: var(--radius-window);
-  box-shadow: 
-    0 16px 40px -8px rgba(0, 0, 0, 0.35),
-    0 0 1px 1px rgba(0, 0, 0, 0.08);
-  position: relative;
-}
-
-/* Native Card: Subtle transparent macOS section container */
-.liquid-card {
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  position: relative;
-}
-
-@media (prefers-color-scheme: dark) {
-  .liquid-card {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-}
-
-/* Native macOS Pill Controls */
-.glass-pill {
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: var(--radius-pill);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-}
-
-.glass-pill:hover {
-  background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(255, 255, 255, 0.65);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass-pill {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-  .glass-pill:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.22);
-  }
-}
-
-/* Solid Filled Circle Accent Send Button */
-.send-btn-solid {
-  width: 29px;
-  height: 29px;
-  border-radius: var(--radius-button);
-  background: #0ea5e9;
-  border: none;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.35);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.send-btn-solid:hover:not(:disabled) {
-  background: #0284c7;
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.45);
-}
-
-.send-btn-solid:active:not(:disabled) {
-  transform: scale(0.95);
-}
-
-.send-btn-solid:disabled {
-  background: #cbd5e1;
-  color: #94a3b8;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-/* Suggestion Card Item: Native macOS list item */
-.suggestion-card {
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: var(--radius-suggestion);
-  padding: 11px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-.suggestion-card:hover {
-  background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 255, 255, 0.75);
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(14, 165, 233, 0.08);
-}
-
-.suggestion-card:active {
-  transform: translateY(0);
-  background: rgba(255, 255, 255, 0.5);
-}
-
-@media (prefers-color-scheme: dark) {
-  .suggestion-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-  .suggestion-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.16);
-  }
-}
-
-/* Small Pill/Chip Label (e.g. TRY) */
-.chip-label {
-  display: inline-flex;
-  align-items: center;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  background: rgba(14, 165, 233, 0.15);
-  color: #0284c7;
-  border: 1px solid rgba(14, 165, 233, 0.25);
-}
-
-/* Header Status Pill */
-.header-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  color: #334155;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-@media (prefers-color-scheme: dark) {
-  .header-pill {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: #cbd5e1;
-  }
-}
-
-/* ==========================================================================
-   STRATEGY B: OBSIDIAN LENS JEWEL PRESENCE ORB (From bytehouse_presence.html)
-   Enclosed in a protective recessed dark bezel so glows pop on light frosted glass
-   ========================================================================== */
-
-:root {
+  /* Stitch Orb Colors */
   --bh-black: #030305;
   --bh-dark-green: #063b2a;
   --bh-green: #19c37d;
@@ -223,62 +11,210 @@ html, body {
   --bh-rose-pink: #fb7185;
   --bh-red: #ef3340;
   --bh-white: #ffffff;
+
+  /* UI Accent & Glass Surface */
+  --primary-cyan: #00f5ff;
+  --surface-lowest: rgba(7, 9, 14, 0.92);
+  --surface-low: rgba(18, 20, 28, 0.75);
+  --surface-high: rgba(30, 32, 44, 0.65);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-glass-bright: rgba(255, 255, 255, 0.22);
+
+  --radius-window: 20px;
+  --radius-card: 14px;
+  --radius-pill: 9999px;
 }
 
-/* Recessed Bezel Chamber isolating the dark orb & capturing its chromatic halo */
-.presence-bezel {
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  color: #f1f5f9;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Scrollbar hide */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ==========================================================================
+   AMBIENT GRID & SPOTLIGHT WINDOW SHELL
+   ========================================================================== */
+
+.bg-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.spotlight-window {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(124, 58, 237, 0.18), transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(25, 195, 125, 0.10), transparent 35%),
+    radial-gradient(circle at 85% 25%, rgba(32, 169, 255, 0.12), transparent 35%),
+    rgba(6, 8, 14, 0.90);
+  border: 1px solid var(--border-glass-bright);
+  border-radius: var(--radius-window);
+  box-shadow:
+    0 24px 64px -12px rgba(0, 0, 0, 0.85),
+    0 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 0 40px rgba(0, 245, 255, 0.06);
   position: relative;
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-button);
-  background: radial-gradient(circle at 35% 25%, rgba(20, 24, 38, 0.95), rgba(3, 3, 5, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 
-    inset 0 1.5px 3px rgba(255, 255, 255, 0.35),
-    inset 0 -1.5px 3px rgba(0, 0, 0, 0.85),
-    0 4px 14px rgba(3, 3, 5, 0.35),
-    0 0 16px rgba(32, 169, 255, 0.22);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   BYTEHOUSE NEURAL PRESENCE ORB (From stitch/code.html)
+   ========================================================================== */
+
+.bytehouse-stage {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bytehouse-stage--compact {
+  width: 120px;
+  height: 120px;
+}
+
+.bytehouse {
+  position: relative;
+  width: 110px;
+  height: 110px;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.3s cubic-bezier(.22, 1, .36, 1);
-  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.4s cubic-bezier(.22, 1, .36, 1);
+  border-radius: 50%;
 }
 
-.presence-bezel:hover {
-  transform: scale(1.05);
+.bytehouse-stage--compact .bytehouse {
+  width: 68px;
+  height: 68px;
 }
 
-.presence-bezel:active {
-  transform: scale(0.96);
+.bytehouse:hover {
+  transform: scale(1.06);
 }
 
-/* Outer Glow Halo */
-.presence-glow {
+.bytehouse:active {
+  transform: scale(0.95);
+}
+
+/* Outer acoustic concentric rings */
+.sound-ring {
   position: absolute;
-  inset: -8px;
+  inset: -22px;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  pointer-events: none;
+  animation: ringExpand 3.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
+}
+
+.bytehouse-stage--compact .sound-ring {
+  inset: -12px;
+}
+
+.sound-ring:nth-child(2) {
+  inset: -44px;
+  border-color: rgba(32, 169, 255, 0.20);
+  animation-delay: 1.1s;
+}
+
+.bytehouse-stage--compact .sound-ring:nth-child(2) {
+  inset: -22px;
+}
+
+.sound-ring:nth-child(3) {
+  inset: -68px;
+  border-color: rgba(236, 72, 153, 0.14);
+  animation-delay: 2.2s;
+}
+
+.bytehouse-stage--compact .sound-ring:nth-child(3) {
+  inset: -34px;
+}
+
+@keyframes ringExpand {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Outer Glow */
+.glow {
+  position: absolute;
+  inset: -32px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
     rgba(32, 169, 255, 0.45),
-    rgba(124, 58, 237, 0.32) 28%,
-    rgba(236, 72, 153, 0.20) 48%,
-    rgba(25, 195, 125, 0.12) 64%,
-    transparent 78%
+    rgba(124, 58, 237, 0.32) 27%,
+    rgba(236, 72, 153, 0.22) 46%,
+    rgba(25, 195, 125, 0.14) 62%,
+    transparent 74%
   );
-  filter: blur(8px);
+  filter: blur(20px);
   pointer-events: none;
-  animation: presenceBreathe 3s ease-in-out infinite;
+  animation: breathe 3.2s ease-in-out infinite;
 }
 
-/* Main Obsidian Orb Core (40x40px inside 52px bezel) */
-.presence-orb {
-  position: relative;
-  width: 38px;
-  height: 38px;
+.bytehouse-stage--compact .glow {
+  inset: -16px;
+  filter: blur(12px);
+}
+
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(0.94);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+/* Main Orb */
+.orb {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   overflow: hidden;
   background: radial-gradient(
@@ -291,20 +227,30 @@ html, body {
     var(--bh-black) 73%
   );
   box-shadow:
-    inset 3px 2px 8px rgba(255, 255, 255, 0.35),
-    inset -6px -6px 14px rgba(0, 0, 0, 0.85),
-    0 0 10px rgba(32, 169, 255, 0.4),
-    0 0 20px rgba(124, 58, 237, 0.25);
-  animation: presenceOrbFloat 4s ease-in-out infinite;
+    inset 8px 6px 18px rgba(255, 255, 255, 0.35),
+    inset -14px -14px 28px rgba(0, 0, 0, 0.85),
+    0 0 28px rgba(32, 169, 255, 0.45),
+    0 0 55px rgba(124, 58, 237, 0.30),
+    0 0 80px rgba(236, 72, 153, 0.20);
+  animation: orbFloat 4s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 /* Multicolor Energy Ribbon */
-.presence-energy {
+.energy {
   position: absolute;
-  width: 58px;
-  height: 30px;
-  left: -10px;
-  top: 13px;
+  width: 150px;
+  height: 75px;
+  left: -20px;
+  top: 35px;
   border-radius: 50%;
   background: linear-gradient(
     90deg,
@@ -316,13 +262,21 @@ html, body {
     var(--bh-green) 88%,
     var(--bh-dark-green) 100%
   );
-  filter: blur(4px);
+  filter: blur(12px);
   opacity: 0.85;
   transform: rotate(-30deg);
-  animation: presenceEnergyMove 5s ease-in-out infinite;
+  animation: energyMove 5s ease-in-out infinite;
 }
 
-.presence-energy::after {
+.bytehouse-stage--compact .energy {
+  width: 95px;
+  height: 48px;
+  left: -12px;
+  top: 20px;
+  filter: blur(8px);
+}
+
+.energy::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -335,344 +289,326 @@ html, body {
     var(--bh-pink),
     transparent
   );
-  filter: blur(5px);
+  filter: blur(14px);
   opacity: 0.75;
   transform: rotate(65deg);
 }
 
-/* Green Energy Accent */
-.presence-orb::before {
+@keyframes energyMove {
+  0% {
+    transform: rotate(-30deg) translateX(-10px);
+  }
+  50% {
+    transform: rotate(25deg) translateX(14px);
+  }
+  100% {
+    transform: rotate(-30deg) translateX(-10px);
+  }
+}
+
+/* Green and Red Edge Accents */
+.orb::before {
   content: "";
   position: absolute;
-  width: 24px;
-  height: 24px;
-  right: -4px;
-  bottom: 2px;
+  width: 58px;
+  height: 58px;
+  right: -10px;
+  bottom: 4px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(25, 195, 125, 0.85),
-    rgba(6, 59, 42, 0.5),
+    rgba(25, 195, 125, 0.88),
+    rgba(6, 59, 42, 0.48),
     transparent 70%
   );
-  filter: blur(3px);
-  animation: presenceGreenPulse 3s ease-in-out infinite;
+  filter: blur(7px);
+  animation: greenPulse 3s ease-in-out infinite;
 }
 
-/* Red/Rose Energy Accent */
-.presence-orb::after {
+.orb::after {
   content: "";
   position: absolute;
-  width: 28px;
-  height: 14px;
-  left: -4px;
-  bottom: 3px;
+  width: 68px;
+  height: 34px;
+  left: -10px;
+  bottom: 6px;
   border-radius: 50%;
   background: linear-gradient(
     90deg,
-    rgba(239, 51, 64, 0.75),
-    rgba(251, 113, 133, 0.55),
+    rgba(239, 51, 64, 0.76),
+    rgba(251, 113, 133, 0.58),
     transparent
   );
-  filter: blur(4px);
+  filter: blur(8px);
   transform: rotate(-25deg);
-  animation: presenceRedEnergy 4s ease-in-out infinite;
+  animation: redEnergy 4s ease-in-out infinite;
 }
 
-/* ==========================================================================
-   STITCH PRESENCE DESIGN: CONCENTRIC SOUNDWAVE HALOS & PENDULUM DYNAMICS
-   ========================================================================== */
-
-/* Concentric acoustic rings around orb container */
-.sound-ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  border: 1px solid rgba(124, 58, 237, 0.28);
-  animation: ringExpand 3.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
-}
-
-.sound-ring--1 {
-  inset: -6px;
-  animation-delay: 0s;
-}
-
-.sound-ring--2 {
-  inset: -12px;
-  border-color: rgba(32, 169, 255, 0.22);
-  animation-delay: 1.1s;
-}
-
-.sound-ring--3 {
-  inset: -18px;
-  border-color: rgba(236, 72, 153, 0.16);
-  animation-delay: 2.2s;
-}
-
-@keyframes ringExpand {
-  0% {
-    transform: scale(0.88);
-    opacity: 0;
+@keyframes greenPulse {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: 0.45;
   }
   50% {
-    opacity: 0.75;
-  }
-  100% {
-    transform: scale(1.16);
-    opacity: 0;
+    transform: scale(1.25);
+    opacity: 0.95;
   }
 }
 
-/* Central Pendulum Specular Light (From stitch/code.html) */
-.presence-light {
+@keyframes redEnergy {
+  0%, 100% {
+    transform: rotate(-25deg) translateX(0);
+  }
+  50% {
+    transform: rotate(15deg) translateX(12px);
+  }
+}
+
+/* Central Pendulum White Light */
+.light {
   position: absolute;
-  width: 13px;
-  height: 13px;
-  top: 13px;
-  left: 13px;
+  width: 22px;
+  height: 22px;
+  top: 32px;
+  left: 44px;
   border-radius: 50%;
   background: var(--bh-white);
-  transform-origin: 50% -18px;
   box-shadow:
-    0 0 6px var(--bh-white),
-    0 0 14px var(--bh-blue),
-    0 0 24px var(--bh-blue),
-    0 0 36px var(--bh-violet),
-    0 0 48px var(--bh-pink);
+    0 0 10px var(--bh-white),
+    0 0 22px var(--bh-blue),
+    0 0 36px var(--bh-blue),
+    0 0 55px var(--bh-violet),
+    0 0 75px var(--bh-pink);
+  transform-origin: 50% -28px 0px;
   animation: pendulumIdle 3.6s ease-in-out infinite;
 }
 
+.bytehouse-stage--compact .light {
+  width: 14px;
+  height: 14px;
+  top: 18px;
+  left: 26px;
+  box-shadow:
+    0 0 6px var(--bh-white),
+    0 0 14px var(--bh-blue),
+    0 0 24px var(--bh-violet);
+}
+
 @keyframes pendulumIdle {
-  0% { transform: rotate(-16deg) translate(-5px, -1px); }
-  50% { transform: rotate(16deg) translate(5px, -1px); }
-  100% { transform: rotate(-16deg) translate(-5px, -1px); }
+  0% { transform: rotate(-18deg) translate(-12px, -3px); }
+  50% { transform: rotate(18deg) translate(12px, -3px); }
+  100% { transform: rotate(-18deg) translate(-12px, -3px); }
 }
 
-/* Keyframes from stitch/code.html */
-@keyframes presenceBreathe {
-  0%, 100% { transform: scale(0.94); opacity: 0.65; }
-  50% { transform: scale(1.08); opacity: 1; }
+/* White Highlight Sheen */
+.highlight {
+  position: absolute;
+  width: 30px;
+  height: 14px;
+  top: 12px;
+  left: 22px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  filter: blur(2.5px);
+  transform: rotate(-25deg);
 }
 
-@keyframes presenceOrbFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-@keyframes presenceEnergyMove {
-  0% { transform: rotate(-30deg) translateX(-4px); }
-  50% { transform: rotate(25deg) translateX(6px); }
-  100% { transform: rotate(-30deg) translateX(-4px); }
-}
-
-@keyframes presenceGreenPulse {
-  0%, 100% { transform: scale(0.8); opacity: 0.45; }
-  50% { transform: scale(1.2); opacity: 0.95; }
-}
-
-@keyframes presenceRedEnergy {
-  0%, 100% { transform: rotate(-25deg) translateX(0); }
-  50% { transform: rotate(15deg) translateX(5px); }
+.bytehouse-stage--compact .highlight {
+  width: 18px;
+  height: 8px;
+  top: 7px;
+  left: 14px;
 }
 
 /* ==========================================================================
-   PRESENCE STATES: THINKING & WORKING (From stitch/code.html)
+   PRESENCE DYNAMIC STATES (Listening & Thinking)
    ========================================================================== */
 
-.presence-bezel--thinking .presence-energy {
-  animation: presenceThinkingEnergy 1.2s linear infinite;
+/* Listening State */
+.bytehouse.listening .orb {
+  animation:
+    orbFloat 2s ease-in-out infinite,
+    listeningPulse 1s ease-in-out infinite;
 }
 
-.presence-bezel--thinking .presence-light {
+.bytehouse.listening .glow {
+  animation: listeningGlow 1s ease-in-out infinite;
+}
+
+.bytehouse.listening .light {
+  box-shadow:
+    0 0 14px var(--bh-white),
+    0 0 32px var(--bh-blue),
+    0 0 58px var(--bh-green),
+    0 0 90px var(--bh-blue);
+  animation: pendulumListening 2.2s ease-in-out infinite !important;
+}
+
+@keyframes listeningPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes listeningGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+@keyframes pendulumListening {
+  0% { transform: rotate(-26deg) translate(-18px, -5px) scale(1.08); }
+  50% { transform: rotate(26deg) translate(18px, -5px) scale(1.08); }
+  100% { transform: rotate(-26deg) translate(-18px, -5px) scale(1.08); }
+}
+
+/* Thinking State */
+.bytehouse.thinking .energy {
+  animation: thinkingEnergy 1.2s linear infinite;
+}
+
+.bytehouse.thinking .light {
   animation: pendulumThinking 1.4s ease-in-out infinite !important;
 }
 
-.presence-bezel--thinking .presence-glow {
-  animation: presenceThinkingGlow 1.6s ease-in-out infinite;
+.bytehouse.thinking .glow {
+  animation: thinkingGlow 1.6s ease-in-out infinite;
 }
 
-.presence-bezel--thinking .sound-ring {
-  animation-duration: 1.6s;
-}
-
-@keyframes pendulumThinking {
-  0% { transform: rotate(-28deg) translate(-7px, -3px) scale(1.1); }
-  25% { transform: rotate(0deg) translate(0px, 3px) scale(1.18); }
-  50% { transform: rotate(28deg) translate(7px, -3px) scale(1.1); }
-  75% { transform: rotate(0deg) translate(0px, 3px) scale(1.18); }
-  100% { transform: rotate(-28deg) translate(-7px, -3px) scale(1.1); }
-}
-
-@keyframes presenceThinkingEnergy {
+@keyframes thinkingEnergy {
   from { transform: rotate(0deg) scale(1.12); }
   to { transform: rotate(360deg) scale(1.12); }
 }
 
-@keyframes presenceThinkingGlow {
-  0%, 100% { opacity: 0.55; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.28); }
+@keyframes pendulumThinking {
+  0% { transform: rotate(-32deg) translate(-20px, -7px) scale(1.12); }
+  25% { transform: rotate(0deg) translate(0px, 7px) scale(1.18); }
+  50% { transform: rotate(32deg) translate(20px, -7px) scale(1.12); }
+  75% { transform: rotate(0deg) translate(0px, 7px) scale(1.18); }
+  100% { transform: rotate(-32deg) translate(-20px, -7px) scale(1.12); }
 }
 
-.presence-bezel--working .presence-orb {
-  animation: presenceOrbFloat 1.8s ease-in-out infinite, presenceWorkingPulse 0.9s ease-in-out infinite;
-}
-
-.presence-bezel--working .presence-light {
-  animation: pendulumListening 2.2s ease-in-out infinite !important;
-  box-shadow:
-    0 0 8px var(--bh-white),
-    0 0 18px var(--bh-green),
-    0 0 32px var(--bh-blue),
-    0 0 48px var(--bh-green);
-}
-
-@keyframes pendulumListening {
-  0% { transform: rotate(-22deg) translate(-6px, -2px) scale(1.08); }
-  50% { transform: rotate(22deg) translate(6px, -2px) scale(1.08); }
-  100% { transform: rotate(-22deg) translate(-6px, -2px) scale(1.08); }
-}
-
-.presence-bezel--working .presence-orb {
-  animation: presenceOrbFloat 1.8s ease-in-out infinite, presenceWorkingPulse 0.9s ease-in-out infinite;
-}
-
-.presence-bezel--working .presence-glow {
-  background: radial-gradient(
-    circle,
-    rgba(25, 195, 125, 0.55),
-    rgba(32, 169, 255, 0.38) 32%,
-    rgba(124, 58, 237, 0.25) 55%,
-    transparent 78%
-  );
-  animation: presenceWorkingGlow 0.9s ease-in-out infinite;
-}
-
-.presence-bezel--working .presence-light {
-  box-shadow:
-    0 0 8px var(--bh-white),
-    0 0 16px var(--bh-green),
-    0 0 28px var(--bh-blue),
-    0 0 42px var(--bh-green);
-}
-
-@keyframes presenceWorkingPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-
-@keyframes presenceWorkingGlow {
-  0%, 100% { transform: scale(1); opacity: 0.65; }
-  50% { transform: scale(1.3); opacity: 1; }
-}
-
-/* User Chat Bubble */
-.user-bubble-liquid {
-  background: #0284c7;
-  color: #ffffff;
-  border-radius: var(--radius-card);
-  padding: 10px 14px;
-  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-/* Assistant Chat Bubble: Native translucent panel */
-.assistant-bubble-liquid {
-  background: rgba(255, 255, 255, 0.48);
-  color: #0f172a;
-  border-radius: var(--radius-card);
-  padding: 12px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-@media (prefers-color-scheme: dark) {
-  .assistant-bubble-liquid {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.12);
-    color: #f1f5f9;
+@keyframes thinkingGlow {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.28);
   }
 }
 
-/* Real-Time Streaming Cursor */
-.streaming-cursor {
-  display: inline-block;
-  color: #0284c7;
-  animation: blink 0.85s infinite;
-  font-weight: 700;
-  margin-left: 2px;
-  vertical-align: baseline;
-  text-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+/* ==========================================================================
+   SPOTLIGHT CONTROLS, CHIPS, CARDS & BUBBLES
+   ========================================================================== */
+
+/* Suggestion Card Item */
+.stitch-suggestion-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.1; }
+.stitch-suggestion-card:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(0, 245, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
-/* Thinking Pulse Dots */
+.stitch-suggestion-card:active {
+  transform: scale(0.98);
+}
+
+/* Chat Message Bubbles */
+.stitch-user-bubble {
+  background: linear-gradient(135deg, rgba(32, 169, 255, 0.25), rgba(124, 58, 237, 0.35));
+  border: 1px solid rgba(0, 245, 255, 0.35);
+  border-radius: 14px 14px 4px 14px;
+  padding: 8px 14px;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.stitch-assistant-bubble {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px 14px 14px 4px;
+  padding: 12px 16px;
+  color: #f8fafc;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+}
+
+/* Tool Execution Cards */
+.stitch-tool-card {
+  background: rgba(12, 14, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 9px 13px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Typing Thinking Dots */
 .thinking-dots {
   display: inline-flex;
-  gap: 5px;
   align-items: center;
-  padding: 6px 4px;
+  gap: 5px;
+  padding: 4px 0;
 }
 
 .thinking-dots span {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
+  background-color: var(--primary-cyan);
   border-radius: 50%;
-  background: #38bdf8;
-  animation: dot-pulse 1.2s infinite ease-in-out;
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  animation: bounceDot 1.3s infinite ease-in-out both;
 }
 
-.thinking-dots span:nth-child(2) {
-  animation-delay: 0.2s;
+.thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+.thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounceDot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1.1); opacity: 1; }
 }
 
-.thinking-dots span:nth-child(3) {
-  animation-delay: 0.4s;
+.streaming-cursor {
+  display: inline-block;
+  color: var(--primary-cyan);
+  font-weight: 700;
+  margin-left: 2px;
+  animation: cursorBlink 0.9s infinite;
 }
 
-@keyframes dot-pulse {
-  0%, 80%, 100% { transform: scale(0.65); opacity: 0.4; }
-  40% { transform: scale(1.15); opacity: 1; }
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 
-/* Tool Action Cards */
-.tool-card-stitch {
-  margin-top: 8px;
-  padding: 9px 12px;
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: var(--radius-card);
-  font-size: 12.5px;
-  color: #334155;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-}
-
-@media (prefers-color-scheme: dark) {
-  .tool-card-stitch {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
-  }
-}
-
+/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .presence-glow,
-  .presence-orb,
-  .presence-energy,
-  .presence-light,
-  .presence-bezel--thinking .presence-energy,
-  .presence-bezel--thinking .presence-light,
-  .presence-bezel--thinking .presence-glow,
-  .presence-bezel--working .presence-orb,
-  .presence-bezel--working .presence-glow {
-    animation: none !important;
-    transform: none !important;
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

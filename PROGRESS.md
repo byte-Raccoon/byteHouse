@@ -482,7 +482,21 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
 - **Goal:** Modernize companion HUD with Stitch liquid glassmorphism design, SVG caustics, and video orb avatar.
 - **Feature:** Ported `stitch/code.html` design to React 19 HUD with Tailwind CSS v4, SVG caustics displacement filter `#liquid-caustic-filter`, cursor reflection tracking (`--liquid-x`, `--liquid-y`), prompt suggestions, live status indicator, and `orb-animation.webm` avatar.
 - **Tests:** Production build `npm run build` succeeds; 9/9 Swift test suites pass.
+
+### Stage 2.4 — Stitch OrbAnimationGen Spotlight Window-Based UI/UX (completed 2026-09-20)
+
+- **Goal:** Transform the ByteHouse companion into a centered macOS Spotlight window (720x580px) matching the Stitch `OrbAnimationGen` pure-CSS presence orb and macOS Command Center HUD.
+- **Feature:** 
+  - Centered 720x580px window in `HUDPanel.swift` with native traffic lights, dark ambient grid (`.bg-grid`), deep chromatic aura radial backdrop.
+  - Pure-CSS ByteHouse Presence Orb with 3 expanding acoustic concentric halos, breathing glow, gradient orb core, multicolor energy ribbon, pendulum light dynamics, and live audio amplitude spectrum equalizer.
+  - Interactive state controls (`IDLE`, `LISTENING`, `THINKING`) syncing with Swift bridge presence state and user interactions.
+  - Spotlight Omnibar command input with glowing auto-awesome slot, mic dictation button, keycaps, and quick suggestion cards.
+  - Real-time streaming conversation feed with live cursor, thinking dots, and Bento-styled tool execution cards.
+  - Telemetry and keyboard shortcut footer bar (`⌘K Actions`, `⌥Space Toggle`, `⎋ Dismiss`, `60 FPS Native CSS`).
+- **Tests:** Production build `npm run build` succeeds (548ms); 9/9 Swift test suites pass with 100% success (1.225s).
+- **Decisions:** [33] (active).
 - **Next stage:** Stage 3 — Memory Subsystem
+
 
 ---
 

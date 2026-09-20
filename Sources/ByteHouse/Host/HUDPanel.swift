@@ -22,7 +22,7 @@ public class HUDPanel: NSPanel {
         self.webView = WKWebView(frame: .zero, configuration: config)
         webBridge.webView = self.webView
 
-        let width: CGFloat = 440
+        let width: CGFloat = 720
         let height: CGFloat = 580
 
         let screenRect = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
