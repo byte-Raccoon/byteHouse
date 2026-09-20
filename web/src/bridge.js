@@ -67,8 +67,9 @@ class ByteHouseBridge {
         });
       }
       if (action === 'getShortcut') return Promise.resolve('⌃⌥ Space');
-      if (action === 'listTasks') return Promise.resolve([]);
-      if (action === 'listMemories') return Promise.resolve([]);
+      if (action === 'listTasks') return Promise.resolve({ tasks: [] });
+      if (action === 'completeTask') return Promise.resolve({ success: true, task: { id: payload.taskId, status: 'completed' } });
+      if (action === 'listMemories') return Promise.resolve({ memories: [] });
       return Promise.resolve({ success: true });
     }
   }
@@ -117,8 +118,15 @@ class ByteHouseBridge {
     }
   }
 
-  listTasks() {
-    return this.send('listTasks');
+  async listTasks() {
+    const res = await this.send('listTasks');
+    if (Array.isArray(res)) return { tasks: res };
+    if (res && Array.isArray(res.tasks)) return res;
+    return { tasks: [] };
+  }
+
+  completeTask(taskId) {
+    return this.send('completeTask', { taskId });
   }
 
   listMemories() {

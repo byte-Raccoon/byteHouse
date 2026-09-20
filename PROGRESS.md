@@ -508,8 +508,50 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
     - **Grok OSS** (Groq gpt-oss-120b High Speed)
     - **OpenAI** (GPT-4o / GPT-4o-mini Cloud)
   - Runtime dynamic provider switching: `ConversationService.setAIProvider(_:)` protected by `NSLock`, WebBridge actions `setProvider` and `getProvider`.
-- **Tests:** Production build `npm run build` succeeds (540ms); 9/9 Swift test suites pass with 100% success (1.311s). Visual verification completed via headless WebKit snapshots.
-- **Next stage:** Stage 3 — Memory Subsystem
+### Stage 2.6 — Bytie Living Core, Cursor-Tracking Binary Byte Eye & Dynamic Task Window (completed 2026-09-20)
+
+- **Goal:** Active task window side-by-side transition, Bytie cursor tracking & prompt bar focus, single conscious binary byte eye (1=white, 0=dark), dynamic orb spectrum prompt bar, and minimal edge margins with responsive auto-adjusting.
+- **Feature:**
+  - **Single Conscious Binary Eye (Byte derived):** The central white light inside Bytie serves as its conscious eye. It flips binary states: `1` (bright luminous white awake) and `0` (dark slit pupil blink), derived from a single byte.
+  - **Cursor Tracking & Saccadic Gaze:** The eye dynamically tracks mouse cursor coordinates across the entire window with smooth organic micro-easing and bounded orb travel.
+  - **Prompt Bar Focus:** When the prompt bar is active/focused (typing or pressing Space), Bytie's eye automatically redirects its gaze downward, looking directly at the prompt bar.
+  - **Active Task Layout Transition:** When `activeTask` is present, the layout seamlessly transitions from centered to split `justify-between`:
+    - Bytie shifts to the far left edge (`md:-ml-10 lg:-ml-12`).
+    - The Task Window opens on the far right with minimal margin to the window end (`mr-0`).
+    - Task Window size fits its content intrinsically (`w-fit min-w-[280px] max-w-[min(440px,calc(100vw-260px))]`).
+    - Auto-adjusts smoothly when resizing or maximizing the window.
+    - Includes priority badge, status, dismiss `✕` button, and "Mark Done" action wired to `bridge.completeTask`.
+  - **Living Bytie Core Label & Dynamic Spectrum:** Added explicit `BYTIE LIVING CORE` identity badge and running dynamic 6-stop orb spectrum gradient border on the prompt bar.
+- **Verification:** Frontend production build `npm run build` succeeds (1.16s). Headless WebKit visual snapshot verification captured and validated in `bytie_centered_state.png` and `bytie_active_task_layout.png`.
+### Stage 2.7 — Complete 3D Bytie Living Spirit Presence (Three.js WebGL & Custom Shaders) (completed 2026-09-20)
+
+- **Goal:** Fulfill the complete authoritative specification in `BYTIE_3D_SPEC.md`, replacing the 2D CSS orb with a living 3D procedural WebGL entity powered by Three.js and custom GLSL shaders.
+- **Features Implemented:**
+  - **3D Procedural Energy Body:** 64-segment volumetric sphere deformed by multi-octave 3D Simplex noise along surface normals in GLSL vertex shader. Volumetric fragment shader blends dark base depth, electric blue, violet, cyan, magenta, and emerald accents with dynamic Fresnel rim lighting.
+  - **Conscious Binary Byte Eye:** Single internal volumetric white light source acting as Bytie's eye, derived from a byte (`1` = bright awake luminous white, `0` = dark pupil blink). Gaze organically tracks mouse cursor coordinates across the window, and tilts downward toward the prompt bar when input is focused.
+  - **4 Flowing Spirit Ribbons / Plasma Fins:** Dorsal, lateral-left, lateral-right, and caudal-tail ribbons with parametric sine wave propagation, harmonic frequencies, and dual-color gradient transitions.
+  - **Atmospheric Particle Cloud & Orbital Filament:** 68 floating spirit motes with Gaussian bloom and radial boundary fading, plus an elliptical orbital filament.
+  - **Semantic State Transitions:** Smooth delta-time interpolation between `IDLE`, `LISTENING`, `THINKING`, `SPEAKING`, and `ALERT` states without triggering React re-renders.
+  - **Interaction & Accessibility:** Click pulse wave ripples through body displacement and ribbons; native `prefers-reduced-motion` slows motion gracefully.
+  - **Layout & Split Mode:** Bytie glides smoothly to the left when an active task is present, keeping the task window on the far right with tight margins and responsive scaling.
+- **Verification:**
+  - Production build (`npm run build`) succeeded in 1.10s.
+  - Headless WebKit visual snapshot verification captured and visually inspected across states: `bytie_3d_idle.png`, `bytie_3d_listening.png`, `bytie_3d_thinking.png`, `bytie_3d_active_task.png`.
+### Stage 2.8 — Bytie Celestial Spirit Creature Transformation (Reference Artwork Visual Fidelity) (completed 2026-09-20)
+
+- **Goal:** Transform Bytie's 3D anatomy and shader rendering to match the user-provided reference artwork (`bytie_target_spirit.jpg`) following the Stitch Visual Fidelity Rule.
+- **Features Implemented:**
+  - **Celestial Liquid-Glass Crystal Head:** Multi-zone spherical gradient with sapphire and electric cyan upper hemisphere, midnight violet internal core, radiant magenta lower rim, prismatic emerald caustic glint on the upper-right rim, and a crisp glossy specular highlight placed on the upper-left crown completely separate from facial features.
+  - **Expressive Solid Glowing Crescent Eyes (`⌒   ⌒`):** Two large, joyful glowing white smiling crescent eyes with parabolic top/bottom contours, tapered corners, soft Gaussian bloom, cursor gaze tracking, and natural binary blinking.
+  - **Buoyant Sea-Angel / Fairy Wing-Fins:** Translucent petal wings with smoothly rounded dome tips (broad fan with circular dome curvature, eliminating sharp triangular spikes), secondary lower flare, cyan-to-hot-pink gradient, and buoyant kinematics.
+  - **Voluminous 3D Helical Silk Tail:** Dual-ribbon system (`mainTailMesh` + `veilTailMesh`) starting neatly tucked beneath the lower sphere rim, expanding from a slender neck into a wide billowing silk sheet with 3D helical twist along Catmull-Rom splines, tapering into a delicate spiraling tip.
+  - **Jewel-Tone ACES Tonemapping Protection:** Saturated color blending without excessive additive multiplier stacking, preventing ACES tonemapping from washing out the deep violet, hot magenta, and electric cyan into flat white.
+  - **Floating Petal Sparks & Orbital Filament:** Five floating luminous curved petals drifting and tumbling around the spirit alongside an elliptical neon orbital ring and orbiting tracer bead.
+- **Verification:**
+  - Production build (`npm run build`) succeeded in 932ms.
+  - Visual verification loop completed via headless WebKit snapshots across all states: `bytie_3d_idle.png`, `bytie_3d_listening.png`, `bytie_3d_thinking.png`, `bytie_3d_active_task.png`.
+  - Native Swift test suite (9/9 tests) passed in 1.290s.
+- **Next stage:** Stage 3 — Memory Subsystem (Explicit User-Visible Memory CRUD)
 
 ---
 
@@ -520,7 +562,8 @@ The next execution step is:
 ```text
 Stage 0 verified
        ↓
-Review roadmap & user priorities
+Stage 2.8 verified (Bytie Celestial Spirit Creature Transformation)
        ↓
-Proceed to Stage 1 (Foundation) or Stage 2 (ByteHouse Core)
+Proceed to Stage 3 (Memory Subsystem — Explicit User-Visible Memory CRUD)
 ```
+

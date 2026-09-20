@@ -537,8 +537,47 @@ Supersedes: [old decision number]
 
 **Status:** active
 
+---
 
+# [35] Complete Bytie 3D Specification Architecture via Three.js & Custom GLSL Shaders
 
+**Decision:** ByteHouse implements **Bytie** as a real-time, living 3D procedural energy presence using direct Three.js (`^0.186.0`) and custom GLSL vertex/fragment shaders, completely replacing the initial 2D CSS orb in accordance with `BYTIE_3D_SPEC.md` and Stitch visual fidelity guidelines.
 
+Key architectural characteristics:
+- **Procedural 3D Energy Body:** 64-segment sphere with multi-octave 3D Simplex noise displacement vertex deformation and layered volumetric chromatic fragment shaders (cyan, electric blue, violet, magenta, and subtle emerald accents) with dynamic Fresnel rim translucency.
+- **Conscious Binary Byte Eye:** A volumetric internal white light source acting as Bytie's eye, derived from a byte (`1` = bright awake luminous white, `0` = dark slit pupil blink). Supports organic saccadic gaze tracking towards mouse cursor coordinates across the window, and tilts downward toward the prompt bar when the input is focused.
+- **Spirit Ribbons & Plasma Fins:** 4 flowing ribbons (dorsal, lateral-left, lateral-right, caudal-tail) with parametric wave propagation, harmonic frequencies, and independent phase kinematics.
+- **Atmospheric Particle Cloud & Orbital Filament:** 68 drifting spirit motes with Gaussian bloom and radial boundary fading, alongside an elliptical orbital filament.
+- **Semantic State Reactivity:** Continuous delta-time parameter interpolation between `IDLE`, `LISTENING`, `THINKING`, `SPEAKING`, and `ALERT` states without triggering React re-renders.
+- **Performance & Lifecycle Safety:** 60 FPS requestAnimationFrame loop inside `BytieScene.js`, complete WebGL resource disposal on unmount, and native reduced-motion accessibility support.
 
+**Reason:** Fulfills the canonical vision of a living digital spirit with volumetric depth, genuine procedural energy, and expressive presence that reacts seamlessly to system states, user gaze, and active task sidebars.
+
+**Alternatives considered:** 2D CSS radial gradients (lacked volumetric depth, organic deformation, and true 3D spatial presence); React Three Fiber (introduced unnecessary peer-dependency overhead and React 19 incompatibilities).
+
+**Date:** 2026-09-20
+
+**Status:** active
+
+---
+
+# [36] Bytie Visual Transformation to Celestial Spirit Creature Anatomy
+
+**Decision:** ByteHouse transforms Bytie's 3D anatomical model and shader pipelines to faithfully match the canonical user-provided spirit reference (`bytie_target_spirit.jpg`), following the Stitch Visual Fidelity Rule.
+
+Key architectural and visual components:
+- **Celestial Liquid-Glass Head:** Sapphire and electric cyan upper dome, deep midnight violet core, radiant magenta lower rim, subtle emerald caustic glint on the upper-right edge, and a tight, glossy specular highlight on the upper-left crown.
+- **Expressive Solid Glowing Crescent Eyes (`⌒   ⌒`):** Two large, joyful glowing white smiling crescent eyes with parabolic top/bottom curves, tapered corners, soft Gaussian bloom, cursor gaze tracking, and natural binary blinking.
+- **Buoyant Sea-Angel / Fairy Wing-Fins:** Translucent petal wings with smoothly rounded dome tips (broad fan with circular dome curvature, eliminating sharp triangular spikes), secondary lower flare, cyan-to-hot-pink gradient, and buoyant kinematics.
+- **Voluminous 3D Helical Silk Tail:** Dual-ribbon architecture (`mainTailMesh` + `veilTailMesh`) starting neatly tucked beneath the lower sphere rim, expanding from a slender neck into a wide billowing silk sheet with 3D helical twist along Catmull-Rom splines, tapering into a delicate spiraling tip.
+- **Jewel-Tone ACES Tonemapping Protection:** Saturated color blending without excessive additive multiplier stacking, preventing ACES tonemapping from washing out the deep violet, hot magenta, and electric cyan into flat white.
+- **Floating Petal Sparks & Orbital Filament:** Five floating luminous curved petals drifting and tumbling around the spirit alongside an elliptical neon orbital ring and orbiting tracer bead.
+
+**Reason:** Delivers the exact visual identity, charm, and organic living presence requested by the user, elevating Bytie from an abstract energy sphere into an adorable, expressive, living intelligence companion.
+
+**Alternatives considered:** Procedural particle sprite approximation; flat 2D SVG animations; generic cartoon eyes.
+
+**Date:** 2026-09-20
+
+**Status:** active
 

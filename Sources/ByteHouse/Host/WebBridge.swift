@@ -107,6 +107,23 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
                 sendSuccess(requestId: requestId, data: ["tasks": []])
             }
 
+        case "completeTask":
+            guard let taskId = body["taskId"] as? String ?? body["id"] as? String else {
+                sendError(requestId: requestId, error: "taskId is required.")
+                return
+            }
+            if let task = taskService.completeTask(taskId: taskId) {
+                let encoder = JSONEncoder()
+                if let data = try? encoder.encode(task),
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    sendSuccess(requestId: requestId, data: ["task": json])
+                } else {
+                    sendSuccess(requestId: requestId, data: true)
+                }
+            } else {
+                sendError(requestId: requestId, error: "Task not found or failed to complete.")
+            }
+
         case "listMemories":
             let memories = memoryService.list()
             let encoder = JSONEncoder()

@@ -272,25 +272,60 @@ html, body {
 }
 
 /* ================================
-   CENTRAL WHITE LIGHT & PENDULUM DYNAMICS
+   CENTRAL WHITE LIGHT & PENDULUM DYNAMICS (BYTIE'S LIVING BYTE EYE)
 ================================= */
 
 .light {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  top: 40px;
-  left: 56px;
-  transform-origin: 50% -36px 0px;
+  width: 26px;
+  height: 26px;
+  top: 39px;
+  left: 55px;
+  border-radius: 50%;
+  transform: translate(var(--eye-tx, 0px), var(--eye-ty, 0px));
+  transition: transform 0.1s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.bytie-byte-eye {
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
   background: var(--white);
   box-shadow:
-    rgb(255, 255, 255) 0px 0px 8px,
-    rgb(32, 169, 255) 0px 0px 18px,
-    rgb(32, 169, 255) 0px 0px 30px,
-    rgb(124, 58, 237) 0px 0px 45px,
-    rgb(236, 72, 153) 0px 0px 60px;
-  animation: 3.6s ease-in-out infinite pendulumIdle;
+    rgb(255, 255, 255) 0px 0px 10px,
+    rgb(32, 169, 255) 0px 0px 22px,
+    rgb(32, 169, 255) 0px 0px 36px,
+    rgb(124, 58, 237) 0px 0px 52px,
+    rgb(236, 72, 153) 0px 0px 68px;
+  animation: 4.5s ease-in-out infinite bytieByteEyeBlink;
+  transform-origin: center center;
+}
+
+/* Binary eye blink: flipping between 1 (luminous white awake) and 0 (dark pupil closed) derived from byte */
+@keyframes bytieByteEyeBlink {
+  /* State 1: Binary 1 (Conscious Luminous White) */
+  0%, 80%, 86%, 100% {
+    background: #ffffff;
+    opacity: 1;
+    transform: scale(1);
+    box-shadow:
+      rgb(255, 255, 255) 0px 0px 10px,
+      rgb(32, 169, 255) 0px 0px 22px,
+      rgb(32, 169, 255) 0px 0px 36px,
+      rgb(124, 58, 237) 0px 0px 52px,
+      rgb(236, 72, 153) 0px 0px 68px;
+  }
+  /* State 0: Binary 0 (Dark Pupil / Slit Blink - 1 to 0 state flip) */
+  82.5%, 84.5% {
+    background: #060914;
+    opacity: 0.18;
+    transform: scaleY(0.08) scaleX(0.92);
+    box-shadow: 
+      0 0 2px rgba(0, 0, 0, 0.95),
+      0 0 8px rgba(32, 169, 255, 0.15);
+  }
 }
 
 @keyframes pendulumIdle {
@@ -352,10 +387,16 @@ html, body {
 
 @keyframes orbFloat {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-1deg) scale(1.015);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-8px) rotate(0.5deg) scale(1.03);
+  }
+  75% {
+    transform: translateY(-3px) rotate(1.2deg) scale(1.01);
   }
 }
 
@@ -405,13 +446,13 @@ html, body {
   animation: listeningGlow 1s ease-in-out infinite;
 }
 
-.bytehouse.listening .light {
+.bytehouse.listening .bytie-byte-eye {
   box-shadow:
     0 0 14px var(--white),
     0 0 32px var(--blue),
     0 0 58px var(--green),
     0 0 90px var(--blue);
-  animation: pendulumListening 2.2s ease-in-out infinite !important;
+  transform: scale(1.12);
 }
 
 @keyframes listeningPulse {
@@ -442,8 +483,13 @@ html, body {
   animation: thinkingEnergy 1.2s linear infinite;
 }
 
-.bytehouse.thinking .light {
-  animation: pendulumThinking 1.4s ease-in-out infinite !important;
+.bytehouse.thinking .bytie-byte-eye {
+  box-shadow:
+    0 0 16px var(--white),
+    0 0 34px rgb(236, 72, 153),
+    0 0 58px rgb(124, 58, 237),
+    0 0 92px rgb(32, 169, 255);
+  transform: scale(1.18);
 }
 
 .bytehouse.thinking .glow {
@@ -457,6 +503,162 @@ html, body {
   to {
     transform: rotate(360deg) scale(1.12);
   }
+}
+
+/* ================================
+   DYNAMIC RUNNING SPECTRUM PROMPT BAR & LIVING BYTIE SPIRIT
+================================= */
+
+@keyframes orbSpectrumFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.prompt-bar-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: linear-gradient(
+    90deg,
+    #00f5ff 0%,
+    #20a9ff 18%,
+    #7c3aed 36%,
+    #ec4899 54%,
+    #fb7185 72%,
+    #19c37d 90%,
+    #00f5ff 100%
+  );
+  background-size: 300% 100%;
+  animation: orbSpectrumFlow 7s ease infinite;
+  box-shadow:
+    0 0 20px -3px rgba(32, 169, 255, 0.35),
+    0 0 35px -6px rgba(124, 58, 237, 0.25),
+    0 0 50px -10px rgba(236, 72, 153, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.prompt-bar-wrapper:focus-within {
+  animation-duration: 4s;
+  box-shadow:
+    0 0 28px 0px rgba(0, 245, 255, 0.5),
+    0 0 50px -2px rgba(124, 58, 237, 0.35),
+    0 0 70px -4px rgba(236, 72, 153, 0.28);
+}
+
+.prompt-bar-inner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: 18.5px;
+  background: rgba(8, 12, 20, 0.90);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Dynamic Living Bytie Spirit Icon */
+@keyframes bytieLivingSpirit {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-2.5px) rotate(-4deg) scale(1.06);
+  }
+  50% {
+    transform: translateY(0.8px) rotate(1.5deg) scale(0.96);
+  }
+  75% {
+    transform: translateY(-1.5px) rotate(3deg) scale(1.04);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes bytieColorCycle {
+  0%, 100% {
+    color: #00f5ff;
+    filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.85)) drop-shadow(0 0 14px rgba(32, 169, 255, 0.5));
+  }
+  25% {
+    color: #a855f7;
+    filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.85)) drop-shadow(0 0 14px rgba(124, 58, 237, 0.5));
+  }
+  50% {
+    color: #ec4899;
+    filter: drop-shadow(0 0 6px rgba(236, 72, 153, 0.85)) drop-shadow(0 0 14px rgba(251, 113, 133, 0.5));
+  }
+  75% {
+    color: #10b981;
+    filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.85)) drop-shadow(0 0 14px rgba(6, 182, 212, 0.5));
+  }
+}
+
+@keyframes bytieSparkBlink {
+  0%, 88%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  92% {
+    opacity: 0.1;
+    transform: scale(0.2);
+  }
+  96% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+.bytie-spirit-icon {
+  display: inline-block;
+  animation: 
+    bytieLivingSpirit 3.5s ease-in-out infinite,
+    bytieColorCycle 7s linear infinite;
+  transform-origin: center center;
+}
+
+.bytie-spark {
+  animation: bytieSparkBlink 4.5s ease-in-out infinite;
+  transform-origin: 12.9px 8.9px;
+}
+
+/* ================================
+   DYNAMIC TASK WINDOW
+================================= */
+
+.task-card-window {
+  position: relative;
+  width: fit-content;
+  min-width: 280px;
+  max-width: min(440px, calc(100vw - 260px));
+  background: rgba(12, 18, 30, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(0, 245, 255, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.task-card-window:hover {
+  border-color: rgba(0, 245, 255, 0.35);
+  box-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.75),
+    0 0 32px rgba(0, 245, 255, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 /* Reduced motion */
