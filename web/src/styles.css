@@ -42,141 +42,61 @@ html, body {
 }
 
 /* ==========================================================================
-   NATIVE macOS FROSTED GLASS & LIQUID TRANSLUCENCY SYSTEM
+   NATIVE macOS SPOTLIGHT THEME (Transparent Canvas + System Materials)
    ========================================================================== */
 
-/* Single Continuous Backdrop Blur Applied to Entire Window Shell Only */
+/* Main Assistant Window Shell: Clean, Frameless & Transparent */
 .liquid-window {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(186, 230, 253, 0.1));
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: 1px solid rgba(255, 255, 255, 0.52);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-window);
   box-shadow: 
-    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.45),
-    0 16px 40px -8px rgba(15, 23, 42, 0.2),
-    0 0 1px 1px rgba(0, 0, 0, 0.04);
+    0 16px 40px -8px rgba(0, 0, 0, 0.35),
+    0 0 1px 1px rgba(0, 0, 0, 0.08);
   position: relative;
 }
 
-/* A quiet fixed sheen preserves depth without animating the text window. */
-.liquid-window::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle at var(--liquid-x, 25%) var(--liquid-y, 0%),
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(219, 234, 254, 0.08) 30%,
-    rgba(224, 242, 254, 0.03) 55%,
-    transparent 75%
-  );
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-/* Specular gleam perimeter */
-.perimeter-shimmer {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    transparent 25%,
-    rgba(255, 255, 255, 0.8) 48%,
-    rgba(186, 230, 253, 0.7) 52%,
-    transparent 75%,
-    transparent 100%
-  );
-  background-size: 250% 250%;
-  animation: borderSweep 8s linear infinite;
-  opacity: 0.6;
-}
-
-/* Inner card without duplicate backdrop-filter to prevent blur seams */
+/* Native Card: Subtle transparent macOS section container */
 .liquid-card {
-  background: rgba(255, 255, 255, 0.38);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: var(--radius-card);
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.75),
-    0 4px 16px -2px rgba(15, 60, 100, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   position: relative;
 }
 
-/* Living Caustic Fluid Layer */
-.caustic-fluid-layer {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  overflow: hidden;
-  mix-blend-mode: soft-light;
-  opacity: 0.25;
+@media (prefers-color-scheme: dark) {
+  .liquid-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
 }
 
-.caustic-mesh-1, .caustic-mesh-2 {
-  position: absolute;
-  inset: -50%;
-  background: 
-    radial-gradient(ellipse 55% 45% at 30% 30%, rgba(56, 189, 248, 0.25) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 45% at 75% 65%, rgba(96, 165, 250, 0.2) 0%, transparent 55%),
-    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0%, transparent 50%);
-  filter: url(#liquid-caustic-filter) contrast(135%) brightness(112%);
-  animation: liquidDrift 16s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.caustic-mesh-2 {
-  animation: liquidDriftReverse 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  mix-blend-mode: overlay;
-  opacity: 0.3;
-}
-
-/* Sunlight water reflection ripple sweep */
-.fluid-shimmer-sweep {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    125deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.18) 38%,
-    rgba(186, 230, 253, 0.28) 48%,
-    rgba(255, 255, 255, 0.35) 52%,
-    transparent 65%
-  );
-  background-size: 200% 200%;
-  animation: fluidSweep 7.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-
-/* Polished Light Glass Pill Controls */
+/* Native macOS Pill Controls */
 .glass-pill {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--radius-pill);
-  box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.18),
-    0 2px 7px rgba(15, 23, 42, 0.1);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .glass-pill:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.78);
-  box-shadow: 
-    inset 0 1px 1.5px rgba(255, 255, 255, 1),
-    0 4px 10px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  .glass-pill:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
 }
 
 /* Solid Filled Circle Accent Send Button */
@@ -213,30 +133,41 @@ html, body {
   cursor: not-allowed;
 }
 
-/* Suggestion Card Item (Individual rounded card, radius 10px, 12px vert, 16px horiz) */
+/* Suggestion Card Item: Native macOS list item */
 .suggestion-card {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: var(--radius-suggestion);
-  padding: 12px 16px;
+  padding: 11px 15px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.18s ease-in-out;
+  transition: all 0.15s ease-in-out;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .suggestion-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.75);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
+  box-shadow: 0 3px 10px rgba(14, 165, 233, 0.08);
 }
 
 .suggestion-card:active {
   transform: translateY(0);
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  .suggestion-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .suggestion-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
 }
 
 /* Small Pill/Chip Label (e.g. TRY) */
@@ -249,12 +180,12 @@ html, body {
   text-transform: uppercase;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
-  background: rgba(14, 165, 233, 0.12);
-  color: #0369a1;
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  background: rgba(14, 165, 233, 0.15);
+  color: #0284c7;
+  border: 1px solid rgba(14, 165, 233, 0.25);
 }
 
-/* Header Status Pill matching chip-label aesthetic */
+/* Header Status Pill */
 .header-pill {
   display: inline-flex;
   align-items: center;
@@ -263,10 +194,18 @@ html, body {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   color: #334155;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+  }
 }
 
 /* ==========================================================================
@@ -574,26 +513,33 @@ html, body {
 
 /* User Chat Bubble */
 .user-bubble-liquid {
-  background: linear-gradient(135deg, #0284c7, #2563eb);
+  background: #0284c7;
   color: #ffffff;
   border-radius: var(--radius-card);
-  padding: 11px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+  padding: 10px 14px;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
   word-break: break-word;
   overflow-wrap: anywhere;
 }
 
-/* Assistant Chat Bubble */
+/* Assistant Chat Bubble: Native translucent panel */
 .assistant-bubble-liquid {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.48);
   color: #0f172a;
   border-radius: var(--radius-card);
-  padding: 13px 17px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.055);
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   word-break: break-word;
   overflow-wrap: anywhere;
+}
+
+@media (prefers-color-scheme: dark) {
+  .assistant-bubble-liquid {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f1f5f9;
+  }
 }
 
 /* Real-Time Streaming Cursor */
@@ -645,50 +591,33 @@ html, body {
 /* Tool Action Cards */
 .tool-card-stitch {
   margin-top: 8px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-card);
   font-size: 12.5px;
   color: #334155;
-  box-shadow: 0 2px 8px rgba(14, 116, 144, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* Keyframes */
-@keyframes liquidDrift {
-  0% { transform: translate3d(-3%, -3%, 0) scale(1) rotate(0deg); }
-  50% { transform: translate3d(4%, 3%, 0) scale(1.08) rotate(3deg); }
-  100% { transform: translate3d(-2%, 5%, 0) scale(1.02) rotate(-2deg); }
-}
-
-@keyframes liquidDriftReverse {
-  0% { transform: translate3d(3%, 4%, 0) scale(1.05) rotate(0deg); }
-  50% { transform: translate3d(-4%, -2%, 0) scale(0.98) rotate(-4deg); }
-  100% { transform: translate3d(2%, -4%, 0) scale(1.06) rotate(2deg); }
-}
-
-@keyframes borderSweep {
-  0% { background-position: 0% 0%; }
-  50% { background-position: 100% 100%; }
-  100% { background-position: 0% 0%; }
-}
-
-@keyframes fluidSweep {
-  0% { background-position: -120% -120%; opacity: 0.2; }
-  40% { opacity: 0.6; }
-  70% { opacity: 0.3; }
-  100% { background-position: 180% 180%; opacity: 0.2; }
+@media (prefers-color-scheme: dark) {
+  .tool-card-stitch {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caustic-mesh-1,
-  .caustic-mesh-2,
-  .perimeter-shimmer,
-  .fluid-shimmer-sweep,
-  .glass-pill::after,
-  .liquid-window::before,
-  .companion-mark__halo,
-  .companion-mark__core {
+  .presence-glow,
+  .presence-orb,
+  .presence-energy,
+  .presence-light,
+  .presence-bezel--thinking .presence-energy,
+  .presence-bezel--thinking .presence-light,
+  .presence-bezel--thinking .presence-glow,
+  .presence-bezel--working .presence-orb,
+  .presence-bezel--working .presence-glow {
     animation: none !important;
     transform: none !important;
   }

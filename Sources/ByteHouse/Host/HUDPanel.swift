@@ -52,10 +52,18 @@ public class HUDPanel: NSPanel {
         webView.autoresizingMask = [.width, .height]
         webView.setValue(false, forKey: "drawsBackground") // Transparent WebKit canvas
 
-        let containerView = NSView(frame: bounds)
-        containerView.wantsLayer = true
-        containerView.addSubview(webView)
-        self.contentView = containerView
+        // Native macOS VisualEffectView providing true macOS vibrancy material
+        let visualEffectView = NSVisualEffectView(frame: bounds)
+        visualEffectView.autoresizingMask = [.width, .height]
+        visualEffectView.material = .popover
+        visualEffectView.blendingMode = .behindWindow
+        visualEffectView.state = .active
+        visualEffectView.wantsLayer = true
+        visualEffectView.layer?.cornerRadius = 20.0
+        visualEffectView.layer?.masksToBounds = true
+
+        visualEffectView.addSubview(webView)
+        self.contentView = visualEffectView
 
         // Load content URL (bytehouse://app/index.html or http dev server)
         if contentURL.scheme == "http" || contentURL.scheme == "https" {
