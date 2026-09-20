@@ -86,6 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             conversationService: convService,
             taskService: tService,
             memoryService: memService,
+            config: config,
             configuredShortcut: config.hotkey
         )
         self.webBridge = bridge

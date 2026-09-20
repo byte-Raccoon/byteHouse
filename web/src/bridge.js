@@ -129,6 +129,18 @@ class ByteHouseBridge {
     return this.send('hideWindow');
   }
 
+  toggleMaximize() {
+    return this.send('toggleMaximize');
+  }
+
+  setProvider(provider) {
+    return this.send('setProvider', { provider });
+  }
+
+  getProvider() {
+    return this.send('getProvider');
+  }
+
   getShortcut() {
     return this.send('getShortcut');
   }

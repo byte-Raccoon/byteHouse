@@ -495,8 +495,21 @@ The roadmap below is derived from the phase sequence in `ANALYSIS.md`.
   - Telemetry and keyboard shortcut footer bar (`⌘K Actions`, `⌥Space Toggle`, `⎋ Dismiss`, `60 FPS Native CSS`).
 - **Tests:** Production build `npm run build` succeeds (548ms); 9/9 Swift test suites pass with 100% success (1.225s).
 - **Decisions:** [33] (active).
-- **Next stage:** Stage 3 — Memory Subsystem
+### Stage 2.5 — Interactive Provider Selector ('Bytie' Spirit of ByteHouse), Window Maximize & ByteHouse Icon (completed 2026-09-20)
 
+- **Goal:** Double-click maximize/restore window toggling, official ByteHouse circle-dot logo icon, remove CSS/FPS placeholder text, and add interactive provider selector ("Who am I talking to") featuring Bytie, the homegrown spirit of ByteHouse.
+- **Feature:**
+  - Double-click anywhere on non-interactive window canvas toggles between full screen (`screen.visibleFrame`) and starting window size (`normalFrame`), with smooth AppKit animation.
+  - ByteHouse logo icon: cyan circle with center dot (`text-cyan-400`), replacing the generic zapper bolt icon.
+  - Removed "CSS Multi-Layer Spectrum Dynamics" and "60 FPS Native GL/CSS".
+  - Provider Selector ("Who am I talking to"): Interactive pill selector bar in bottom controls with floating glass dropdown menu:
+    - **Bytie** (Homegrown Spirit of ByteHouse • Local Core)
+    - **Google Gemini** (Gemini 2.0 / 3.6 Flash API)
+    - **Grok OSS** (Groq gpt-oss-120b High Speed)
+    - **OpenAI** (GPT-4o / GPT-4o-mini Cloud)
+  - Runtime dynamic provider switching: `ConversationService.setAIProvider(_:)` protected by `NSLock`, WebBridge actions `setProvider` and `getProvider`.
+- **Tests:** Production build `npm run build` succeeds (540ms); 9/9 Swift test suites pass with 100% success (1.311s). Visual verification completed via headless WebKit snapshots.
+- **Next stage:** Stage 3 — Memory Subsystem
 
 ---
 

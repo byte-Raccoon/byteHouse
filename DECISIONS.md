@@ -513,7 +513,7 @@ Supersedes: [old decision number]
 
 # [33] Window-Based Spotlight HUD & OrbAnimationGen UI/UX
 
-**Decision:** ByteHouse adopts a centered macOS Spotlight-style command window (720x580px, optical top-center positioning) featuring the full pure-CSS **ByteHouse Neural Presence Orb** from Stitch project `OrbAnimationGen` (`projects/2119614306656510916`), complete with 3 concentric acoustic soundwave halos, breathing outer chromatic glow, dynamic energy ribbon, pendulum light dynamics, and live audio amplitude spectrum bars. The companion interface provides macOS traffic lights, quick state toggles (`IDLE`, `LISTENING`, `THINKING`), omnibar input with glowing sparkle slot and return keycaps, interactive suggestion cards, and rich Bento-styled tool execution feedback.
+**Decision:** ByteHouse adopts a centered macOS Spotlight-style command window (840x620px, optical top-center positioning) featuring the full pure-CSS **ByteHouse Neural Presence Orb** from Stitch project `OrbAnimationGen` (`projects/2119614306656510916`), complete with 3 concentric acoustic soundwave halos, breathing outer chromatic glow, dynamic energy ribbon, pendulum light dynamics, and live audio amplitude spectrum bars. The companion interface provides macOS traffic lights, quick state toggles (`IDLE`, `LISTENING`, `THINKING`), omnibar input with glowing sparkle slot and return keycaps, interactive suggestion cards, and rich Bento-styled tool execution feedback.
 
 **Reason:** Aligns ByteHouse with native macOS Spotlight/Raycast UX conventions, provides high visual presence and immediate feedback on model state transitions, and creates a unified command center experience that stays fast, lightweight, and 60 FPS GPU-accelerated.
 
@@ -522,6 +522,21 @@ Supersedes: [old decision number]
 **Date:** 2026-09-20
 
 **Status:** active
+
+---
+
+# [34] Dynamic Multi-Intelligence Provider Switching ('Bytie' Spirit of ByteHouse) & HUD Window Maximize
+
+**Decision:** ByteHouse adopts runtime intelligence switching accessible directly from the companion interface footer, allowing the user to seamlessly switch between **Bytie** (the homegrown local spirit of ByteHouse), Google Gemini, Grok OSS (Groq), and OpenAI. The active provider is managed dynamically in `ConversationService` using thread-safe synchronization (`NSLock`) and exposed through the WebKit IPC bridge. Additionally, double-clicking non-interactive areas of the companion window toggles between the default Spotlight size (`840x620` optical top-center) and full-screen maximization (`screen.visibleFrame`).
+
+**Reason:** Gives the user total transparency over "who am I talking to", provides zero-friction offline operation via Bytie, and allows fluid adaptation between compact HUD interaction and expanded full-screen workspaces.
+
+**Alternatives considered:** Requiring application restart or `.env` edits to change AI providers (cumbersome and poor UX); separate settings modal (interrupts flow compared to in-situ pill selector).
+
+**Date:** 2026-09-20
+
+**Status:** active
+
 
 
 

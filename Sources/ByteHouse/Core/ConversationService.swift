@@ -15,7 +15,8 @@ public struct ChatResponse: Codable, Sendable {
 
 public class ConversationService: @unchecked Sendable {
     private let database: ByteHouseDatabase
-    private let aiProvider: AIProvider
+    private var aiProvider: AIProvider
+    private let providerLock = NSLock()
     private let toolRegistry: ToolRegistry
     private let memoryService: MemoryService
 
@@ -24,6 +25,18 @@ public class ConversationService: @unchecked Sendable {
         self.aiProvider = aiProvider
         self.toolRegistry = toolRegistry
         self.memoryService = memoryService
+    }
+
+    public func setAIProvider(_ provider: AIProvider) {
+        providerLock.lock()
+        defer { providerLock.unlock() }
+        self.aiProvider = provider
+    }
+
+    public var currentProviderName: String {
+        providerLock.lock()
+        defer { providerLock.unlock() }
+        return aiProvider.name
     }
 
     public func getOrCreateConversation(id: String? = nil) -> Conversation {
@@ -136,7 +149,13 @@ public class ConversationService: @unchecked Sendable {
         let tools = toolRegistry.getToolDefinitions()
 
         // 3. AI provider generation with streaming
-        var response = try await aiProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
+        let currentProvider: AIProvider = {
+            providerLock.lock()
+            defer { providerLock.unlock() }
+            return aiProvider
+        }()
+
+        var response = try await currentProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
 
         // 4. Tool execution loop (supports multi-turn tool calling up to 5 rounds)
         var rounds = 0
@@ -158,7 +177,7 @@ public class ConversationService: @unchecked Sendable {
             }
 
             onPresenceChange?("thinking")
-            response = try await aiProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
+            response = try await currentProvider.generateStream(messages: aiMessages, tools: tools, onDelta: onDelta)
         }
 
         var finalAnswer = response.content

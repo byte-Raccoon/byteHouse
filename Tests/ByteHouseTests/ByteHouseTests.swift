@@ -235,20 +235,20 @@ struct ByteHouseTests {
 
     @Test("AIProviderFactory Selection & Offline Fallback")
     func aiProviderFactory() {
-        // 1. Default without keys -> MockAIProvider
+        // 1. Default without keys -> MockAIProvider (Bytie)
         let mockConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "mock")
         let provider1 = AIProviderFactory.create(config: mockConfig)
-        #expect(provider1.name == "mock")
+        #expect(provider1.name == "Bytie (Spirit of ByteHouse)")
 
         // 2. Gemini requested with key -> GeminiAIProvider
         let geminiConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "gemini", geminiApiKey: "fake-key")
         let provider2 = AIProviderFactory.create(config: geminiConfig)
         #expect(provider2.name == "gemini")
 
-        // 3. Gemini requested without key -> fallback to MockAIProvider
+        // 3. Gemini requested without key -> fallback to MockAIProvider (Bytie)
         let geminiNoKeyConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "gemini", geminiApiKey: nil)
         let provider3 = AIProviderFactory.create(config: geminiNoKeyConfig)
-        #expect(provider3.name == "mock")
+        #expect(provider3.name == "Bytie (Spirit of ByteHouse)")
 
         // 4. OpenAI requested with key -> OpenAIProvider
         let openAiConfig = AppConfig(databasePath: ":memory:", logPath: "/tmp/test.log", aiProvider: "openai", openAiApiKey: "fake-key")

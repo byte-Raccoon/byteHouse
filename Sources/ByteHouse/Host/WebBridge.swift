@@ -5,16 +5,19 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
     public weak var webView: WKWebView?
     public var onHideWindow: (() -> Void)?
     public var onMoveWindow: ((CGFloat, CGFloat) -> Void)?
+    public var onToggleMaximize: (() -> Void)?
 
     private let conversationService: ConversationService
     private let taskService: TaskService
     private let memoryService: MemoryService
     private let configuredShortcut: String
+    private let config: AppConfig
 
-    public init(conversationService: ConversationService, taskService: TaskService, memoryService: MemoryService, configuredShortcut: String = "⌃⌥ Space") {
+    public init(conversationService: ConversationService, taskService: TaskService, memoryService: MemoryService, config: AppConfig = AppConfig.load(), configuredShortcut: String = "⌃⌥ Space") {
         self.conversationService = conversationService
         self.taskService = taskService
         self.memoryService = memoryService
+        self.config = config
         self.configuredShortcut = configuredShortcut
         super.init()
     }
@@ -129,6 +132,28 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
             } else {
                 sendError(requestId: requestId, error: "deltaX and deltaY required")
             }
+
+        case "toggleMaximize":
+            onToggleMaximize?()
+            sendSuccess(requestId: requestId, data: true)
+
+        case "setProvider":
+            guard let providerId = body["provider"] as? String else {
+                sendError(requestId: requestId, error: "Provider is required.")
+                return
+            }
+            let newProvider = AIProviderFactory.create(config: config, overrideProvider: providerId)
+            conversationService.setAIProvider(newProvider)
+            AppLogger.shared.info("Bridge", "AI Provider switched to: \(newProvider.name) [\(providerId)]")
+            sendSuccess(requestId: requestId, data: [
+                "provider": providerId,
+                "name": newProvider.name
+            ])
+
+        case "getProvider":
+            sendSuccess(requestId: requestId, data: [
+                "name": conversationService.currentProviderName
+            ])
 
         default:
             sendError(requestId: requestId, error: "Unknown bridge action: \(action)")

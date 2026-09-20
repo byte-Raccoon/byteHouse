@@ -1,6 +1,41 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { bridge } from './bridge.js';
 
+const PROVIDERS = [
+  {
+    id: 'bytie',
+    name: 'Bytie',
+    fullName: 'Bytie (Spirit of ByteHouse)',
+    tagline: 'Homegrown Spirit • Local Core',
+    badge: 'OFFLINE',
+    color: 'text-cyan-400',
+  },
+  {
+    id: 'gemini',
+    name: 'Gemini 2.0',
+    fullName: 'Google Gemini',
+    tagline: 'Gemini 2.0 / 3.6 Flash API',
+    badge: 'LIVE API',
+    color: 'text-emerald-400',
+  },
+  {
+    id: 'grok',
+    name: 'Grok OSS',
+    fullName: 'Grok OSS (Groq)',
+    tagline: 'Fast Inference gpt-oss-120b',
+    badge: 'HIGH SPEED',
+    color: 'text-amber-400',
+  },
+  {
+    id: 'openai',
+    name: 'OpenAI',
+    fullName: 'OpenAI GPT-4o',
+    tagline: 'GPT-4o / GPT-4o-mini Cloud',
+    badge: 'LIVE API',
+    color: 'text-purple-400',
+  },
+];
+
 export default function App() {
   const [presenceState, setPresenceState] = useState('idle');
   const [prompt, setPrompt] = useState('');
@@ -9,11 +44,33 @@ export default function App() {
   const [conversationId, setConversationId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
+  const [selectedProviderId, setSelectedProviderId] = useState('bytie');
+  const [isProviderMenuOpen, setIsProviderMenuOpen] = useState(false);
 
   const inputRef = useRef(null);
+  const menuRef = useRef(null);
+  const toggleButtonRef = useRef(null);
   const states = ['idle', 'listening', 'thinking'];
 
+  const selectedProvider = PROVIDERS.find((p) => p.id === selectedProviderId) || PROVIDERS[0];
+
   useEffect(() => {
+    // Check initial active provider from Swift backend
+    bridge.getProvider().then((res) => {
+      if (res && res.name) {
+        const lower = res.name.toLowerCase();
+        if (lower.includes('bytie')) {
+          setSelectedProviderId('bytie');
+        } else if (lower.includes('gemini')) {
+          setSelectedProviderId('gemini');
+        } else if (lower.includes('groq') || lower.includes('grok')) {
+          setSelectedProviderId('grok');
+        } else if (lower.includes('openai')) {
+          setSelectedProviderId('openai');
+        }
+      }
+    }).catch(() => {});
+
     // Listen for presence state changes from Swift backend
     const unsubPresence = bridge.onPresenceState((state) => {
       forceState(state);
@@ -21,6 +78,10 @@ export default function App() {
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
+        if (isProviderMenuOpen) {
+          setIsProviderMenuOpen(false);
+          return;
+        }
         bridge.hideWindow();
       }
       if (e.code === 'Space' && document.activeElement !== inputRef.current) {
@@ -37,7 +98,7 @@ export default function App() {
 
     const handleMouseDown = (e) => {
       // Don't drag if clicking buttons, inputs, keycaps, or interactive elements
-      if (e.target.closest('button, input, textarea, a, kbd, [role="button"]')) {
+      if (e.target.closest('button, input, textarea, a, kbd, [role="button"], .provider-menu')) {
         return;
       }
       isDragging = true;
@@ -60,9 +121,31 @@ export default function App() {
       isDragging = false;
     };
 
+    // Double-click anywhere to toggle maximize / restore window size
+    const handleDoubleClick = (e) => {
+      if (e.target.closest('button, input, textarea, a, kbd, [role="button"], .bytehouse, .provider-menu')) {
+        return;
+      }
+      bridge.toggleMaximize();
+    };
+
+    // Close provider menu when clicking outside
+    const handleClickOutside = (e) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(e.target)
+      ) {
+        setIsProviderMenuOpen(false);
+      }
+    };
+
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('dblclick', handleDoubleClick);
+    window.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       unsubPresence();
@@ -70,8 +153,10 @@ export default function App() {
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('dblclick', handleDoubleClick);
+      window.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [presenceState]);
+  }, [presenceState, isProviderMenuOpen]);
 
   const forceState = (stateName) => {
     setPresenceState(stateName);
@@ -82,6 +167,18 @@ export default function App() {
     const currentIdx = states.indexOf(presenceState);
     const nextIdx = (currentIdx + 1) % states.length;
     forceState(states[nextIdx]);
+  };
+
+  const handleSelectProvider = async (providerId) => {
+    setSelectedProviderId(providerId);
+    setIsProviderMenuOpen(false);
+    const chosen = PROVIDERS.find((p) => p.id === providerId) || PROVIDERS[0];
+    setStatusLabel(`TALKING TO: ${chosen.name.toUpperCase()}`);
+    try {
+      await bridge.setProvider(providerId);
+    } catch (err) {
+      console.warn('Failed to switch provider:', err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -248,26 +345,89 @@ export default function App() {
       {/* Bottom Interactive controls */}
       <footer className="w-full max-w-xl z-20 flex flex-col items-center gap-3">
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="w-full flex items-center justify-between px-5 py-3 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl focus-within:border-cyan-400/40 focus-within:bg-white/[0.07] transition-all shadow-lg">
-            <div className="flex items-center gap-3 text-white/80 text-xs w-full">
-              <svg className="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          <div className="w-full flex items-center justify-between px-4 py-2.5 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl focus-within:border-cyan-400/40 focus-within:bg-white/[0.07] transition-all shadow-lg">
+            <div className="flex items-center gap-3 text-white/80 text-xs flex-grow min-w-0">
+              {/* ByteHouse Circle-Dot Logo Icon */}
+              <svg className="w-4 h-4 text-cyan-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" aria-label="ByteHouse Icon">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+                <circle cx="12" cy="12" r="2.5" fill="currentColor" />
               </svg>
               <input
                 ref={inputRef}
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder={inputFocused ? "Type prompt & press Enter to ask ByteHouse..." : "CSS Multi-Layer Spectrum Dynamics"}
+                placeholder={inputFocused ? "Type prompt & press Enter to ask ByteHouse..." : `Message ${selectedProvider.name} or press Enter...`}
                 onFocus={() => setInputFocused(true)}
                 onBlur={() => setInputFocused(false)}
-                className="bg-transparent border-none outline-none text-white text-xs w-full placeholder:text-white/80 focus:placeholder:text-white/40 focus:ring-0 tracking-wide font-normal"
+                className="bg-transparent border-none outline-none text-white text-xs w-full placeholder:text-white/40 focus:ring-0 tracking-wide font-normal"
                 disabled={isSubmitting}
               />
             </div>
-            <span className="text-[11px] font-mono text-white/40 flex-shrink-0 ml-3">
-              60 FPS Native GL/CSS
-            </span>
+
+            {/* Provider Selector ("Who am I talking to") */}
+            <div className="relative flex-shrink-0 ml-3">
+              <button
+                ref={toggleButtonRef}
+                type="button"
+                onClick={() => setIsProviderMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 hover:border-cyan-400/40 transition-all text-xs font-mono text-white/80 cursor-pointer shadow-sm group select-none"
+                title="Select who you are talking to"
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${selectedProvider.id === 'bytie' ? 'bg-cyan-400' : 'bg-emerald-400'} animate-pulse`}></span>
+                <span className="text-white/40 text-[10px] hidden sm:inline tracking-wider">TALKING TO:</span>
+                <span className="text-white font-medium text-[11px] group-hover:text-cyan-300 transition-colors">{selectedProvider.name}</span>
+                <svg className={`w-3 h-3 text-white/40 transition-transform duration-200 ${isProviderMenuOpen ? 'rotate-180 text-cyan-400' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Floating Provider Menu */}
+              {isProviderMenuOpen && (
+                <div
+                  ref={menuRef}
+                  className="provider-menu absolute bottom-full right-0 mb-2.5 w-72 rounded-xl bg-[#0c121e]/95 backdrop-blur-2xl border border-white/10 p-1.5 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150"
+                >
+                  <div className="px-2.5 py-1.5 border-b border-white/5 mb-1 flex items-center justify-between">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-white/40">Select Intelligence</span>
+                    <span className="text-[9px] font-mono text-cyan-400/80 px-1.5 py-0.5 rounded bg-cyan-400/10">ByteHouse</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    {PROVIDERS.map((p) => {
+                      const isSelected = p.id === selectedProviderId;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => handleSelectProvider(p.id)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-all ${
+                            isSelected
+                              ? 'bg-cyan-500/15 border border-cyan-400/30 text-white'
+                              : 'hover:bg-white/5 border border-transparent text-white/70 hover:text-white'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div className={`w-2 h-2 rounded-full ${p.id === 'bytie' ? 'bg-cyan-400' : 'bg-emerald-400'} ${isSelected ? 'shadow-[0_0_8px_rgba(0,245,255,0.6)]' : ''}`}></div>
+                            <div className="flex flex-col">
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-xs font-medium text-white">{p.fullName}</span>
+                                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-white/5 text-white/40">{p.badge}</span>
+                              </div>
+                              <span className="text-[10px] text-white/40 font-mono tracking-tight">{p.tagline}</span>
+                            </div>
+                          </div>
+                          {isSelected && (
+                            <svg className="w-4 h-4 text-cyan-400 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </form>
       </footer>

@@ -47,13 +47,13 @@ public extension AIProvider {
 }
 
 public class MockAIProvider: AIProvider, @unchecked Sendable {
-    public let name = "mock"
+    public let name = "Bytie (Spirit of ByteHouse)"
 
     public init() {}
 
     public func generate(messages: [AIMessage], tools: [ToolDefinition]?) async throws -> AIGenerateResponse {
         guard let last = messages.last else {
-            return AIGenerateResponse(content: "How can I help you?", tool_calls: nil)
+            return AIGenerateResponse(content: "Hello! I am Bytie, the spirit of ByteHouse. How can I help you?", tool_calls: nil)
         }
 
         // Case 1: Answering after a tool has executed
@@ -178,12 +178,17 @@ public class MockAIProvider: AIProvider, @unchecked Sendable {
             return AIGenerateResponse(content: "", tool_calls: [call])
         }
 
-        // Default greeting
-        if text.contains("hello") || text.contains("hi") {
-            return AIGenerateResponse(content: "Hello! I'm ByteHouse, your personal companion. How can I help you today?", tool_calls: nil)
+        // Identity / Who am I talking to
+        if text.contains("who are you") || text.contains("who am i talking to") || text.contains("what is your name") || text.contains("bytie") {
+            return AIGenerateResponse(content: "You are talking to Bytie, the homegrown spirit of ByteHouse! I live right here on your Mac to manage your memory and tasks.", tool_calls: nil)
         }
 
-        return AIGenerateResponse(content: "I'm ByteHouse. You can ask me to remember facts, recall information, or manage your tasks.", tool_calls: nil)
+        // Default greeting
+        if text.contains("hello") || text.contains("hi") {
+            return AIGenerateResponse(content: "Hello! I am Bytie, the spirit of ByteHouse. How can I help you today?", tool_calls: nil)
+        }
+
+        return AIGenerateResponse(content: "I am Bytie, the spirit of ByteHouse. You can ask me to remember facts, recall information, or manage your tasks.", tool_calls: nil)
     }
 
     public func generateStream(messages: [AIMessage], tools: [ToolDefinition]?, onDelta: @Sendable @escaping (String) -> Void) async throws -> AIGenerateResponse {
@@ -202,8 +207,13 @@ public class MockAIProvider: AIProvider, @unchecked Sendable {
 }
 
 public final class AIProviderFactory {
-    public static func create(config: AppConfig) -> AIProvider {
-        let requested = config.aiProvider.lowercased()
+    public static func create(config: AppConfig, overrideProvider: String? = nil) -> AIProvider {
+        let requested = (overrideProvider ?? config.aiProvider).lowercased()
+
+        if requested == "bytie" || requested == "mock" {
+            AppLogger.shared.info("AI", "Selected Bytie (Spirit of ByteHouse - Homegrown Local Core).")
+            return MockAIProvider()
+        }
 
         if requested == "gemini" {
             if let key = config.geminiApiKey, !key.isEmpty {
