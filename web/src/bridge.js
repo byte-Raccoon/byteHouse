@@ -133,6 +133,17 @@ class ByteHouseBridge {
     return this.send('getShortcut');
   }
 
+  moveWindow(deltaX, deltaY) {
+    if (this.isNative()) {
+      window.webkit.messageHandlers.bytehouse.postMessage({
+        requestId: 'drag_' + Date.now(),
+        action: 'moveWindow',
+        deltaX,
+        deltaY,
+      });
+    }
+  }
+
   onPresenceState(callback) {
     this.presenceListeners.add(callback);
     return () => this.presenceListeners.delete(callback);

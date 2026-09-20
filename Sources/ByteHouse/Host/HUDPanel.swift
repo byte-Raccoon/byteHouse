@@ -1,6 +1,12 @@
 import AppKit
 import WebKit
 
+public class ByteHouseWebView: WKWebView {
+    override public var mouseDownCanMoveWindow: Bool {
+        return true
+    }
+}
+
 public class HUDPanel: NSPanel {
     public let webView: WKWebView
 
@@ -19,7 +25,7 @@ public class HUDPanel: NSPanel {
         let schemeHandler = LocalSchemeHandler(baseDir: distDir)
         config.setURLSchemeHandler(schemeHandler, forURLScheme: "bytehouse")
 
-        self.webView = WKWebView(frame: .zero, configuration: config)
+        self.webView = ByteHouseWebView(frame: .zero, configuration: config)
         webBridge.webView = self.webView
 
         let width: CGFloat = 840
@@ -54,6 +60,9 @@ public class HUDPanel: NSPanel {
         webView.frame = bounds
         webView.autoresizingMask = [.width, .height]
         webView.setValue(false, forKey: "drawsBackground") // Transparent WebKit canvas
+        webView.wantsLayer = true
+        webView.layer?.cornerRadius = 20.0
+        webView.layer?.masksToBounds = true
 
         // Native macOS VisualEffectView providing true macOS vibrancy material
         let visualEffectView = NSVisualEffectView(frame: bounds)
@@ -67,6 +76,16 @@ public class HUDPanel: NSPanel {
 
         visualEffectView.addSubview(webView)
         self.contentView = visualEffectView
+        self.invalidateShadow()
+
+        // Hook up JS drag-to-move window bridge
+        webBridge.onMoveWindow = { [weak self] deltaX, deltaY in
+            guard let self = self else { return }
+            var origin = self.frame.origin
+            origin.x += deltaX
+            origin.y -= deltaY
+            self.setFrameOrigin(origin)
+        }
 
         // Load content URL (bytehouse://app/index.html or http dev server)
         if contentURL.scheme == "http" || contentURL.scheme == "https" {
@@ -75,6 +94,11 @@ public class HUDPanel: NSPanel {
             let appURL = URL(string: "bytehouse://app/index.html")!
             webView.load(URLRequest(url: appURL))
         }
+    }
+
+    override public func setFrame(_ frameRect: NSRect, display displayFlag: Bool) {
+        super.setFrame(frameRect, display: displayFlag)
+        self.invalidateShadow()
     }
 
     override public var canBecomeKey: Bool {

@@ -30,9 +30,46 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
 
+    // Mouse drag-to-move window
+    let isDragging = false;
+    let startScreenX = 0;
+    let startScreenY = 0;
+
+    const handleMouseDown = (e) => {
+      // Don't drag if clicking buttons, inputs, keycaps, or interactive elements
+      if (e.target.closest('button, input, textarea, a, kbd, [role="button"]')) {
+        return;
+      }
+      isDragging = true;
+      startScreenX = e.screenX;
+      startScreenY = e.screenY;
+    };
+
+    const handleMouseMove = (e) => {
+      if (!isDragging) return;
+      const deltaX = e.screenX - startScreenX;
+      const deltaY = e.screenY - startScreenY;
+      if (deltaX !== 0 || deltaY !== 0) {
+        startScreenX = e.screenX;
+        startScreenY = e.screenY;
+        bridge.moveWindow(deltaX, deltaY);
+      }
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+    };
+
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
     return () => {
       unsubPresence();
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [presenceState]);
 
@@ -95,7 +132,7 @@ export default function App() {
   }
 
   return (
-    <div className="w-full h-full bg-grid flex flex-col justify-between items-center p-6 select-none overflow-hidden">
+    <div className="w-full h-full bg-grid flex flex-col justify-between items-center p-6 select-none overflow-hidden rounded-[20px]">
       {/* Top bar info */}
       <header className="w-full max-w-5xl flex items-center justify-between z-20">
         <div className="flex items-center gap-3">

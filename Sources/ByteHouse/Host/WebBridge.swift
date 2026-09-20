@@ -4,6 +4,7 @@ import WebKit
 public class WebBridge: NSObject, WKScriptMessageHandler {
     public weak var webView: WKWebView?
     public var onHideWindow: (() -> Void)?
+    public var onMoveWindow: ((CGFloat, CGFloat) -> Void)?
 
     private let conversationService: ConversationService
     private let taskService: TaskService
@@ -119,6 +120,15 @@ public class WebBridge: NSObject, WKScriptMessageHandler {
         case "hideWindow":
             onHideWindow?()
             sendSuccess(requestId: requestId, data: true)
+
+        case "moveWindow":
+            if let deltaX = body["deltaX"] as? Double,
+               let deltaY = body["deltaY"] as? Double {
+                onMoveWindow?(CGFloat(deltaX), CGFloat(deltaY))
+                sendSuccess(requestId: requestId, data: true)
+            } else {
+                sendError(requestId: requestId, error: "deltaX and deltaY required")
+            }
 
         default:
             sendError(requestId: requestId, error: "Unknown bridge action: \(action)")

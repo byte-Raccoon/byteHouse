@@ -18,14 +18,11 @@
 
 html, body {
   margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.12), transparent 45%),
-    radial-gradient(circle at 20% 80%, rgba(25, 195, 125, 0.08), transparent 35%),
-    radial-gradient(circle at 80% 20%, rgba(32, 169, 255, 0.08), transparent 35%),
-    var(--black);
+  background: transparent !important;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
   color: #fff;
   user-select: none;
@@ -34,6 +31,15 @@ html, body {
 #root {
   width: 100%;
   height: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.12), transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(25, 195, 125, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(32, 169, 255, 0.08), transparent 35%),
+    var(--black);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 /* Ambient background grid dots */
