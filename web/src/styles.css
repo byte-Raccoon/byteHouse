@@ -379,43 +379,76 @@ html, body {
   animation: presenceRedEnergy 4s ease-in-out infinite;
 }
 
-/* Central Specular Light Core */
+/* ==========================================================================
+   STITCH PRESENCE DESIGN: CONCENTRIC SOUNDWAVE HALOS & PENDULUM DYNAMICS
+   ========================================================================== */
+
+/* Concentric acoustic rings around orb container */
+.sound-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 1px solid rgba(124, 58, 237, 0.28);
+  animation: ringExpand 3.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
+}
+
+.sound-ring--1 {
+  inset: -6px;
+  animation-delay: 0s;
+}
+
+.sound-ring--2 {
+  inset: -12px;
+  border-color: rgba(32, 169, 255, 0.22);
+  animation-delay: 1.1s;
+}
+
+.sound-ring--3 {
+  inset: -18px;
+  border-color: rgba(236, 72, 153, 0.16);
+  animation-delay: 2.2s;
+}
+
+@keyframes ringExpand {
+  0% {
+    transform: scale(0.88);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: scale(1.16);
+    opacity: 0;
+  }
+}
+
+/* Central Pendulum Specular Light (From stitch/code.html) */
 .presence-light {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  top: 9px;
-  left: 14px;
+  width: 13px;
+  height: 13px;
+  top: 13px;
+  left: 13px;
   border-radius: 50%;
   background: var(--bh-white);
+  transform-origin: 50% -18px;
   box-shadow:
-    0 0 5px var(--bh-white),
-    0 0 10px var(--bh-blue),
-    0 0 16px var(--bh-blue),
-    0 0 24px var(--bh-violet),
-    0 0 32px var(--bh-pink);
-  animation: presenceLightMove 4s ease-in-out infinite;
+    0 0 6px var(--bh-white),
+    0 0 14px var(--bh-blue),
+    0 0 24px var(--bh-blue),
+    0 0 36px var(--bh-violet),
+    0 0 48px var(--bh-pink);
+  animation: pendulumIdle 3.6s ease-in-out infinite;
 }
 
-/* Specular Crest Highlight */
-.presence-highlight {
-  position: absolute;
-  width: 12px;
-  height: 6px;
-  top: 5px;
-  left: 8px;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  filter: blur(1.2px);
-  transform: rotate(-25deg);
+@keyframes pendulumIdle {
+  0% { transform: rotate(-16deg) translate(-5px, -1px); }
+  50% { transform: rotate(16deg) translate(5px, -1px); }
+  100% { transform: rotate(-16deg) translate(-5px, -1px); }
 }
 
-/* Keyframes from bytehouse_presence.html */
+/* Keyframes from stitch/code.html */
 @keyframes presenceBreathe {
   0%, 100% { transform: scale(0.94); opacity: 0.65; }
   50% { transform: scale(1.08); opacity: 1; }
@@ -432,11 +465,6 @@ html, body {
   100% { transform: rotate(-30deg) translateX(-4px); }
 }
 
-@keyframes presenceLightMove {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(4px, 2.5px) scale(1.15); }
-}
-
 @keyframes presenceGreenPulse {
   0%, 100% { transform: scale(0.8); opacity: 0.45; }
   50% { transform: scale(1.2); opacity: 0.95; }
@@ -448,7 +476,7 @@ html, body {
 }
 
 /* ==========================================================================
-   PRESENCE STATES: THINKING & WORKING
+   PRESENCE STATES: THINKING & WORKING (From stitch/code.html)
    ========================================================================== */
 
 .presence-bezel--thinking .presence-energy {
@@ -456,26 +484,52 @@ html, body {
 }
 
 .presence-bezel--thinking .presence-light {
-  animation: presenceThinkingLight 1s ease-in-out infinite;
+  animation: pendulumThinking 1.4s ease-in-out infinite !important;
 }
 
 .presence-bezel--thinking .presence-glow {
   animation: presenceThinkingGlow 1.6s ease-in-out infinite;
 }
 
-@keyframes presenceThinkingEnergy {
-  from { transform: rotate(0deg) scale(1.1); }
-  to { transform: rotate(360deg) scale(1.1); }
+.presence-bezel--thinking .sound-ring {
+  animation-duration: 1.6s;
 }
 
-@keyframes presenceThinkingLight {
-  0%, 100% { transform: translate(-2px, 0) scale(1); }
-  50% { transform: translate(5px, -2px) scale(1.25); }
+@keyframes pendulumThinking {
+  0% { transform: rotate(-28deg) translate(-7px, -3px) scale(1.1); }
+  25% { transform: rotate(0deg) translate(0px, 3px) scale(1.18); }
+  50% { transform: rotate(28deg) translate(7px, -3px) scale(1.1); }
+  75% { transform: rotate(0deg) translate(0px, 3px) scale(1.18); }
+  100% { transform: rotate(-28deg) translate(-7px, -3px) scale(1.1); }
+}
+
+@keyframes presenceThinkingEnergy {
+  from { transform: rotate(0deg) scale(1.12); }
+  to { transform: rotate(360deg) scale(1.12); }
 }
 
 @keyframes presenceThinkingGlow {
   0%, 100% { opacity: 0.55; transform: scale(0.95); }
-  50% { opacity: 1; transform: scale(1.25); }
+  50% { opacity: 1; transform: scale(1.28); }
+}
+
+.presence-bezel--working .presence-orb {
+  animation: presenceOrbFloat 1.8s ease-in-out infinite, presenceWorkingPulse 0.9s ease-in-out infinite;
+}
+
+.presence-bezel--working .presence-light {
+  animation: pendulumListening 2.2s ease-in-out infinite !important;
+  box-shadow:
+    0 0 8px var(--bh-white),
+    0 0 18px var(--bh-green),
+    0 0 32px var(--bh-blue),
+    0 0 48px var(--bh-green);
+}
+
+@keyframes pendulumListening {
+  0% { transform: rotate(-22deg) translate(-6px, -2px) scale(1.08); }
+  50% { transform: rotate(22deg) translate(6px, -2px) scale(1.08); }
+  100% { transform: rotate(-22deg) translate(-6px, -2px) scale(1.08); }
 }
 
 .presence-bezel--working .presence-orb {

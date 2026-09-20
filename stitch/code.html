@@ -1,534 +1,595 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="en" style=""><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ByteHouse Presence Orb Animation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>ByteHouse AI Assistant</title>
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Google Fonts: Inter -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<!-- Custom Configuration for Tailwind -->
-<script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-          }
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #030305;
+      --dark-green: #063b2a;
+      --green: #19c37d;
+      --blue: #20a9ff;
+      --violet: #7c3aed;
+      --pink: #ec4899;
+      --rose-pink: #fb7185;
+      --red: #ef3340;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.12), transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(25, 195, 125, 0.08), transparent 35%),
+        radial-gradient(circle at 80% 20%, rgba(32, 169, 255, 0.08), transparent 35%),
+        var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      color: #fff;
+    }
+
+    /* Ambient background grid dots */
+    .bg-grid {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* ================================
+       BYTEHOUSE PRESENCE ORB
+    ================================= */
+
+    .bytehouse-stage {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 320px;
+      height: 320px;
+    }
+
+    .bytehouse {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.4s cubic-bezier(.22, 1, .36, 1);
+      border-radius: 50%;
+    }
+
+    .bytehouse:hover {
+      transform: scale(1.08);
+    }
+
+    .bytehouse:active {
+      transform: scale(0.95);
+    }
+
+    /* Outer acoustic concentric rings */
+    .sound-ring {
+      position: absolute;
+      inset: -30px;
+      border-radius: 50%;
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      pointer-events: none;
+      animation: ringExpand 3.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
+    }
+    .sound-ring:nth-child(2) {
+      inset: -60px;
+      border-color: rgba(32, 169, 255, 0.18);
+      animation-delay: 1.1s;
+    }
+    .sound-ring:nth-child(3) {
+      inset: -95px;
+      border-color: rgba(236, 72, 153, 0.12);
+      animation-delay: 2.2s;
+    }
+
+    @keyframes ringExpand {
+      0% {
+        transform: scale(0.85);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.15);
+        opacity: 0;
       }
     }
-  </script>
-<!-- BEGIN: CSS Styles -->
-<style data-purpose="liquid-glass-effects">
-    /* Ultra-luminous crystal light liquid glassmorphism with elegant Tailwind blue undertones */
-    .liquid-window {
-      background: linear-gradient(
-        142deg,
-        rgba(255, 255, 255, 0.72) 0%,
-        rgba(238, 246, 255, 0.48) 42%,
-        rgba(224, 242, 254, 0.52) 100%
-      );
-      backdrop-filter: blur(48px) saturate(190%) contrast(102%);
-      -webkit-backdrop-filter: blur(48px) saturate(190%) contrast(102%);
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      box-shadow: 
-        inset 0 1.5px 3px 0 rgba(255, 255, 255, 0.95),
-        inset 0 -1.5px 2px 0 rgba(186, 230, 253, 0.4),
-        0 24px 60px -12px rgba(14, 60, 105, 0.16),
-        0 0 45px -5px rgba(186, 230, 253, 0.35);
-      position: relative;
+
+    /* ================================
+       OUTER GLOW
+    ================================= */
+
+    .glow {
+      position: absolute;
+      inset: -45px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle,
+          rgba(32, 169, 255, 0.45),
+          rgba(124, 58, 237, 0.32) 27%,
+          rgba(236, 72, 153, 0.22) 46%,
+          rgba(25, 195, 125, 0.14) 62%,
+          transparent 74%
+        );
+      filter: blur(24px);
+      pointer-events: none;
+      animation: breathe 3.2s ease-in-out infinite;
     }
 
-    /* Prismatic liquid sheen overlay with gentle shifting light reflection */
-    .liquid-window::before {
-      content: '';
+    /* ================================
+       MAIN ORB
+    ================================= */
+
+    .orb {
       position: absolute;
       inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(
-        circle at var(--liquid-x, 25%) var(--liquid-y, 0%),
-        rgba(255, 255, 255, 0.75) 0%,
-        rgba(219, 234, 254, 0.4) 30%,
-        rgba(224, 242, 254, 0.15) 55%,
-        transparent 75%
-      );
-      pointer-events: none;
-      animation: ambientLightBreathe 10s ease-in-out infinite alternate;
-      will-change: opacity, transform;
-    }
-
-    /* Traveling specular gleaming perimeter with blue/cyan refraction */
-    .perimeter-shimmer {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1.2px;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      background: linear-gradient(
-        115deg,
-        transparent 0%,
-        transparent 20%,
-        rgba(255, 255, 255, 0.95) 45%,
-        rgba(125, 211, 252, 0.9) 50%,
-        rgba(199, 210, 254, 0.85) 55%,
-        transparent 80%,
-        transparent 100%
-      );
-      background-size: 250% 250%;
-      animation: borderSweep 8s linear infinite;
-      opacity: 0.9;
-    }
-
-    /* Refined inner card with crisp blue-frosted glass */
-    .liquid-card {
-      background: linear-gradient(
-        138deg,
-        rgba(255, 255, 255, 0.78) 0%,
-        rgba(240, 247, 255, 0.58) 55%,
-        rgba(224, 242, 254, 0.6) 100%
-      );
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 
-        inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95),
-        inset 0 -1px 2px rgba(191, 219, 254, 0.45),
-        0 14px 34px -4px rgba(15, 60, 100, 0.07);
-      position: relative;
-    }
-
-    /* Living Sunlight-Through-Water Caustic Layer */
-    .caustic-fluid-layer {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
+      border-radius: 50%;
       overflow: hidden;
-      mix-blend-mode: soft-light;
-      opacity: 0.55;
+      background:
+        radial-gradient(
+          circle at 34% 24%,
+          var(--white) 0%,
+          var(--blue) 7%,
+          #1464a0 18%,
+          var(--violet) 32%,
+          var(--dark-green) 51%,
+          var(--black) 73%
+        );
+      box-shadow:
+        inset 10px 8px 24px rgba(255, 255, 255, 0.3),
+        inset -18px -18px 36px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(32, 169, 255, 0.4),
+        0 0 65px rgba(124, 58, 237, 0.28),
+        0 0 95px rgba(236, 72, 153, 0.18);
+      animation: orbFloat 4s ease-in-out infinite;
     }
 
-    .caustic-mesh-1, .caustic-mesh-2 {
+    /* ================================
+       MULTICOLOR ENERGY
+    ================================= */
+
+    .energy {
       position: absolute;
-      inset: -50%;
-      background: 
-        radial-gradient(ellipse 55% 45% at 30% 30%, rgba(56, 189, 248, 0.32) 0%, transparent 60%),
-        radial-gradient(ellipse 45% 45% at 75% 65%, rgba(96, 165, 250, 0.25) 0%, transparent 55%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 50%);
-      filter: url(#liquid-caustic-filter) contrast(135%) brightness(112%);
-      animation: liquidDrift 16s ease-in-out infinite alternate;
-      will-change: transform;
+      width: 190px;
+      height: 95px;
+      left: -25px;
+      top: 45px;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          90deg,
+          var(--red) 0%,
+          var(--rose-pink) 18%,
+          var(--pink) 35%,
+          var(--violet) 52%,
+          var(--blue) 70%,
+          var(--green) 88%,
+          var(--dark-green) 100%
+        );
+      filter: blur(14px);
+      opacity: 0.85;
+      transform: rotate(-30deg);
+      animation: energyMove 5s ease-in-out infinite;
     }
 
-    .caustic-mesh-2 {
-      animation: liquidDriftReverse 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      mix-blend-mode: overlay;
-      opacity: 0.45;
-    }
-
-    /* Sunlight water reflection ripple sweep */
-    .fluid-shimmer-sweep {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(
-        125deg,
-        transparent 20%,
-        rgba(255, 255, 255, 0.22) 38%,
-        rgba(186, 230, 253, 0.38) 48%,
-        rgba(255, 255, 255, 0.45) 52%,
-        transparent 65%
-      );
-      background-size: 200% 200%;
-      animation: fluidSweep 7.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
-      pointer-events: none;
-      mix-blend-mode: overlay;
-    }
-
-    /* Polished Light Glass Pill Controls with soft blue radiance */
-    .glass-pill {
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.85) 0%,
-        rgba(240, 247, 255, 0.62) 100%
-      );
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 
-        inset 0 1px 1.5px rgba(255, 255, 255, 0.98),
-        inset 0 -0.5px 1px rgba(186, 230, 253, 0.45),
-        0 4px 14px rgba(15, 45, 80, 0.07);
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-    }
-
-    .glass-pill:hover {
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(224, 242, 254, 0.8) 100%
-      );
-      border-color: rgba(255, 255, 255, 1);
-      box-shadow: 
-        inset 0 1px 2px rgba(255, 255, 255, 1),
-        0 6px 18px rgba(14, 116, 144, 0.12);
-    }
-
-    .glass-pill::after {
-      content: '';
+    .energy::after {
+      content: "";
       position: absolute;
       inset: 0;
-      border-radius: inherit;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.6) 50%,
-        transparent 100%
-      );
-      background-size: 200% 100%;
-      opacity: 0.4;
-      pointer-events: none;
-      animation: capsuleShimmer 6s ease-in-out infinite;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--blue),
+          var(--violet),
+          var(--pink),
+          transparent
+        );
+      filter: blur(16px);
+      opacity: 0.75;
+      transform: rotate(65deg);
     }
 
-    /* Light Liquid Glass Send Button with Sky Glow */
-    .send-btn-liquid {
-      background: linear-gradient(
-        135deg,
-        #38bdf8 0%,
-        #0284c7 100%
-      );
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      box-shadow: 
-        inset 0 1px 1.5px rgba(255, 255, 255, 0.6),
-        inset 0 -1px 1.5px rgba(3, 105, 161, 0.5),
-        0 4px 12px rgba(2, 132, 199, 0.32);
-      position: relative;
-      overflow: hidden;
-    }
+    /* ================================
+       GREEN ENERGY SPOT
+    ================================= */
 
-    .send-btn-liquid::after {
-      content: '';
+    .orb::before {
+      content: "";
       position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      background: radial-gradient(circle at 40% 25%, rgba(255, 255, 255, 0.6) 0%, transparent 60%);
-      animation: ambientPulse 3s ease-in-out infinite alternate;
-      pointer-events: none;
+      width: 75px;
+      height: 75px;
+      right: -12px;
+      bottom: 6px;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle,
+          rgba(25, 195, 125, 0.88),
+          rgba(6, 59, 42, 0.48),
+          transparent 70%
+        );
+      filter: blur(8px);
+      animation: greenPulse 3s ease-in-out infinite;
     }
 
-    /* Interactive Prompt Action Chip Cards */
-    .prompt-chip {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.7) 0%,
-        rgba(240, 249, 255, 0.45) 100%
-      );
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 
-        inset 0 1px 1.5px rgba(255, 255, 255, 0.9),
-        0 2px 8px rgba(14, 116, 144, 0.04);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .prompt-chip:hover {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.9) 0%,
-        rgba(224, 242, 254, 0.7) 100%
-      );
-      border-color: rgba(186, 230, 253, 0.85);
-      transform: translateY(-1px);
-      box-shadow: 
-        inset 0 1px 2px rgba(255, 255, 255, 1),
-        0 4px 14px rgba(14, 116, 144, 0.1);
+    /* ================================
+       RED / ROSE ENERGY
+    ================================= */
+
+    .orb::after {
+      content: "";
+      position: absolute;
+      width: 85px;
+      height: 42px;
+      left: -12px;
+      bottom: 8px;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(239, 51, 64, 0.76),
+          rgba(251, 113, 133, 0.58),
+          transparent
+        );
+      filter: blur(10px);
+      transform: rotate(-25deg);
+      animation: redEnergy 4s ease-in-out infinite;
     }
 
-    /* Vibrant Pearl Iridescent Spectrum Orb */
-    .orb-glow {
-      background: conic-gradient(
-        from 180deg at 50% 50%,
-        #38bdf8 0deg,
-        #60a5fa 70deg,
-        #a78bfa 140deg,
-        #38bdf8 210deg,
-        #34d399 280deg,
-        #38bdf8 360deg
-      );
-      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+    /* ================================
+       CENTRAL WHITE LIGHT
+    ================================= */
+
+    .light {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      top: 30px;
+      left: 48px;
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow:
+        0 0 12px var(--white),
+        0 0 28px var(--blue),
+        0 0 45px var(--blue),
+        0 0 70px var(--violet),
+        0 0 90px var(--pink);
+      animation: lightMove 4s ease-in-out infinite;
     }
 
-    /* Fluid Caustic Keyframes */
-    @keyframes liquidDrift {
-      0% { transform: translate3d(-3%, -3%, 0) scale(1) rotate(0deg); }
-      50% { transform: translate3d(4%, 3%, 0) scale(1.08) rotate(3deg); }
-      100% { transform: translate3d(-2%, 5%, 0) scale(1.02) rotate(-2deg); }
+    /* ================================
+       WHITE HIGHLIGHT
+    ================================= */
+
+    .highlight {
+      position: absolute;
+      width: 38px;
+      height: 18px;
+      top: 15px;
+      left: 28px;
+      border-radius: 50%;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.95),
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      filter: blur(3px);
+      transform: rotate(-25deg);
     }
 
-    @keyframes liquidDriftReverse {
-      0% { transform: translate3d(3%, 4%, 0) scale(1.05) rotate(0deg); }
-      50% { transform: translate3d(-4%, -2%, 0) scale(0.98) rotate(-4deg); }
-      100% { transform: translate3d(2%, -4%, 0) scale(1.06) rotate(2deg); }
+    /* ================================
+       BASE ANIMATIONS
+    ================================= */
+
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(0.94);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.12);
+        opacity: 1;
+      }
     }
 
-    @keyframes borderSweep {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
     }
 
-    @keyframes fluidSweep {
-      0% { background-position: -120% -120%; opacity: 0.2; }
-      40% { opacity: 0.6; }
-      70% { opacity: 0.3; }
-      100% { background-position: 180% 180%; opacity: 0.2; }
+    @keyframes energyMove {
+      0% {
+        transform: rotate(-30deg) translateX(-12px);
+      }
+      50% {
+        transform: rotate(25deg) translateX(18px);
+      }
+      100% {
+        transform: rotate(-30deg) translateX(-12px);
+      }
     }
 
-    @keyframes capsuleShimmer {
-      0% { background-position: -200% 0; }
-      50%, 100% { background-position: 200% 0; }
+    @keyframes lightMove {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(14px, 8px) scale(1.22);
+      }
     }
 
-    @keyframes ambientLightBreathe {
-      0% { opacity: 0.7; transform: scale(1); }
-      100% { opacity: 1; transform: scale(1.03); }
+    @keyframes greenPulse {
+      0%, 100% {
+        transform: scale(0.85);
+        opacity: 0.45;
+      }
+      50% {
+        transform: scale(1.25);
+        opacity: 0.95;
+      }
     }
 
-    @keyframes ambientPulse {
-      0% { opacity: 0.4; }
-      100% { opacity: 0.85; }
+    @keyframes redEnergy {
+      0%, 100% {
+        transform: rotate(-25deg) translateX(0);
+      }
+      50% {
+        transform: rotate(15deg) translateX(14px);
+      }
     }
 
+    /* ================================
+       LISTENING STATE
+    ================================= */
+
+    .bytehouse.listening .orb {
+      animation:
+        orbFloat 2s ease-in-out infinite,
+        listeningPulse 1s ease-in-out infinite;
+    }
+
+    .bytehouse.listening .glow {
+      animation: listeningGlow 1s ease-in-out infinite;
+    }
+
+    .bytehouse.listening .light {
+      box-shadow:
+        0 0 14px var(--white),
+        0 0 32px var(--blue),
+        0 0 58px var(--green),
+        0 0 90px var(--blue);
+    }
+
+    @keyframes listeningPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes listeningGlow {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.65;
+      }
+      50% {
+        transform: scale(1.4);
+        opacity: 1;
+      }
+    }
+
+    /* ================================
+       THINKING STATE
+    ================================= */
+
+    .bytehouse.thinking .energy {
+      animation: thinkingEnergy 1.2s linear infinite;
+    }
+
+    .bytehouse.thinking .light {
+      animation: thinkingLight 1s ease-in-out infinite;
+    }
+
+    .bytehouse.thinking .glow {
+      animation: thinkingGlow 1.8s ease-in-out infinite;
+    }
+
+    @keyframes thinkingEnergy {
+      from {
+        transform: rotate(0deg) scale(1.12);
+      }
+      to {
+        transform: rotate(360deg) scale(1.12);
+      }
+    }
+
+    @keyframes thinkingLight {
+      0%, 100% {
+        transform: translate(-7px, 0) scale(1);
+      }
+      50% {
+        transform: translate(14px, -7px) scale(1.3);
+      }
+    }
+
+    @keyframes thinkingGlow {
+      0%, 100% {
+        opacity: 0.55;
+        transform: scale(0.95);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.3);
+      }
+    }
+
+    /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
-      .caustic-mesh-1,
-      .caustic-mesh-2,
-      .perimeter-shimmer,
-      .fluid-shimmer-sweep,
-      .glass-pill::after,
-      .liquid-window::before,
-      .send-btn-liquid::after {
-        animation: none !important;
-        transform: none !important;
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
       }
     }
   </style>
-<!-- END: CSS Styles -->
 </head>
-<body class="relative min-h-screen w-full bg-[#e8f1f7] font-sans antialiased text-slate-800 flex items-center justify-center p-3 sm:p-6 overflow-hidden select-none">
-<!-- BEGIN: Procedural Caustics Displacement Filter -->
-<svg aria-hidden="true" class="hidden" height="0" width="0">
-<defs>
-<filter height="140%" id="liquid-caustic-filter" width="140%" x="-20%" y="-20%">
-<feturbulence basefrequency="0.024 0.038" numoctaves="3" result="noise" seed="4" type="fractalNoise">
-<animate attributename="baseFrequency" dur="18s" repeatcount="indefinite" values="0.024 0.038; 0.032 0.022; 0.02 0.035; 0.024 0.038"></animate>
-</feturbulence>
-<fedisplacementmap in="SourceGraphic" in2="noise" scale="22" xchannelselector="R" ychannelselector="G"></fedisplacementmap>
-</filter>
-</defs>
-</svg>
-<!-- END: Procedural Caustics Displacement Filter -->
-<!-- BEGIN: Background Nature Layer (Bright & Sun-dappled with Blue Tint) -->
-<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none" data-purpose="atmospheric-backdrop">
-<!-- Forest canopy background with luminous sun-dappled morning light treatment -->
-<img alt="Lush redwood forest backdrop in bright sunlight" class="w-full h-full object-cover scale-105 filter brightness-[1.15] contrast-[0.95] saturate-[1.25]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFSmUkVzucKPgm2NYbwHgrDFmBebH4Tz0yCuT0WeWJR9_7LAePkcopvYvQAJ00wMKbGqFYUY8OEn_7aRgmMbBepkhLHlSOBHTU7r7fKiZusf-3urnZ3betqcoo6Ekn4XdjCt35YYkWQ8hMtc9uwBILpY9JV9N8XAfFRAFs0p3Qkm_lk12kjhlaD9oNbVA03P8WZG14fC4oGLfAUBkDUym_VABBVocishRpa9MT1ROPy9wWOfGkps2oyI_bi-sNoCXg2Q"/>
-<!-- Soft sky blue atmosphere washes and screen blends -->
-<div class="absolute inset-0 bg-gradient-to-b from-sky-100/40 via-white/20 to-blue-50/50 mix-blend-screen"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-sky-200/30 via-transparent to-blue-100/35"></div>
-<div class="absolute -top-[15%] -left-[10%] w-[65vw] h-[65vw] rounded-full bg-sky-200/40 blur-[120px] mix-blend-screen"></div>
-<div class="absolute -bottom-[20%] -right-[10%] w-[65vw] h-[65vw] rounded-full bg-cyan-200/35 blur-[130px] mix-blend-screen"></div>
-<div class="absolute top-[30%] left-[20%] w-[40vw] h-[40vw] rounded-full bg-blue-100/45 blur-[100px] mix-blend-screen"></div>
-</div>
-<!-- END: Background Nature Layer -->
-<!-- BEGIN: Assistant Liquid Glass Container -->
-<main class="liquid-window relative z-10 w-full max-w-[440px] h-[92vh] max-h-[860px] rounded-[44px] flex flex-col justify-between p-5 pb-6 overflow-hidden shadow-2xl shadow-blue-900/10" data-purpose="assistant-shell">
-<!-- Traveling specular gleam border around liquid glass body -->
-<div class="perimeter-shimmer"></div>
-<!-- Ambient liquid caustics behind glass surface -->
-<div class="caustic-fluid-layer">
-<div class="caustic-mesh-1"></div>
-<div class="caustic-mesh-2"></div>
-</div>
-<!-- Diagonal refractive fluid sweep across window -->
-<div class="fluid-shimmer-sweep"></div>
-<!-- Liquid Bevel Refraction Lines -->
-<div class="absolute top-0 left-10 right-10 h-[1.5px] bg-gradient-to-r from-transparent via-white to-transparent pointer-events-none"></div>
-<div class="absolute bottom-0 left-16 right-16 h-[1px] bg-gradient-to-r from-transparent via-sky-200/60 to-transparent pointer-events-none"></div>
-<!-- BEGIN: Top Navigation Header -->
-<header class="relative z-10 flex items-center justify-between pt-1 px-1" data-purpose="app-header">
-<!-- Left: Logo & Identity perfectly aligned -->
-<div class="flex items-center space-x-3">
-<!-- Liquid Iridescent Pearl Orb Avatar with Sky Halo -->
-<div class="relative w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-sky-400 via-blue-400 to-cyan-300 shadow-[0_4px_16px_rgba(56,189,248,0.35)] flex-shrink-0">
-<div class="w-full h-full rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center overflow-hidden relative shadow-inner">
-<div class="w-8 h-8 rounded-full orb-glow opacity-90 animate-spin" style="animation-duration: 20s;"></div>
-<!-- Specular reflection -->
-<div class="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-transparent rounded-full"></div>
-<div class="absolute w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff]"></div>
-</div>
-</div>
-<!-- Title and Sleek Status Row -->
-<div class="flex flex-col justify-center">
-<h1 class="text-[17px] font-bold tracking-tight text-slate-900 drop-shadow-[0_1px_1px_rgba(255,255,255,0.9)] leading-tight">
-            ByteHouse
-          </h1>
-<!-- Organized Status Line -->
-<div class="flex items-center space-x-2 mt-1">
-<!-- Live IDLE indicator -->
-<div class="flex items-center space-x-1.5">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_#10b981]"></span>
-</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-slate-600">
-                Idle
-              </span>
-</div>
-<span class="text-[9px] text-blue-300 font-medium select-none">•</span>
-<!-- Refined Claude Model Badge -->
-<span class="inline-flex items-center text-[10px] font-semibold text-slate-700 bg-white/70 hover:bg-white/90 border border-blue-200/60 shadow-[0_1px_3px_rgba(14,116,144,0.05)] px-2 py-0.5 rounded-full transition-colors">
-              Claude 3.5 Sonnet
-            </span>
-</div>
-</div>
-</div>
-<!-- Right: Control Actions (Pill Buttons) -->
-<div class="flex items-center space-x-2 flex-shrink-0">
-<!-- Space Action Pill -->
-<button aria-label="Switch Space" class="glass-pill px-3 py-1.5 rounded-full flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all shadow-sm" type="button">
-<span class="relative z-10 text-[11px] font-mono text-sky-600 font-bold tracking-tight">⌃⌥</span>
-<span class="relative z-10 tracking-normal font-medium text-slate-800">Space</span>
-</button>
-<!-- Close / Dismiss Pill Button -->
-<button aria-label="Close Assistant" class="glass-pill w-8 h-8 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all shadow-sm" type="button">
-<svg class="relative z-10 w-3.5 h-3.5 stroke-[2.4]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
-<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</button>
-</div>
-</header>
-<!-- END: Top Navigation Header -->
-<!-- BEGIN: Chat Flow & Greeting View -->
-<div class="flex-1 flex flex-col justify-start pt-6 px-0.5 overflow-y-auto space-y-4 no-scrollbar relative z-10" data-purpose="chat-messages">
-<!-- Greeting Liquid Bubble Card with Blue Tint -->
-<article class="liquid-card rounded-3xl p-5 sm:p-5.5 text-left relative overflow-hidden backdrop-blur-2xl border border-blue-100/70">
-<!-- Internal caustics shimmer in card -->
-<div class="caustic-fluid-layer opacity-30">
-<div class="caustic-mesh-1 scale-125"></div>
-</div>
-<div class="fluid-shimmer-sweep opacity-40"></div>
-<!-- Top specular wash -->
-<div class="absolute -top-10 -right-10 w-36 h-36 bg-sky-200/40 rounded-full blur-2xl pointer-events-none"></div>
-<!-- Greeting Headline -->
-<p class="relative z-10 text-[15px] leading-relaxed text-slate-800 font-normal tracking-[-0.01em]">
-          Hello! I'm <span class="font-bold text-slate-900 drop-shadow-sm">ByteHouse</span>, your personal companion.
-        </p>
-<!-- Try Suggestions Header -->
-<div class="relative z-10 flex items-center space-x-2 mt-4 mb-2.5">
-<span class="text-xs font-semibold uppercase tracking-wider text-sky-700 bg-sky-100/60 px-2 py-0.5 rounded-md">
-            Try
-          </span>
-<span class="text-xs text-slate-500 font-medium">Click to use prompt</span>
-</div>
-<!-- Refined Suggestion Prompts as Interactive Glass Chips -->
-<ul class="relative z-10 space-y-2">
-<li class="prompt-chip group flex items-center justify-between p-3 rounded-2xl cursor-pointer">
-<div class="flex items-center space-x-2.5 min-w-0 pr-2">
-<span class="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.8)] flex-shrink-0"></span>
-<span class="text-[13.5px] text-slate-700 italic group-hover:text-sky-900 group-hover:not-italic font-medium truncate transition-colors leading-tight">
-                "Remember that my flight is on Friday"
-              </span>
-</div>
-<svg class="w-4 h-4 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</li>
-<li class="prompt-chip group flex items-center justify-between p-3 rounded-2xl cursor-pointer">
-<div class="flex items-center space-x-2.5 min-w-0 pr-2">
-<span class="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.8)] flex-shrink-0"></span>
-<span class="text-[13.5px] text-slate-700 italic group-hover:text-sky-900 group-hover:not-italic font-medium truncate transition-colors leading-tight">
-                "Add a task to prepare meeting notes"
-              </span>
-</div>
-<svg class="w-4 h-4 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</li>
-<li class="prompt-chip group flex items-center justify-between p-3 rounded-2xl cursor-pointer">
-<div class="flex items-center space-x-2.5 min-w-0 pr-2">
-<span class="w-2 h-2 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.8)] flex-shrink-0"></span>
-<span class="text-[13.5px] text-slate-700 italic group-hover:text-sky-900 group-hover:not-italic font-medium truncate transition-colors leading-tight">
-                "What do you remember?"
-              </span>
-</div>
-<svg class="w-4 h-4 text-slate-400 group-hover:text-sky-600 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</li>
-</ul>
-</article>
-</div>
-<!-- END: Chat Flow & Greeting View -->
-<!-- BEGIN: Floating Liquid Input Capsule -->
-<footer class="relative z-20 pt-3" data-purpose="chat-input-bar">
-<div class="relative flex items-center">
-<!-- Sculptured light liquid capsule frame with subtle blue tint -->
-<div class="relative overflow-hidden w-full flex items-center glass-pill rounded-full pl-4.5 pr-2 py-1.5 focus-within:ring-2 focus-within:ring-sky-400/40 focus-within:border-sky-200 transition-all duration-300 shadow-[0_8px_24px_rgba(14,60,110,0.08)]">
-<!-- Soft caustic shimmer inside capsule dock -->
-<div class="fluid-shimmer-sweep opacity-50 pointer-events-none"></div>
-<!-- Input Icon -->
-<div class="relative z-10 pl-1 pr-2 text-sky-500 flex-shrink-0">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
-<path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<!-- Text Input Field -->
-<input class="relative z-10 w-full bg-transparent border-none text-[14px] sm:text-[14.5px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-0 p-0 font-normal tracking-[-0.01em]" placeholder="Ask ByteHouse or give an instruction..." type="text"/>
-<!-- Translucent Glass Send Action Button (Blue Glow) -->
-<button aria-label="Send prompt" class="relative z-10 send-btn-liquid w-8 h-8 rounded-full flex items-center justify-center ml-2 text-white hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex-shrink-0" type="button">
-<svg class="w-3.5 h-3.5 transform -rotate-12 translate-x-[-0.5px] translate-y-[-0.5px]" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
-<path d="M6 12L3 21l18-9L3 3l3 9zm0 0h9" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</button>
-</div>
-</div>
-<!-- iOS Home Indicator Accent Bar -->
-<div class="w-32 h-1 bg-slate-400/30 rounded-full mx-auto mt-4 mb-0.5"></div>
-</footer>
-<!-- END: Floating Liquid Input Capsule -->
-</main>
-<!-- END: Assistant Liquid Glass Container -->
-<!-- BEGIN: Interactive Polish Scripts -->
-<script data-purpose="interactive-state">
-    // Interactive cursor/touch-based specular light tracking
-    const mainShell = document.querySelector('main');
-    if (mainShell) {
-      window.addEventListener('pointermove', (e) => {
-        const rect = mainShell.getBoundingClientRect();
-        const xPercent = Math.min(Math.max(((e.clientX - rect.left) / rect.width) * 100, 0), 100);
-        const yPercent = Math.min(Math.max(((e.clientY - rect.top) / rect.height) * 100, 0), 100);
-        mainShell.style.setProperty('--liquid-x', `${xPercent}%`);
-        mainShell.style.setProperty('--liquid-y', `${yPercent}%`);
+
+<body class="min-h-screen bg-grid flex flex-col justify-between items-center p-8 select-none">
+
+  <!-- Top bar info -->
+  <header class="w-full max-w-5xl flex items-center justify-between z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+      <span class="text-xs font-semibold tracking-widest uppercase text-white/70">ByteHouse Neural Presence</span>
+    </div>
+
+    <!-- Mode Badges -->
+    <div class="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1.5 backdrop-blur-md">
+      <button id="btn-idle" onclick="forceState('idle')" class="state-btn px-3 py-1 rounded-full text-xs font-medium transition-all text-white/50 hover:text-white">IDLE</button>
+      <button id="btn-listening" onclick="forceState('listening')" class="state-btn px-3 py-1 rounded-full text-xs font-medium transition-all text-white/50 hover:text-white">LISTENING</button>
+      <button id="btn-thinking" onclick="forceState('thinking')" class="state-btn px-3 py-1 rounded-full text-xs font-medium transition-all bg-white/20 text-white shadow">THINKING</button>
+    </div>
+  </header>
+
+  <!-- Center Orb Showcase -->
+  <main class="flex flex-col items-center justify-center my-auto z-10 text-center">
+    
+    <div class="bytehouse-stage">
+      <!-- Concentric soundwave halos -->
+      <div class="sound-ring"></div>
+      <div class="sound-ring"></div>
+      <div class="sound-ring"></div>
+
+      <!-- ByteHouse Orb -->
+      <div class="bytehouse thinking" id="bytehouse" role="button" tabindex="0" aria-label="ByteHouse assistant">
+        <div class="glow"></div>
+        <div class="orb">
+          <div class="energy"></div>
+          <div class="light" style="width: 24px; height: 24px; top: 40px; left: 56px; transform-origin: 50% -36px 0px; box-shadow: rgb(255, 255, 255) 0px 0px 8px, rgb(32, 169, 255) 0px 0px 18px, rgb(32, 169, 255) 0px 0px 30px, rgb(124, 58, 237) 0px 0px 45px, rgb(236, 72, 153) 0px 0px 60px; animation: 3.6s ease-in-out infinite pendulumIdle;"><style>@keyframes pendulumIdle { 0% { transform: rotate(-18deg) translate(-14px, -3px); } 50% { transform: rotate(18deg) translate(14px, -3px); } 100% { transform: rotate(-18deg) translate(-14px, -3px); } } .bytehouse.listening .light { animation: pendulumListening 2.2s ease-in-out infinite !important; } @keyframes pendulumListening { 0% { transform: rotate(-26deg) translate(-20px, -6px) scale(1.08); } 50% { transform: rotate(26deg) translate(20px, -6px) scale(1.08); } 100% { transform: rotate(-26deg) translate(-20px, -6px) scale(1.08); } } .bytehouse.thinking .light { animation: pendulumThinking 1.4s ease-in-out infinite !important; } @keyframes pendulumThinking { 0% { transform: rotate(-32deg) translate(-22px, -8px) scale(1.12); } 25% { transform: rotate(0deg) translate(0px, 8px) scale(1.18); } 50% { transform: rotate(32deg) translate(22px, -8px) scale(1.12); } 75% { transform: rotate(0deg) translate(0px, 8px) scale(1.18); } 100% { transform: rotate(-32deg) translate(-22px, -8px) scale(1.12); } }</style></div>
+          <div class="highlight"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State readout & caption -->
+    <div class="mt-6 flex flex-col items-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/30 text-xs font-mono tracking-widest text-pink-300 uppercase shadow-inner" id="status-badge">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span id="status-text" class="">STATE: THINKING</span>
+      </div>
+      <p class="text-white/40 text-xs mt-3 max-w-sm tracking-wide">
+        Click or press <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/80 font-mono text-[11px]">Space</kbd> to cycle states (Idle → Listening → Thinking)
+      </p>
+    </div>
+
+  </main>
+
+  <!-- Bottom Interactive controls -->
+  <footer class="w-full max-w-xl z-20 flex flex-col items-center gap-3">
+    <div class="w-full flex items-center justify-between px-5 py-3 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl">
+      <div class="flex items-center gap-3 text-white/80 text-xs">
+        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <span class="">CSS Multi-Layer Spectrum Dynamics</span>
+      </div>
+      <span class="text-[11px] font-mono text-white/40">60 FPS Native GL/CSS</span>
+    </div>
+  </footer>
+
+  <script>
+    const bytehouse = document.getElementById("bytehouse");
+    const statusText = document.getElementById("status-text");
+    const statusBadge = document.getElementById("status-badge");
+    const stateBtns = {
+      idle: document.getElementById("btn-idle"),
+      listening: document.getElementById("btn-listening"),
+      thinking: document.getElementById("btn-thinking"),
+    };
+
+    const states = ["idle", "listening", "thinking"];
+    let currentState = 0;
+
+    function setState(state) {
+      bytehouse.classList.remove("listening", "thinking");
+      if (state !== "idle") {
+        bytehouse.classList.add(state);
+      }
+
+      statusText.textContent = "STATE: " + state.toUpperCase();
+
+      // Update badge color
+      if (state === "idle") {
+        statusBadge.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-mono tracking-widest text-emerald-400 uppercase shadow-inner";
+      } else if (state === "listening") {
+        statusBadge.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono tracking-widest text-cyan-300 uppercase shadow-inner";
+      } else if (state === "thinking") {
+        statusBadge.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/30 text-xs font-mono tracking-widest text-pink-300 uppercase shadow-inner";
+      }
+
+      // Update toggle buttons
+      Object.keys(stateBtns).forEach(s => {
+        if (s === state) {
+          stateBtns[s].className = "state-btn px-3 py-1 rounded-full text-xs font-medium transition-all bg-white/20 text-white shadow";
+        } else {
+          stateBtns[s].className = "state-btn px-3 py-1 rounded-full text-xs font-medium transition-all text-white/50 hover:text-white";
+        }
       });
     }
 
-    // Smooth click interactions for prompt chips
-    document.querySelectorAll('.prompt-chip').forEach((item) => {
-      item.addEventListener('click', () => {
-        const promptText = item.querySelector('span:last-child').innerText.replace(/^"|"$/g, '').trim();
-        const input = document.querySelector('input[type="text"]');
-        if (input) {
-          input.value = promptText;
-          input.focus();
-        }
-      });
+    function forceState(stateName) {
+      const idx = states.indexOf(stateName);
+      if (idx !== -1) {
+        currentState = idx;
+        setState(stateName);
+      }
+    }
+
+    function nextState() {
+      currentState = (currentState + 1) % states.length;
+      setState(states[currentState]);
+    }
+
+    bytehouse.addEventListener("click", nextState);
+
+    bytehouse.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        nextState();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Space" && document.activeElement !== bytehouse && document.activeElement.tagName !== "INPUT") {
+        event.preventDefault();
+        nextState();
+      }
     });
   </script>
-<!-- END: Interactive Polish Scripts -->
+
+
+
+
 </body></html>

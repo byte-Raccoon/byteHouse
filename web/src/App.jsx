@@ -168,14 +168,19 @@ export default function App() {
     >
       {/* BEGIN: Top Navigation Header */}
       <header className="relative z-10 flex items-center justify-between flex-shrink-0 mb-4" data-purpose="app-header">
-        {/* Left: Identity & Strategy B Obsidian Lens Jewel Presence Orb */}
+        {/* Left: Identity & Stitch Neural Presence Orb with Acoustic Sound Rings */}
         <div className="flex items-center space-x-3.5">
-          {/* Obsidian Lens Jewel Chamber from bytehouse_presence.html */}
+          {/* Obsidian Lens Jewel Chamber with concentric sound rings from stitch/code.html */}
           <div 
             className={`presence-bezel presence-bezel--${presenceState}`} 
             aria-label="ByteHouse presence"
             role="img"
           >
+            {/* Concentric soundwave halos from stitch/code.html */}
+            <div className="sound-ring sound-ring--1" />
+            <div className="sound-ring sound-ring--2" />
+            <div className="sound-ring sound-ring--3" />
+
             <div className="presence-glow" />
             <div className="presence-orb">
               <div className="presence-energy" />
@@ -186,7 +191,7 @@ export default function App() {
 
           {/* Title and Sleek Status Row */}
           <div className="flex flex-col justify-center">
-            <h1 className="text-[16px] font-bold tracking-tight text-slate-900 leading-tight">
+            <h1 className="text-[15.5px] font-bold tracking-tight text-slate-900 leading-tight">
               ByteHouse
             </h1>
             <div className="flex items-center space-x-2 mt-1">
@@ -225,20 +230,33 @@ export default function App() {
           </div>
         </div>
 
-        {/* Right: Control Actions */}
-        <div className="flex items-center space-x-3 flex-shrink-0">
-          <button
-            aria-label="Switch Space"
-            className="glass-pill px-2.5 py-1 flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all"
-            type="button"
-          >
-            <span className="relative z-10 text-[10.5px] font-mono text-sky-600 font-bold tracking-tight">⌃⌥</span>
-            <span className="relative z-10 text-[11px] font-medium text-slate-800">Space</span>
-          </button>
+        {/* Right: Stitch Mode Pill Badges & Dismiss Action */}
+        <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-full p-0.5">
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider transition-all ${
+                presenceState === 'idle'
+                  ? 'bg-white dark:bg-white/20 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 dark:text-white/40'
+              }`}
+            >
+              IDLE
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider transition-all ${
+                presenceState === 'thinking'
+                  ? 'bg-violet-500 text-white shadow-sm'
+                  : 'text-slate-500 dark:text-white/40'
+              }`}
+            >
+              THINKING
+            </span>
+          </div>
+
           <button
             aria-label="Close Assistant"
             onClick={handleClose}
-            className="glass-pill w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all"
+            className="glass-pill w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all ml-1"
             type="button"
           >
             <svg className="relative z-10 w-3 h-3 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
