@@ -166,41 +166,27 @@ export default function App() {
       className="liquid-window relative z-10 w-full h-full flex flex-col justify-between p-4 overflow-hidden"
       data-purpose="assistant-shell"
     >
-      {/* Traveling specular perimeter shimmer border */}
-      <div className="perimeter-shimmer"></div>
-
-      {/* Ambient liquid caustics behind glass surface */}
-      <div className="caustic-fluid-layer">
-        <div className="caustic-mesh-1"></div>
-        <div className="caustic-mesh-2"></div>
-      </div>
-
-      {/* Diagonal refractive fluid sweep */}
-      <div className="fluid-shimmer-sweep"></div>
-
       {/* BEGIN: Top Navigation Header */}
-      <header className="relative z-10 flex items-center justify-between flex-shrink-0 mb-3" data-purpose="app-header">
-        {/* Left: Identity & Polished Avatar */}
-        <div className="flex items-center space-x-3">
-          {/* Avatar Icon with subtle outer glow and inner shadow depth */}
-          <div className="avatar-polished-container">
-            <div className="avatar-inner">
-              <video
-                className="w-full h-full object-cover rounded-full pointer-events-none scale-105"
-                src="/orb-animation.webm"
-                autoPlay
-                loop
-                muted
-                playsInline
-              />
-              {/* Soft specular depth overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-black/10 rounded-full pointer-events-none"></div>
+      <header className="relative z-10 flex items-center justify-between flex-shrink-0 mb-4" data-purpose="app-header">
+        {/* Left: Identity & Strategy B Obsidian Lens Jewel Presence Orb */}
+        <div className="flex items-center space-x-3.5">
+          {/* Obsidian Lens Jewel Chamber from bytehouse_presence.html */}
+          <div 
+            className={`presence-bezel presence-bezel--${presenceState}`} 
+            aria-label="ByteHouse presence"
+            role="img"
+          >
+            <div className="presence-glow" />
+            <div className="presence-orb">
+              <div className="presence-energy" />
+              <div className="presence-light" />
+              <div className="presence-highlight" />
             </div>
           </div>
 
           {/* Title and Sleek Status Row */}
           <div className="flex flex-col justify-center">
-            <h1 className="text-[15.5px] font-bold tracking-tight text-slate-900 leading-tight">
+            <h1 className="text-[16px] font-bold tracking-tight text-slate-900 leading-tight">
               ByteHouse
             </h1>
             <div className="flex items-center space-x-2 mt-1">
@@ -210,19 +196,19 @@ export default function App() {
                   <span
                     className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
                       presenceState === 'working'
-                        ? 'bg-cyan-400'
+                        ? 'bg-emerald-400'
                         : presenceState === 'thinking'
-                        ? 'bg-pink-400'
-                        : 'bg-emerald-400'
+                        ? 'bg-violet-400'
+                        : 'bg-sky-400'
                     }`}
                   ></span>
                   <span
                     className={`relative inline-flex rounded-full h-2 w-2 ${
                       presenceState === 'working'
-                        ? 'bg-cyan-500 shadow-[0_0_6px_#06b6d4]'
+                        ? 'bg-emerald-500 shadow-[0_0_6px_#10b981]'
                         : presenceState === 'thinking'
-                        ? 'bg-pink-500 shadow-[0_0_6px_#ec4899]'
-                        : 'bg-emerald-500 shadow-[0_0_6px_#10b981]'
+                        ? 'bg-violet-500 shadow-[0_0_6px_#8b5cf6]'
+                        : 'bg-sky-500 shadow-[0_0_6px_#0ea5e9]'
                     }`}
                   ></span>
                 </span>
@@ -240,7 +226,7 @@ export default function App() {
         </div>
 
         {/* Right: Control Actions */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
+        <div className="flex items-center space-x-3 flex-shrink-0">
           <button
             aria-label="Switch Space"
             className="glass-pill px-2.5 py-1 flex items-center space-x-1 text-xs font-semibold text-slate-700 hover:text-slate-900 active:scale-95 cursor-pointer overflow-hidden transition-all"
@@ -266,12 +252,12 @@ export default function App() {
       {/* BEGIN: Chat Flow & Messages View */}
       <div
         ref={feedRef}
-        className="flex-1 flex flex-col justify-start overflow-y-auto space-y-3 no-scrollbar relative z-10 pb-3"
+        className="flex-1 flex flex-col justify-start overflow-y-auto space-y-4 no-scrollbar relative z-10 px-1 pt-4 pb-2"
         data-purpose="chat-messages"
       >
         {/* Welcome Greeting Card (Shown initially) */}
         {messages.length === 0 && (
-          <article className="liquid-card p-4 text-left relative overflow-hidden">
+          <article className="liquid-card p-5 text-left relative overflow-hidden">
             {/* Greeting Headline */}
             <p className="text-[14.5px] leading-relaxed text-slate-900 font-normal tracking-[-0.01em]">
               Hello! I'm <span className="font-semibold text-slate-900">ByteHouse</span>, your personal AI companion.
@@ -328,11 +314,11 @@ export default function App() {
             className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} my-0.5`}
           >
             {msg.role === 'user' ? (
-              <div className="user-bubble-liquid text-[13px] max-w-[85%] font-medium leading-relaxed">
+              <div className="user-bubble-liquid text-[13px] max-w-[85%] font-medium leading-6">
                 {msg.content}
               </div>
             ) : (
-              <div className="assistant-bubble-liquid text-left relative max-w-[90%] text-[13px] leading-relaxed text-slate-900">
+              <div className="assistant-bubble-liquid text-left relative max-w-[90%] text-[13px] leading-6 text-slate-900">
                 {msg.isStreaming && !msg.content ? (
                   <div className="thinking-dots">
                     <span />
@@ -403,9 +389,9 @@ export default function App() {
       {/* END: Chat Flow & Messages View */}
 
       {/* BEGIN: Floating Input Bar */}
-      <footer className="relative z-20 pt-2 flex-shrink-0" data-purpose="chat-input-bar">
+      <footer className="relative z-20 pt-1 flex-shrink-0" data-purpose="chat-input-bar">
         <form onSubmit={handleSubmit} className="relative flex items-center">
-          <div className="relative overflow-hidden w-full flex items-center glass-pill pl-3.5 pr-1.5 py-1.5 focus-within:ring-2 focus-within:ring-sky-400/40 focus-within:border-sky-300 transition-all duration-200 shadow-sm">
+          <div className="relative overflow-hidden w-full flex items-center glass-pill pl-3 pr-1.5 py-1 focus-within:ring-2 focus-within:ring-sky-400/40 focus-within:border-sky-300 transition-all duration-200 shadow-sm">
             {/* Input Icon */}
             <div className="relative z-10 pl-0.5 pr-2 text-sky-500 flex-shrink-0">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -416,7 +402,7 @@ export default function App() {
             {/* Text Input Field */}
             <input
               ref={inputRef}
-              className="relative z-10 w-full bg-transparent border-none text-[13px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-0 px-1 py-1 font-normal tracking-[-0.01em]"
+              className="relative z-10 w-full bg-transparent border-none text-[12.5px] text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-0 px-1 py-0.5 font-normal tracking-[-0.01em]"
               placeholder="Ask ByteHouse or give an instruction..."
               type="text"
               value={prompt}

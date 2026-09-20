@@ -120,7 +120,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupGlobalShortcut()
 
         // Show HUD initially
-        panel.toggle(statusItem: statusItem)
+        panel.toggle()
         AppLogger.shared.info("Host", "Native companion running. Summon with \(config.hotkey) or menu bar icon.")
     }
 
@@ -176,13 +176,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showHUD() {
         guard let panel = hudPanel else { return }
-        panel.positionNear(statusItem: statusItem)
+        panel.positionCenter()
         panel.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
     @objc func toggleHUD() {
-        hudPanel?.toggle(statusItem: statusItem)
+        hudPanel?.toggle()
     }
 
     @objc func quitApp() {

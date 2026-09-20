@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ByteHouse Presence</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #030305;
+      --dark-green: #063b2a;
+      --green: #19c37d;
+      --blue: #20a9ff;
+      --violet: #7c3aed;
+      --pink: #ec4899;
+      --rose-pink: #fb7185;
+      --red: #ef3340;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 15%, rgba(124, 58, 237, 0.08), transparent 30%),
+        radial-gradient(circle at 20% 80%, rgba(25, 195, 125, 0.06), transparent 30%),
+        var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "SF Pro Text", sans-serif;
+    }
+
+    /* ================================
+       BYTEHOUSE PRESENCE
+    ================================= */
+
+    .bytehouse {
+      position: fixed;
+      top: 28px;
+      right: 28px;
+
+      width: 76px;
+      height: 76px;
+
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+
+      transition: transform 0.35s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .bytehouse:hover {
+      transform: scale(1.07);
+    }
+
+    .bytehouse:active {
+      transform: scale(0.96);
+    }
+
+    /* ================================
+       OUTER GLOW
+    ================================= */
+
+    .glow {
+      position: absolute;
+      inset: -26px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(32, 169, 255, 0.42),
+          rgba(124, 58, 237, 0.28) 27%,
+          rgba(236, 72, 153, 0.18) 46%,
+          rgba(25, 195, 125, 0.10) 62%,
+          transparent 74%
+        );
+
+      filter: blur(15px);
+      pointer-events: none;
+
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    /* ================================
+       MAIN ORB
+    ================================= */
+
+    .orb {
+      position: absolute;
+      inset: 0;
+
+      border-radius: 50%;
+      overflow: hidden;
+
+      background:
+        radial-gradient(
+          circle at 34% 24%,
+          var(--white) 0%,
+          var(--blue) 7%,
+          #1464a0 18%,
+          var(--violet) 32%,
+          var(--dark-green) 51%,
+          var(--black) 73%
+        );
+
+      box-shadow:
+        inset 6px 5px 15px rgba(255, 255, 255, 0.25),
+        inset -12px -12px 25px rgba(0, 0, 0, 0.75),
+        0 0 20px rgba(32, 169, 255, 0.35),
+        0 0 40px rgba(124, 58, 237, 0.22),
+        0 0 65px rgba(236, 72, 153, 0.12);
+
+      animation: orbFloat 4s ease-in-out infinite;
+    }
+
+    /* ================================
+       MULTICOLOR ENERGY
+    ================================= */
+
+    .energy {
+      position: absolute;
+
+      width: 112px;
+      height: 56px;
+
+      left: -17px;
+      top: 26px;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--red) 0%,
+          var(--rose-pink) 18%,
+          var(--pink) 35%,
+          var(--violet) 52%,
+          var(--blue) 70%,
+          var(--green) 88%,
+          var(--dark-green) 100%
+        );
+
+      filter: blur(8px);
+      opacity: 0.78;
+      transform: rotate(-30deg);
+
+      animation: energyMove 5s ease-in-out infinite;
+    }
+
+    .energy::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          var(--blue),
+          var(--violet),
+          var(--pink),
+          transparent
+        );
+
+      filter: blur(10px);
+      opacity: 0.7;
+
+      transform: rotate(65deg);
+    }
+
+    /* ================================
+       GREEN ENERGY SPOT
+    ================================= */
+
+    .orb::before {
+      content: "";
+
+      position: absolute;
+
+      width: 46px;
+      height: 46px;
+
+      right: -8px;
+      bottom: 4px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(25, 195, 125, 0.82),
+          rgba(6, 59, 42, 0.45),
+          transparent 70%
+        );
+
+      filter: blur(5px);
+
+      animation: greenPulse 3s ease-in-out infinite;
+    }
+
+    /* ================================
+       RED / ROSE ENERGY
+    ================================= */
+
+    .orb::after {
+      content: "";
+
+      position: absolute;
+
+      width: 52px;
+      height: 26px;
+
+      left: -8px;
+      bottom: 5px;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(239, 51, 64, 0.72),
+          rgba(251, 113, 133, 0.55),
+          transparent
+        );
+
+      filter: blur(7px);
+      transform: rotate(-25deg);
+
+      animation: redEnergy 4s ease-in-out infinite;
+    }
+
+    /* ================================
+       CENTRAL WHITE LIGHT
+    ================================= */
+
+    .light {
+      position: absolute;
+
+      width: 25px;
+      height: 25px;
+
+      top: 18px;
+      left: 28px;
+
+      border-radius: 50%;
+      background: var(--white);
+
+      box-shadow:
+        0 0 8px var(--white),
+        0 0 18px var(--blue),
+        0 0 30px var(--blue),
+        0 0 45px var(--violet),
+        0 0 60px var(--pink);
+
+      animation: lightMove 4s ease-in-out infinite;
+    }
+
+    /* ================================
+       WHITE HIGHLIGHT
+    ================================= */
+
+    .highlight {
+      position: absolute;
+
+      width: 23px;
+      height: 11px;
+
+      top: 9px;
+      left: 16px;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.9),
+          rgba(255, 255, 255, 0.25),
+          transparent
+        );
+
+      filter: blur(2px);
+      transform: rotate(-25deg);
+    }
+
+    /* ================================
+       STATUS
+    ================================= */
+
+    .status {
+      position: fixed;
+
+      top: 118px;
+      right: 31px;
+
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+
+      opacity: 0;
+      transform: translateY(-4px);
+
+      transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+      pointer-events: none;
+    }
+
+    .status.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================================
+       BASE ANIMATIONS
+    ================================= */
+
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(0.94);
+        opacity: 0.62;
+      }
+
+      50% {
+        transform: scale(1.10);
+        opacity: 1;
+      }
+    }
+
+    @keyframes orbFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-3px);
+      }
+    }
+
+    @keyframes energyMove {
+      0% {
+        transform: rotate(-30deg) translateX(-8px);
+      }
+
+      50% {
+        transform: rotate(25deg) translateX(12px);
+      }
+
+      100% {
+        transform: rotate(-30deg) translateX(-8px);
+      }
+    }
+
+    @keyframes lightMove {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(9px, 5px) scale(1.18);
+      }
+    }
+
+    @keyframes greenPulse {
+      0%, 100% {
+        transform: scale(0.8);
+        opacity: 0.4;
+      }
+
+      50% {
+        transform: scale(1.2);
+        opacity: 0.9;
+      }
+    }
+
+    @keyframes redEnergy {
+      0%, 100% {
+        transform: rotate(-25deg) translateX(0);
+      }
+
+      50% {
+        transform: rotate(15deg) translateX(10px);
+      }
+    }
+
+    /* ================================
+       LISTENING STATE
+    ================================= */
+
+    .bytehouse.listening .orb {
+      animation:
+        orbFloat 2s ease-in-out infinite,
+        listeningPulse 1s ease-in-out infinite;
+    }
+
+    .bytehouse.listening .glow {
+      animation: listeningGlow 1s ease-in-out infinite;
+    }
+
+    .bytehouse.listening .light {
+      box-shadow:
+        0 0 10px var(--white),
+        0 0 22px var(--blue),
+        0 0 42px var(--green),
+        0 0 65px var(--blue);
+    }
+
+    @keyframes listeningPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes listeningGlow {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: scale(1.35);
+        opacity: 1;
+      }
+    }
+
+    /* ================================
+       THINKING STATE
+    ================================= */
+
+    .bytehouse.thinking .energy {
+      animation: thinkingEnergy 1.2s linear infinite;
+    }
+
+    .bytehouse.thinking .light {
+      animation: thinkingLight 1s ease-in-out infinite;
+    }
+
+    .bytehouse.thinking .glow {
+      animation:
+        thinkingGlow 1.8s ease-in-out infinite;
+    }
+
+    @keyframes thinkingEnergy {
+      from {
+        transform: rotate(0deg) scale(1.1);
+      }
+
+      to {
+        transform: rotate(360deg) scale(1.1);
+      }
+    }
+
+    @keyframes thinkingLight {
+      0%, 100% {
+        transform: translate(-5px, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(10px, -5px) scale(1.25);
+      }
+    }
+
+    @keyframes thinkingGlow {
+      0%, 100% {
+        opacity: 0.5;
+        transform: scale(0.95);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.25);
+      }
+    }
+
+    /* ================================
+       REDUCED MOTION
+    ================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div
+    class="bytehouse"
+    id="bytehouse"
+    role="button"
+    tabindex="0"
+    aria-label="ByteHouse assistant"
+  >
+    <div class="glow"></div>
+
+    <div class="orb">
+      <div class="energy"></div>
+      <div class="light"></div>
+      <div class="highlight"></div>
+    </div>
+  </div>
+
+  <div class="status" id="status">IDLE</div>
+
+  <script>
+    const bytehouse = document.getElementById("bytehouse");
+    const status = document.getElementById("status");
+
+    const states = ["idle", "listening", "thinking"];
+
+    let currentState = 0;
+    let statusTimer;
+
+    function setState(state) {
+      bytehouse.classList.remove("listening", "thinking");
+
+      if (state !== "idle") {
+        bytehouse.classList.add(state);
+      }
+
+      status.textContent = state.toUpperCase();
+      status.classList.add("visible");
+
+      clearTimeout(statusTimer);
+
+      statusTimer = setTimeout(() => {
+        status.classList.remove("visible");
+      }, 1200);
+    }
+
+    function nextState() {
+      currentState = (currentState + 1) % states.length;
+      setState(states[currentState]);
+    }
+
+    bytehouse.addEventListener("click", nextState);
+
+    bytehouse.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        nextState();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.code === "Space" &&
+        document.activeElement !== bytehouse
+      ) {
+        event.preventDefault();
+        nextState();
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -47,19 +47,19 @@ html, body {
 
 /* Single Continuous Backdrop Blur Applied to Entire Window Shell Only */
 .liquid-window {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(186, 230, 253, 0.1));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid rgba(255, 255, 255, 0.52);
   border-radius: var(--radius-window);
   box-shadow: 
-    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.7),
-    0 16px 40px -8px rgba(0, 0, 0, 0.18),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.45),
+    0 16px 40px -8px rgba(15, 23, 42, 0.2),
     0 0 1px 1px rgba(0, 0, 0, 0.04);
   position: relative;
 }
 
-/* Prismatic liquid sheen overlay with cursor tracking */
+/* A quiet fixed sheen preserves depth without animating the text window. */
 .liquid-window::before {
   content: '';
   position: absolute;
@@ -67,14 +67,13 @@ html, body {
   border-radius: inherit;
   background: radial-gradient(
     circle at var(--liquid-x, 25%) var(--liquid-y, 0%),
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(219, 234, 254, 0.15) 30%,
-    rgba(224, 242, 254, 0.05) 55%,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(219, 234, 254, 0.08) 30%,
+    rgba(224, 242, 254, 0.03) 55%,
     transparent 75%
   );
   pointer-events: none;
-  animation: ambientLightBreathe 10s ease-in-out infinite alternate;
-  will-change: opacity, transform;
+  opacity: 0.8;
 }
 
 /* Specular gleam perimeter */
@@ -162,19 +161,19 @@ html, body {
 
 /* Polished Light Glass Pill Controls */
 .glass-pill {
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius-pill);
   box-shadow: 
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    0 2px 6px rgba(0, 0, 0, 0.04);
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    0 2px 7px rgba(15, 23, 42, 0.1);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .glass-pill:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.78);
   box-shadow: 
     inset 0 1px 1.5px rgba(255, 255, 255, 1),
     0 4px 10px rgba(0, 0, 0, 0.06);
@@ -182,8 +181,8 @@ html, body {
 
 /* Solid Filled Circle Accent Send Button */
 .send-btn-solid {
-  width: 32px;
-  height: 32px;
+  width: 29px;
+  height: 29px;
   border-radius: var(--radius-button);
   background: #0ea5e9;
   border: none;
@@ -216,8 +215,8 @@ html, body {
 
 /* Suggestion Card Item (Individual rounded card, radius 10px, 12px vert, 16px horiz) */
 .suggestion-card {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: var(--radius-suggestion);
   padding: 12px 16px;
   display: flex;
@@ -229,15 +228,15 @@ html, body {
 }
 
 .suggestion-card:hover {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.72);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.08);
 }
 
 .suggestion-card:active {
   transform: translateY(0);
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* Small Pill/Chip Label (e.g. TRY) */
@@ -264,46 +263,321 @@ html, body {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.42);
   color: #334155;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
-/* Avatar Depth & Soft Outer Glow */
-.avatar-polished-container {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-button);
-  padding: 2px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(186, 230, 253, 0.7) 100%);
-  box-shadow: 
-    0 2px 10px -1px rgba(14, 165, 233, 0.3),
-    0 0 16px rgba(56, 189, 248, 0.25),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9);
-  flex-shrink: 0;
+/* ==========================================================================
+   STRATEGY B: OBSIDIAN LENS JEWEL PRESENCE ORB (From bytehouse_presence.html)
+   Enclosed in a protective recessed dark bezel so glows pop on light frosted glass
+   ========================================================================== */
+
+:root {
+  --bh-black: #030305;
+  --bh-dark-green: #063b2a;
+  --bh-green: #19c37d;
+  --bh-blue: #20a9ff;
+  --bh-violet: #7c3aed;
+  --bh-pink: #ec4899;
+  --bh-rose-pink: #fb7185;
+  --bh-red: #ef3340;
+  --bh-white: #ffffff;
 }
 
-.avatar-inner {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-button);
-  background: #ffffff;
-  overflow: hidden;
+/* Recessed Bezel Chamber isolating the dark orb & capturing its chromatic halo */
+.presence-bezel {
   position: relative;
-  box-shadow: inset 0 1.5px 3px rgba(0, 0, 0, 0.12);
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-button);
+  background: radial-gradient(circle at 35% 25%, rgba(20, 24, 38, 0.95), rgba(3, 3, 5, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 
+    inset 0 1.5px 3px rgba(255, 255, 255, 0.35),
+    inset 0 -1.5px 3px rgba(0, 0, 0, 0.85),
+    0 4px 14px rgba(3, 3, 5, 0.35),
+    0 0 16px rgba(32, 169, 255, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.3s cubic-bezier(.22, 1, .36, 1);
+  overflow: visible;
+}
+
+.presence-bezel:hover {
+  transform: scale(1.05);
+}
+
+.presence-bezel:active {
+  transform: scale(0.96);
+}
+
+/* Outer Glow Halo */
+.presence-glow {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(32, 169, 255, 0.45),
+    rgba(124, 58, 237, 0.32) 28%,
+    rgba(236, 72, 153, 0.20) 48%,
+    rgba(25, 195, 125, 0.12) 64%,
+    transparent 78%
+  );
+  filter: blur(8px);
+  pointer-events: none;
+  animation: presenceBreathe 3s ease-in-out infinite;
+}
+
+/* Main Obsidian Orb Core (40x40px inside 52px bezel) */
+.presence-orb {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(
+    circle at 34% 24%,
+    var(--bh-white) 0%,
+    var(--bh-blue) 7%,
+    #1464a0 18%,
+    var(--bh-violet) 32%,
+    var(--bh-dark-green) 51%,
+    var(--bh-black) 73%
+  );
+  box-shadow:
+    inset 3px 2px 8px rgba(255, 255, 255, 0.35),
+    inset -6px -6px 14px rgba(0, 0, 0, 0.85),
+    0 0 10px rgba(32, 169, 255, 0.4),
+    0 0 20px rgba(124, 58, 237, 0.25);
+  animation: presenceOrbFloat 4s ease-in-out infinite;
+}
+
+/* Multicolor Energy Ribbon */
+.presence-energy {
+  position: absolute;
+  width: 58px;
+  height: 30px;
+  left: -10px;
+  top: 13px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    var(--bh-red) 0%,
+    var(--bh-rose-pink) 18%,
+    var(--bh-pink) 35%,
+    var(--bh-violet) 52%,
+    var(--bh-blue) 70%,
+    var(--bh-green) 88%,
+    var(--bh-dark-green) 100%
+  );
+  filter: blur(4px);
+  opacity: 0.85;
+  transform: rotate(-30deg);
+  animation: presenceEnergyMove 5s ease-in-out infinite;
+}
+
+.presence-energy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--bh-blue),
+    var(--bh-violet),
+    var(--bh-pink),
+    transparent
+  );
+  filter: blur(5px);
+  opacity: 0.75;
+  transform: rotate(65deg);
+}
+
+/* Green Energy Accent */
+.presence-orb::before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  right: -4px;
+  bottom: 2px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(25, 195, 125, 0.85),
+    rgba(6, 59, 42, 0.5),
+    transparent 70%
+  );
+  filter: blur(3px);
+  animation: presenceGreenPulse 3s ease-in-out infinite;
+}
+
+/* Red/Rose Energy Accent */
+.presence-orb::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 14px;
+  left: -4px;
+  bottom: 3px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(239, 51, 64, 0.75),
+    rgba(251, 113, 133, 0.55),
+    transparent
+  );
+  filter: blur(4px);
+  transform: rotate(-25deg);
+  animation: presenceRedEnergy 4s ease-in-out infinite;
+}
+
+/* Central Specular Light Core */
+.presence-light {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  top: 9px;
+  left: 14px;
+  border-radius: 50%;
+  background: var(--bh-white);
+  box-shadow:
+    0 0 5px var(--bh-white),
+    0 0 10px var(--bh-blue),
+    0 0 16px var(--bh-blue),
+    0 0 24px var(--bh-violet),
+    0 0 32px var(--bh-pink);
+  animation: presenceLightMove 4s ease-in-out infinite;
+}
+
+/* Specular Crest Highlight */
+.presence-highlight {
+  position: absolute;
+  width: 12px;
+  height: 6px;
+  top: 5px;
+  left: 8px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  filter: blur(1.2px);
+  transform: rotate(-25deg);
+}
+
+/* Keyframes from bytehouse_presence.html */
+@keyframes presenceBreathe {
+  0%, 100% { transform: scale(0.94); opacity: 0.65; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes presenceOrbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes presenceEnergyMove {
+  0% { transform: rotate(-30deg) translateX(-4px); }
+  50% { transform: rotate(25deg) translateX(6px); }
+  100% { transform: rotate(-30deg) translateX(-4px); }
+}
+
+@keyframes presenceLightMove {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4px, 2.5px) scale(1.15); }
+}
+
+@keyframes presenceGreenPulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.45; }
+  50% { transform: scale(1.2); opacity: 0.95; }
+}
+
+@keyframes presenceRedEnergy {
+  0%, 100% { transform: rotate(-25deg) translateX(0); }
+  50% { transform: rotate(15deg) translateX(5px); }
+}
+
+/* ==========================================================================
+   PRESENCE STATES: THINKING & WORKING
+   ========================================================================== */
+
+.presence-bezel--thinking .presence-energy {
+  animation: presenceThinkingEnergy 1.2s linear infinite;
+}
+
+.presence-bezel--thinking .presence-light {
+  animation: presenceThinkingLight 1s ease-in-out infinite;
+}
+
+.presence-bezel--thinking .presence-glow {
+  animation: presenceThinkingGlow 1.6s ease-in-out infinite;
+}
+
+@keyframes presenceThinkingEnergy {
+  from { transform: rotate(0deg) scale(1.1); }
+  to { transform: rotate(360deg) scale(1.1); }
+}
+
+@keyframes presenceThinkingLight {
+  0%, 100% { transform: translate(-2px, 0) scale(1); }
+  50% { transform: translate(5px, -2px) scale(1.25); }
+}
+
+@keyframes presenceThinkingGlow {
+  0%, 100% { opacity: 0.55; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+.presence-bezel--working .presence-orb {
+  animation: presenceOrbFloat 1.8s ease-in-out infinite, presenceWorkingPulse 0.9s ease-in-out infinite;
+}
+
+.presence-bezel--working .presence-glow {
+  background: radial-gradient(
+    circle,
+    rgba(25, 195, 125, 0.55),
+    rgba(32, 169, 255, 0.38) 32%,
+    rgba(124, 58, 237, 0.25) 55%,
+    transparent 78%
+  );
+  animation: presenceWorkingGlow 0.9s ease-in-out infinite;
+}
+
+.presence-bezel--working .presence-light {
+  box-shadow:
+    0 0 8px var(--bh-white),
+    0 0 16px var(--bh-green),
+    0 0 28px var(--bh-blue),
+    0 0 42px var(--bh-green);
+}
+
+@keyframes presenceWorkingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+@keyframes presenceWorkingGlow {
+  0%, 100% { transform: scale(1); opacity: 0.65; }
+  50% { transform: scale(1.3); opacity: 1; }
 }
 
 /* User Chat Bubble */
 .user-bubble-liquid {
-  background: #0284c7;
+  background: linear-gradient(135deg, #0284c7, #2563eb);
   color: #ffffff;
   border-radius: var(--radius-card);
-  padding: 10px 14px;
+  padding: 11px 15px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
   word-break: break-word;
@@ -312,34 +586,14 @@ html, body {
 
 /* Assistant Chat Bubble */
 .assistant-bubble-liquid {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.72);
   color: #0f172a;
   border-radius: var(--radius-card);
-  padding: 12px 16px;
+  padding: 13px 17px;
   border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.055);
   word-break: break-word;
   overflow-wrap: anywhere;
-}
-
-/* Multi-layered Glowing Orb Ring */
-.orb-glow-ring {
-  box-shadow: 
-    0 0 18px 2px rgba(56, 189, 248, 0.45),
-    0 0 32px 6px rgba(96, 165, 250, 0.25),
-    inset 0 0 12px rgba(255, 255, 255, 0.6);
-  animation: orbBreathing 4s ease-in-out infinite alternate;
-}
-
-@keyframes orbBreathing {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 16px 2px rgba(56, 189, 248, 0.4), 0 0 28px 4px rgba(96, 165, 250, 0.2);
-  }
-  100% {
-    transform: scale(1.04);
-    box-shadow: 0 0 24px 4px rgba(56, 189, 248, 0.6), 0 0 42px 8px rgba(167, 139, 250, 0.35);
-  }
 }
 
 /* Real-Time Streaming Cursor */
@@ -426,21 +680,6 @@ html, body {
   100% { background-position: 180% 180%; opacity: 0.2; }
 }
 
-@keyframes capsuleShimmer {
-  0% { background-position: -200% 0; }
-  50%, 100% { background-position: 200% 0; }
-}
-
-@keyframes ambientLightBreathe {
-  0% { opacity: 0.7; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.03); }
-}
-
-@keyframes ambientPulse {
-  0% { opacity: 0.4; }
-  100% { opacity: 0.85; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .caustic-mesh-1,
   .caustic-mesh-2,
@@ -448,7 +687,8 @@ html, body {
   .fluid-shimmer-sweep,
   .glass-pill::after,
   .liquid-window::before,
-  .send-btn-liquid::after {
+  .companion-mark__halo,
+  .companion-mark__core {
     animation: none !important;
     transform: none !important;
   }

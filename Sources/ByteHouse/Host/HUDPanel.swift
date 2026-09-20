@@ -22,12 +22,13 @@ public class HUDPanel: NSPanel {
         self.webView = WKWebView(frame: .zero, configuration: config)
         webBridge.webView = self.webView
 
-        let width: CGFloat = 420
-        let height: CGFloat = 620
+        let width: CGFloat = 440
+        let height: CGFloat = 580
 
         let screenRect = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
-        let x = screenRect.maxX - width - 24
-        let y = screenRect.maxY - height - 12
+        // macOS Spotlight positioning: centered horizontally, top third vertically (~20% from top of visible screen)
+        let x = screenRect.midX - (width / 2)
+        let y = screenRect.maxY - height - (screenRect.height * 0.18)
 
         let contentRect = NSRect(x: x, y: y, width: width, height: height)
 
@@ -73,28 +74,24 @@ public class HUDPanel: NSPanel {
         return true
     }
 
-    public func positionNear(statusItem: NSStatusItem?) {
+    public func positionCenter() {
         guard let screen = NSScreen.main else { return }
         let screenRect = screen.visibleFrame
         let width = frame.width
         let height = frame.height
 
-        var targetX = screenRect.maxX - width - 24
-        if let button = statusItem?.button, let buttonWindow = button.window {
-            let buttonRect = buttonWindow.frame
-            targetX = buttonRect.midX - (width / 2)
-            targetX = max(screenRect.minX + 16, min(targetX, screenRect.maxX - width - 16))
-        }
-        let targetY = screenRect.maxY - height - 8
+        // Spotlight positioning: centered horizontally, optical top center
+        let targetX = screenRect.midX - (width / 2)
+        let targetY = screenRect.maxY - height - (screenRect.height * 0.18)
 
         setFrameOrigin(NSPoint(x: targetX, y: targetY))
     }
 
-    public func toggle(statusItem: NSStatusItem? = nil) {
+    public func toggle() {
         if isVisible {
             orderOut(nil)
         } else {
-            positionNear(statusItem: statusItem)
+            positionCenter()
             makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
         }
