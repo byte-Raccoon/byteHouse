@@ -814,5 +814,78 @@ giant codebase
         ↓
 uncontrolled AI system
 ```
+## Stitch Visual Fidelity Rule
+
+Stitch is the visual source of truth for ByteHouse.
+
+Do not treat Stitch screenshots as inspiration or as a loose design reference.
+
+When implementing a Stitch design:
+
+1. Preserve the overall composition.
+2. Preserve relative positioning and proportions.
+3. Preserve spacing and visual hierarchy.
+4. Preserve typography scale and weight.
+5. Preserve colors and gradients.
+6. Preserve borders, shadows, glow, blur, transparency and depth.
+7. Recreate complex visual elements as layered components rather than
+   simplifying them into generic CSS shapes.
+8. Do not replace distinctive visual elements with generic UI patterns.
+9. Do not add cards, panels, buttons, labels, or sections that are not
+   represented by the source design unless required by functionality.
+10. Do not consider the task complete merely because the UI is functional.
+
+### Visual Verification Loop
+
+After implementation:
+
+1. Run the application.
+2. Capture the rendered UI.
+3. Compare it against the Stitch reference.
+4. Identify the largest visual discrepancies.
+5. Fix those discrepancies.
+6. Repeat until the implementation closely matches the reference.
+
+Prioritize discrepancies in this order:
+
+1. Composition
+2. Main visual/orb
+3. Scale and positioning
+4. Spacing
+5. Typography
+6. Colors
+7. Lighting/glow
+8. Borders and surfaces
+9. Micro-interactions
+10. Minor details
+
+The agent must not declare a Stitch implementation complete without
+performing visual verification.
+
+The ByteHouse orb is a primary visual identity element.
+
+Do not implement it as a simple gradient circle with a white dot.
+
+It must be constructed as a layered visual system:
+
+- spherical dark base
+- translucent cyan/blue volume
+- violet volume
+- red/rose-pink translucent energy form
+- green/cyan translucent energy form
+- central white light source
+- secondary reflected highlight
+- internal bloom
+- external atmospheric glow
+- subtle spherical edge/refraction effect
+
+The internal colored forms should have independent movement,
+opacity, blur and rotation.
+
+The white light should behave as a light source,
+not as a flat white circle.
+
+The result should visually resemble a luminous,
+three-dimensional energy sphere rather than a CSS gradient orb.
 
 **Build ByteHouse one controlled layer at a time.**

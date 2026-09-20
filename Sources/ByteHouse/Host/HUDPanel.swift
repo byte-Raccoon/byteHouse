@@ -22,8 +22,8 @@ public class HUDPanel: NSPanel {
         self.webView = WKWebView(frame: .zero, configuration: config)
         webBridge.webView = self.webView
 
-        let width: CGFloat = 720
-        let height: CGFloat = 580
+        let width: CGFloat = 840
+        let height: CGFloat = 620
 
         let screenRect = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1440, height: 900)
         // macOS Spotlight positioning: centered horizontally, top third vertically (~20% from top of visible screen)
@@ -34,7 +34,7 @@ public class HUDPanel: NSPanel {
 
         super.init(
             contentRect: contentRect,
-            styleMask: [.nonactivatingPanel, .borderless],
+            styleMask: [.nonactivatingPanel, .borderless, .resizable],
             backing: .buffered,
             defer: false
         )
@@ -43,8 +43,11 @@ public class HUDPanel: NSPanel {
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         self.isOpaque = false
         self.backgroundColor = .clear
+        self.appearance = NSAppearance(named: .darkAqua)
         self.hasShadow = true
         self.isMovableByWindowBackground = true
+        self.minSize = NSSize(width: 520, height: 440)
+        self.showsResizeIndicator = true
 
         // Configure WebKit
         let bounds = NSRect(x: 0, y: 0, width: width, height: height)
@@ -55,7 +58,7 @@ public class HUDPanel: NSPanel {
         // Native macOS VisualEffectView providing true macOS vibrancy material
         let visualEffectView = NSVisualEffectView(frame: bounds)
         visualEffectView.autoresizingMask = [.width, .height]
-        visualEffectView.material = .popover
+        visualEffectView.material = .hudWindow
         visualEffectView.blendingMode = .behindWindow
         visualEffectView.state = .active
         visualEffectView.wantsLayer = true

@@ -1,44 +1,34 @@
 @import "tailwindcss";
 
-:root {
-  /* Stitch Orb Colors */
-  --bh-black: #030305;
-  --bh-dark-green: #063b2a;
-  --bh-green: #19c37d;
-  --bh-blue: #20a9ff;
-  --bh-violet: #7c3aed;
-  --bh-pink: #ec4899;
-  --bh-rose-pink: #fb7185;
-  --bh-red: #ef3340;
-  --bh-white: #ffffff;
-
-  /* UI Accent & Glass Surface */
-  --primary-cyan: #00f5ff;
-  --surface-lowest: rgba(7, 9, 14, 0.92);
-  --surface-low: rgba(18, 20, 28, 0.75);
-  --surface-high: rgba(30, 32, 44, 0.65);
-  --border-glass: rgba(255, 255, 255, 0.12);
-  --border-glass-bright: rgba(255, 255, 255, 0.22);
-
-  --radius-window: 20px;
-  --radius-card: 14px;
-  --radius-pill: 9999px;
-}
-
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
-  user-select: none;
+}
+
+:root {
+  --black: #030305;
+  --dark-green: #063b2a;
+  --green: #19c37d;
+  --blue: #20a9ff;
+  --violet: #7c3aed;
+  --pink: #ec4899;
+  --rose-pink: #fb7185;
+  --red: #ef3340;
+  --white: #ffffff;
 }
 
 html, body {
+  margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: transparent;
-  color: #f1f5f9;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.12), transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(25, 195, 125, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(32, 169, 255, 0.08), transparent 35%),
+    var(--black);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  color: #fff;
+  user-select: none;
 }
 
 #root {
@@ -46,69 +36,42 @@ html, body {
   height: 100%;
 }
 
-/* Scrollbar hide */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* ==========================================================================
-   AMBIENT GRID & SPOTLIGHT WINDOW SHELL
-   ========================================================================== */
-
+/* Ambient background grid dots */
 .bg-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-size: 32px 32px;
 }
 
-.spotlight-window {
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(circle at 50% 12%, rgba(124, 58, 237, 0.18), transparent 45%),
-    radial-gradient(circle at 15% 85%, rgba(25, 195, 125, 0.10), transparent 35%),
-    radial-gradient(circle at 85% 25%, rgba(32, 169, 255, 0.12), transparent 35%),
-    rgba(6, 8, 14, 0.90);
-  border: 1px solid var(--border-glass-bright);
-  border-radius: var(--radius-window);
-  box-shadow:
-    0 24px 64px -12px rgba(0, 0, 0, 0.85),
-    0 0 1px 1px rgba(255, 255, 255, 0.12),
-    0 0 40px rgba(0, 245, 255, 0.06);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-}
-
-/* ==========================================================================
-   BYTEHOUSE NEURAL PRESENCE ORB (From stitch/code.html)
-   ========================================================================== */
+/* ================================
+   BYTEHOUSE PRESENCE ORB (From stitch/code.html)
+================================= */
 
 .bytehouse-stage {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 220px;
-  height: 220px;
-  margin: 0 auto;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 320px;
+  height: 320px;
+  transition: transform 0.3s ease-out;
 }
 
-.bytehouse-stage--compact {
-  width: 120px;
-  height: 120px;
+@media (max-height: 560px), (max-width: 680px) {
+  .bytehouse-stage {
+    transform: scale(0.82);
+  }
+}
+
+@media (max-height: 480px), (max-width: 580px) {
+  .bytehouse-stage {
+    transform: scale(0.68);
+  }
 }
 
 .bytehouse {
   position: relative;
-  width: 110px;
-  height: 110px;
+  width: 140px;
+  height: 140px;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -116,13 +79,8 @@ html, body {
   border-radius: 50%;
 }
 
-.bytehouse-stage--compact .bytehouse {
-  width: 68px;
-  height: 68px;
-}
-
 .bytehouse:hover {
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
 .bytehouse:active {
@@ -132,35 +90,21 @@ html, body {
 /* Outer acoustic concentric rings */
 .sound-ring {
   position: absolute;
-  inset: -22px;
+  inset: -30px;
   border-radius: 50%;
-  border: 1px solid rgba(124, 58, 237, 0.28);
+  border: 1px solid rgba(124, 58, 237, 0.25);
   pointer-events: none;
   animation: ringExpand 3.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite;
 }
-
-.bytehouse-stage--compact .sound-ring {
-  inset: -12px;
-}
-
 .sound-ring:nth-child(2) {
-  inset: -44px;
-  border-color: rgba(32, 169, 255, 0.20);
+  inset: -60px;
+  border-color: rgba(32, 169, 255, 0.18);
   animation-delay: 1.1s;
 }
-
-.bytehouse-stage--compact .sound-ring:nth-child(2) {
-  inset: -22px;
-}
-
 .sound-ring:nth-child(3) {
-  inset: -68px;
-  border-color: rgba(236, 72, 153, 0.14);
+  inset: -95px;
+  border-color: rgba(236, 72, 153, 0.12);
   animation-delay: 2.2s;
-}
-
-.bytehouse-stage--compact .sound-ring:nth-child(3) {
-  inset: -34px;
 }
 
 @keyframes ringExpand {
@@ -177,28 +121,217 @@ html, body {
   }
 }
 
-/* Outer Glow */
+/* ================================
+   OUTER GLOW
+================================= */
+
 .glow {
   position: absolute;
-  inset: -32px;
+  inset: -45px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(32, 169, 255, 0.45),
-    rgba(124, 58, 237, 0.32) 27%,
-    rgba(236, 72, 153, 0.22) 46%,
-    rgba(25, 195, 125, 0.14) 62%,
-    transparent 74%
-  );
-  filter: blur(20px);
+  background:
+    radial-gradient(
+      circle,
+      rgba(32, 169, 255, 0.45),
+      rgba(124, 58, 237, 0.32) 27%,
+      rgba(236, 72, 153, 0.22) 46%,
+      rgba(25, 195, 125, 0.14) 62%,
+      transparent 74%
+    );
+  filter: blur(24px);
   pointer-events: none;
   animation: breathe 3.2s ease-in-out infinite;
 }
 
-.bytehouse-stage--compact .glow {
-  inset: -16px;
-  filter: blur(12px);
+/* ================================
+   MAIN ORB
+================================= */
+
+.orb {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 34% 24%,
+      var(--white) 0%,
+      var(--blue) 7%,
+      #1464a0 18%,
+      var(--violet) 32%,
+      var(--dark-green) 51%,
+      var(--black) 73%
+    );
+  box-shadow:
+    inset 10px 8px 24px rgba(255, 255, 255, 0.3),
+    inset -18px -18px 36px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(32, 169, 255, 0.4),
+    0 0 65px rgba(124, 58, 237, 0.28),
+    0 0 95px rgba(236, 72, 153, 0.18);
+  animation: orbFloat 4s ease-in-out infinite;
 }
+
+/* ================================
+   MULTICOLOR ENERGY
+================================= */
+
+.energy {
+  position: absolute;
+  width: 190px;
+  height: 95px;
+  left: -25px;
+  top: 45px;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      var(--red) 0%,
+      var(--rose-pink) 18%,
+      var(--pink) 35%,
+      var(--violet) 52%,
+      var(--blue) 70%,
+      var(--green) 88%,
+      var(--dark-green) 100%
+    );
+  filter: blur(14px);
+  opacity: 0.85;
+  transform: rotate(-30deg);
+  animation: energyMove 5s ease-in-out infinite;
+}
+
+.energy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--blue),
+      var(--violet),
+      var(--pink),
+      transparent
+    );
+  filter: blur(16px);
+  opacity: 0.75;
+  transform: rotate(65deg);
+}
+
+/* ================================
+   GREEN ENERGY SPOT
+================================= */
+
+.orb::before {
+  content: "";
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  right: -12px;
+  bottom: 6px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(25, 195, 125, 0.88),
+      rgba(6, 59, 42, 0.48),
+      transparent 70%
+    );
+  filter: blur(8px);
+  animation: greenPulse 3s ease-in-out infinite;
+}
+
+/* ================================
+   RED / ROSE ENERGY
+================================= */
+
+.orb::after {
+  content: "";
+  position: absolute;
+  width: 85px;
+  height: 42px;
+  left: -12px;
+  bottom: 8px;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(239, 51, 64, 0.76),
+      rgba(251, 113, 133, 0.58),
+      transparent
+    );
+  filter: blur(10px);
+  transform: rotate(-25deg);
+  animation: redEnergy 4s ease-in-out infinite;
+}
+
+/* ================================
+   CENTRAL WHITE LIGHT & PENDULUM DYNAMICS
+================================= */
+
+.light {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 40px;
+  left: 56px;
+  transform-origin: 50% -36px 0px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow:
+    rgb(255, 255, 255) 0px 0px 8px,
+    rgb(32, 169, 255) 0px 0px 18px,
+    rgb(32, 169, 255) 0px 0px 30px,
+    rgb(124, 58, 237) 0px 0px 45px,
+    rgb(236, 72, 153) 0px 0px 60px;
+  animation: 3.6s ease-in-out infinite pendulumIdle;
+}
+
+@keyframes pendulumIdle {
+  0% { transform: rotate(-18deg) translate(-14px, -3px); }
+  50% { transform: rotate(18deg) translate(14px, -3px); }
+  100% { transform: rotate(-18deg) translate(-14px, -3px); }
+}
+
+@keyframes pendulumListening {
+  0% { transform: rotate(-26deg) translate(-20px, -6px) scale(1.08); }
+  50% { transform: rotate(26deg) translate(20px, -6px) scale(1.08); }
+  100% { transform: rotate(-26deg) translate(-20px, -6px) scale(1.08); }
+}
+
+@keyframes pendulumThinking {
+  0% { transform: rotate(-32deg) translate(-22px, -8px) scale(1.12); }
+  25% { transform: rotate(0deg) translate(0px, 8px) scale(1.18); }
+  50% { transform: rotate(32deg) translate(22px, -8px) scale(1.12); }
+  75% { transform: rotate(0deg) translate(0px, 8px) scale(1.18); }
+  100% { transform: rotate(-32deg) translate(-22px, -8px) scale(1.12); }
+}
+
+/* ================================
+   WHITE HIGHLIGHT
+================================= */
+
+.highlight {
+  position: absolute;
+  width: 38px;
+  height: 18px;
+  top: 15px;
+  left: 28px;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+  filter: blur(3px);
+  transform: rotate(-25deg);
+}
+
+/* ================================
+   BASE ANIMATIONS
+================================= */
 
 @keyframes breathe {
   0%, 100% {
@@ -211,137 +344,25 @@ html, body {
   }
 }
 
-/* Main Orb */
-.orb {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  overflow: hidden;
-  background: radial-gradient(
-    circle at 34% 24%,
-    var(--bh-white) 0%,
-    var(--bh-blue) 7%,
-    #1464a0 18%,
-    var(--bh-violet) 32%,
-    var(--bh-dark-green) 51%,
-    var(--bh-black) 73%
-  );
-  box-shadow:
-    inset 8px 6px 18px rgba(255, 255, 255, 0.35),
-    inset -14px -14px 28px rgba(0, 0, 0, 0.85),
-    0 0 28px rgba(32, 169, 255, 0.45),
-    0 0 55px rgba(124, 58, 237, 0.30),
-    0 0 80px rgba(236, 72, 153, 0.20);
-  animation: orbFloat 4s ease-in-out infinite;
-}
-
 @keyframes orbFloat {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
   }
-}
-
-/* Multicolor Energy Ribbon */
-.energy {
-  position: absolute;
-  width: 150px;
-  height: 75px;
-  left: -20px;
-  top: 35px;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    var(--bh-red) 0%,
-    var(--bh-rose-pink) 18%,
-    var(--bh-pink) 35%,
-    var(--bh-violet) 52%,
-    var(--bh-blue) 70%,
-    var(--bh-green) 88%,
-    var(--bh-dark-green) 100%
-  );
-  filter: blur(12px);
-  opacity: 0.85;
-  transform: rotate(-30deg);
-  animation: energyMove 5s ease-in-out infinite;
-}
-
-.bytehouse-stage--compact .energy {
-  width: 95px;
-  height: 48px;
-  left: -12px;
-  top: 20px;
-  filter: blur(8px);
-}
-
-.energy::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--bh-blue),
-    var(--bh-violet),
-    var(--bh-pink),
-    transparent
-  );
-  filter: blur(14px);
-  opacity: 0.75;
-  transform: rotate(65deg);
 }
 
 @keyframes energyMove {
   0% {
-    transform: rotate(-30deg) translateX(-10px);
+    transform: rotate(-30deg) translateX(-12px);
   }
   50% {
-    transform: rotate(25deg) translateX(14px);
+    transform: rotate(25deg) translateX(18px);
   }
   100% {
-    transform: rotate(-30deg) translateX(-10px);
+    transform: rotate(-30deg) translateX(-12px);
   }
-}
-
-/* Green and Red Edge Accents */
-.orb::before {
-  content: "";
-  position: absolute;
-  width: 58px;
-  height: 58px;
-  right: -10px;
-  bottom: 4px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(25, 195, 125, 0.88),
-    rgba(6, 59, 42, 0.48),
-    transparent 70%
-  );
-  filter: blur(7px);
-  animation: greenPulse 3s ease-in-out infinite;
-}
-
-.orb::after {
-  content: "";
-  position: absolute;
-  width: 68px;
-  height: 34px;
-  left: -10px;
-  bottom: 6px;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    rgba(239, 51, 64, 0.76),
-    rgba(251, 113, 133, 0.58),
-    transparent
-  );
-  filter: blur(8px);
-  transform: rotate(-25deg);
-  animation: redEnergy 4s ease-in-out infinite;
 }
 
 @keyframes greenPulse {
@@ -360,76 +381,14 @@ html, body {
     transform: rotate(-25deg) translateX(0);
   }
   50% {
-    transform: rotate(15deg) translateX(12px);
+    transform: rotate(15deg) translateX(14px);
   }
 }
 
-/* Central Pendulum White Light */
-.light {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  top: 32px;
-  left: 44px;
-  border-radius: 50%;
-  background: var(--bh-white);
-  box-shadow:
-    0 0 10px var(--bh-white),
-    0 0 22px var(--bh-blue),
-    0 0 36px var(--bh-blue),
-    0 0 55px var(--bh-violet),
-    0 0 75px var(--bh-pink);
-  transform-origin: 50% -28px 0px;
-  animation: pendulumIdle 3.6s ease-in-out infinite;
-}
+/* ================================
+   LISTENING STATE
+================================= */
 
-.bytehouse-stage--compact .light {
-  width: 14px;
-  height: 14px;
-  top: 18px;
-  left: 26px;
-  box-shadow:
-    0 0 6px var(--bh-white),
-    0 0 14px var(--bh-blue),
-    0 0 24px var(--bh-violet);
-}
-
-@keyframes pendulumIdle {
-  0% { transform: rotate(-18deg) translate(-12px, -3px); }
-  50% { transform: rotate(18deg) translate(12px, -3px); }
-  100% { transform: rotate(-18deg) translate(-12px, -3px); }
-}
-
-/* White Highlight Sheen */
-.highlight {
-  position: absolute;
-  width: 30px;
-  height: 14px;
-  top: 12px;
-  left: 22px;
-  border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  filter: blur(2.5px);
-  transform: rotate(-25deg);
-}
-
-.bytehouse-stage--compact .highlight {
-  width: 18px;
-  height: 8px;
-  top: 7px;
-  left: 14px;
-}
-
-/* ==========================================================================
-   PRESENCE DYNAMIC STATES (Listening & Thinking)
-   ========================================================================== */
-
-/* Listening State */
 .bytehouse.listening .orb {
   animation:
     orbFloat 2s ease-in-out infinite,
@@ -442,16 +401,20 @@ html, body {
 
 .bytehouse.listening .light {
   box-shadow:
-    0 0 14px var(--bh-white),
-    0 0 32px var(--bh-blue),
-    0 0 58px var(--bh-green),
-    0 0 90px var(--bh-blue);
+    0 0 14px var(--white),
+    0 0 32px var(--blue),
+    0 0 58px var(--green),
+    0 0 90px var(--blue);
   animation: pendulumListening 2.2s ease-in-out infinite !important;
 }
 
 @keyframes listeningPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes listeningGlow {
@@ -460,18 +423,15 @@ html, body {
     opacity: 0.65;
   }
   50% {
-    transform: scale(1.35);
+    transform: scale(1.4);
     opacity: 1;
   }
 }
 
-@keyframes pendulumListening {
-  0% { transform: rotate(-26deg) translate(-18px, -5px) scale(1.08); }
-  50% { transform: rotate(26deg) translate(18px, -5px) scale(1.08); }
-  100% { transform: rotate(-26deg) translate(-18px, -5px) scale(1.08); }
-}
+/* ================================
+   THINKING STATE
+================================= */
 
-/* Thinking State */
 .bytehouse.thinking .energy {
   animation: thinkingEnergy 1.2s linear infinite;
 }
@@ -481,130 +441,19 @@ html, body {
 }
 
 .bytehouse.thinking .glow {
-  animation: thinkingGlow 1.6s ease-in-out infinite;
+  animation: thinkingGlow 1.8s ease-in-out infinite;
 }
 
 @keyframes thinkingEnergy {
-  from { transform: rotate(0deg) scale(1.12); }
-  to { transform: rotate(360deg) scale(1.12); }
-}
-
-@keyframes pendulumThinking {
-  0% { transform: rotate(-32deg) translate(-20px, -7px) scale(1.12); }
-  25% { transform: rotate(0deg) translate(0px, 7px) scale(1.18); }
-  50% { transform: rotate(32deg) translate(20px, -7px) scale(1.12); }
-  75% { transform: rotate(0deg) translate(0px, 7px) scale(1.18); }
-  100% { transform: rotate(-32deg) translate(-20px, -7px) scale(1.12); }
-}
-
-@keyframes thinkingGlow {
-  0%, 100% {
-    opacity: 0.55;
-    transform: scale(0.95);
+  from {
+    transform: rotate(0deg) scale(1.12);
   }
-  50% {
-    opacity: 1;
-    transform: scale(1.28);
+  to {
+    transform: rotate(360deg) scale(1.12);
   }
 }
 
-/* ==========================================================================
-   SPOTLIGHT CONTROLS, CHIPS, CARDS & BUBBLES
-   ========================================================================== */
-
-/* Suggestion Card Item */
-.stitch-suggestion-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.stitch-suggestion-card:hover {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(0, 245, 255, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-
-.stitch-suggestion-card:active {
-  transform: scale(0.98);
-}
-
-/* Chat Message Bubbles */
-.stitch-user-bubble {
-  background: linear-gradient(135deg, rgba(32, 169, 255, 0.25), rgba(124, 58, 237, 0.35));
-  border: 1px solid rgba(0, 245, 255, 0.35);
-  border-radius: 14px 14px 4px 14px;
-  padding: 8px 14px;
-  color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.stitch-assistant-bubble {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 14px 14px 14px 4px;
-  padding: 12px 16px;
-  color: #f8fafc;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(12px);
-}
-
-/* Tool Execution Cards */
-.stitch-tool-card {
-  background: rgba(12, 14, 22, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  padding: 9px 13px;
-  margin-top: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Typing Thinking Dots */
-.thinking-dots {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 0;
-}
-
-.thinking-dots span {
-  width: 5px;
-  height: 5px;
-  background-color: var(--primary-cyan);
-  border-radius: 50%;
-  animation: bounceDot 1.3s infinite ease-in-out both;
-}
-
-.thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
-.thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounceDot {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-  40% { transform: scale(1.1); opacity: 1; }
-}
-
-.streaming-cursor {
-  display: inline-block;
-  color: var(--primary-cyan);
-  font-weight: 700;
-  margin-left: 2px;
-  animation: cursorBlink 0.9s infinite;
-}
-
-@keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Reduced motion preference */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
